@@ -1,838 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WolfTube</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Roboto", Arial, sans-serif;
-        }
-        body {
-            background-color: #0f0f0f;
-            color: white;
-            overflow: hidden;
-        }
-        
-        /* VERIFICAÇÃO DE IDADE */
-        .age-verification {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .age-container {
-            background: linear-gradient(135deg, #1e1e2e, #16213e);
-            border-radius: 32px;
-            padding: 40px 30px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            border: 2px solid rgba(255,107,107,0.5);
-        }
-        .age-icon { font-size: 60px; margin-bottom: 15px; }
-        .age-container h1 {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        .age-text { color: #ccc; margin-bottom: 20px; font-size: 14px; }
-        .age-warning {
-            background: rgba(255,107,107,0.15);
-            border-left: 3px solid #ff6b6b;
-            padding: 12px;
-            border-radius: 10px;
-            color: #ff8888;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-        .age-buttons { display: flex; gap: 15px; justify-content: center; }
-        .age-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .age-btn.yes { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; }
-        .age-btn.no { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
-        
-        .main-content { display: none; }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 16px;
-            height: 56px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            background-color: #0f0f0f;
-            z-index: 1000;
-            border-bottom: 1px solid #272727;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .logo-emoji {
-            font-size: 28px;
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-            color: white;
-        }
-        .header-icons {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .upload-btn {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .user-container {
-            position: relative;
-            cursor: pointer;
-        }
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-        .user-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #3ea6ff, #1e6ec5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .user-name {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 2px;
-        }
-        .creator-badge {
-            background: linear-gradient(135deg, #4ecdc4, #2ecc71);
-            font-size: 9px;
-            padding: 2px 6px;
-            border-radius: 20px;
-            margin-left: 4px;
-            color: white;
-        }
-        .user-badge {
-            background: linear-gradient(135deg, #3ea6ff, #0088cc);
-            font-size: 9px;
-            padding: 2px 6px;
-            border-radius: 20px;
-            margin-left: 4px;
-            color: white;
-        }
-        .user-menu {
-            position: absolute;
-            top: 45px;
-            right: 0;
-            background: #1e1e1e;
-            border-radius: 12px;
-            padding: 8px 0;
-            min-width: 160px;
-            z-index: 2000;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-            display: none;
-        }
-        .user-menu.show { display: block; }
-        .user-menu-item {
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #ddd;
-            font-size: 14px;
-        }
-        .user-menu-item:hover { background-color: #333; }
-        .user-menu-item.logout { color: #ff6b6b; border-top: 1px solid #333; margin-top: 5px; }
-        .login-btn {
-            background: linear-gradient(135deg, #3ea6ff, #0088cc);
-            border: none;
-            padding: 8px 18px;
-            border-radius: 40px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 56px;
-            width: 240px;
-            height: calc(100vh - 56px);
-            background-color: #0f0f0f;
-            overflow-y: auto;
-            padding: 12px 0;
-            z-index: 999;
-        }
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            padding: 8px 24px;
-            cursor: pointer;
-            border-radius: 10px;
-            margin: 2px 8px;
-        }
-        .sidebar-item:hover { background-color: #272727; }
-        hr { margin: 12px 0; border-color: #333; }
-        main {
-            margin-top: 56px;
-            margin-left: 240px;
-            padding: 20px 24px;
-            height: calc(100vh - 56px);
-            overflow-y: auto;
-        }
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px 16px;
-        }
-        .video-card { 
-            cursor: pointer; 
-            transition: transform 0.2s;
-            position: relative;
-        }
-        .video-card:hover { transform: scale(0.98); }
-        .thumbnail {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-        .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
-        .video-text h3 {
-            font-size: 15px;
-            line-height: 20px;
-            margin-bottom: 4px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .video-meta { font-size: 13px; color: #aaa; }
-        
-        /* MODAL DE UPLOAD - VERSÃO PEQUENA */
-        .upload-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-        }
-        .upload-container {
-            background: #1e1e1e;
-            border-radius: 20px;
-            padding: 20px;
-            max-width: 90%;
-            width: 340px;
-            margin: auto;
-            border: 1px solid #333;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-        .upload-container h2 { 
-            color: #ff6b6b; 
-            margin-bottom: 8px; 
-            text-align: center; 
-            font-size: 18px;
-        }
-        .upload-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 8px;
-        }
-        .upload-tab {
-            flex: 1;
-            padding: 8px;
-            text-align: center;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .upload-tab.active {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            color: white;
-        }
-        .upload-panel { display: none; }
-        .upload-panel.active { display: block; }
-        .info-box {
-            background: #0a2a2a;
-            border-left: 3px solid #4ecdc4;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 11px;
-        }
-        .upload-container input, .upload-container textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 12px;
-            background: #333;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 12px;
-        }
-        .file-upload-area {
-            background: #0a0a0a;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
-            text-align: center;
-            border: 1px dashed #4ecdc4;
-        }
-        .file-upload-label {
-            display: block;
-            background: linear-gradient(135deg, #4ecdc4, #2ecc71);
-            padding: 8px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .video-preview {
-            margin-top: 10px;
-            display: none;
-        }
-        .video-preview video {
-            max-width: 100%;
-            max-height: 150px;
-            border-radius: 8px;
-        }
-        .thumbnail-upload-area {
-            background: #0a0a0a;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .thumbnail-upload-label {
-            display: block;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            padding: 8px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .thumbnail-preview-area {
-            margin-top: 10px;
-            padding: 8px;
-            background: #2a2a2a;
-            border-radius: 8px;
-            display: none;
-        }
-        .thumbnail-preview-area img { max-width: 100%; border-radius: 6px; max-height: 100px; }
-        .success-text { color: #2ecc71; font-size: 10px; margin-top: 5px; }
-        .upload-buttons { display: flex; gap: 10px; margin-top: 10px; }
-        .upload-buttons button { flex: 1; padding: 10px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .submit-upload { background: linear-gradient(135deg, #ff6b6b, #4ecdc4); color: white; }
-        .cancel-upload { background: #444; color: white; }
-        .google-drive-section {
-            background: linear-gradient(135deg, #0f9b0f, #0a5a0a);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .google-drive-btn {
-            background: white;
-            color: #0f9b0f;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .google-status {
-            font-size: 10px;
-            margin-top: 8px;
-            color: #4ecdc4;
-        }
-        .upload-progress {
-            background: #333;
-            border-radius: 10px;
-            height: 15px;
-            overflow: hidden;
-            margin-top: 10px;
-            display: none;
-        }
-        .upload-progress-bar {
-            background: linear-gradient(135deg, #4ecdc4, #2ecc71);
-            width: 0%;
-            height: 100%;
-            transition: width 0.3s;
-        }
-        
-        /* MODAL DE LOGIN */
-        .login-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 3500;
-            justify-content: center;
-            align-items: center;
-        }
-        .login-container {
-            background: linear-gradient(135deg, #1e1e2e, #16213e);
-            border-radius: 24px;
-            padding: 30px;
-            max-width: 400px;
-            width: 90%;
-            border: 1px solid rgba(62,166,255,0.5);
-        }
-        .login-container h2 {
-            background: linear-gradient(135deg, #3ea6ff, #4ecdc4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-align: center;
-            margin-bottom: 8px;
-            font-size: 24px;
-        }
-        .opcoes-login {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .opcao-login {
-            flex: 1;
-            text-align: center;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        .opcao-login.selected {
-            border-color: #3ea6ff;
-            background: rgba(62,166,255,0.1);
-        }
-        .opcao-login.creator.selected {
-            border-color: #4ecdc4;
-        }
-        .opcao-icon { font-size: 30px; margin-bottom: 8px; }
-        .opcao-title { font-weight: bold; font-size: 14px; }
-        .opcao-desc { font-size: 10px; color: #aaa; }
-        .input-group { margin-bottom: 15px; }
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(62,166,255,0.3);
-            border-radius: 40px;
-            color: white;
-            font-size: 14px;
-        }
-        .login-submit-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #3ea6ff, #0088cc);
-            border: none;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 12px;
-        }
-        .register-btn {
-            width: 100%;
-            padding: 10px;
-            background: transparent;
-            border: 1px solid rgba(62,166,255,0.5);
-            border-radius: 40px;
-            color: #3ea6ff;
-            cursor: pointer;
-        }
-        .close-login {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            cursor: pointer;
-            color: #888;
-        }
-        
-        /* MODAL DE VÍDEO */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-container {
-            display: flex;
-            flex-direction: row;
-            width: 95%;
-            max-width: 1200px;
-            background: #0f0f0f;
-            border-radius: 16px;
-            gap: 15px;
-            padding: 15px;
-            height: 90vh;
-            overflow: hidden;
-        }
-        .modal-video-column { flex: 2; display: flex; flex-direction: column; height: 100%; overflow-y: auto; }
-        .modal-video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .modal-video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .video-censura-topo {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(to bottom, #000 0%, transparent 100%);
-            z-index: 15;
-            pointer-events: none;
-        }
-        .watermark {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            z-index: 20;
-        }
-        .video-info-modal { padding: 8px 0; }
-        .video-title-modal { font-size: 16px; font-weight: bold; }
-        .video-stats { color: #aaa; margin: 8px 0; font-size: 13px; }
-        .video-actions { display: flex; gap: 15px; margin: 12px 0; }
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #272727;
-            border: none;
-            color: #ddd;
-            padding: 6px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .comments-section { margin-top: 15px; border-top: 1px solid #333; padding-top: 15px; }
-        .comments-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #ff6b6b; }
-        .comment-input-area { display: flex; gap: 10px; margin-bottom: 15px; }
-        .comment-input {
-            flex: 1;
-            background: #333;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 15px;
-            color: white;
-            font-size: 13px;
-        }
-        .comment-submit-btn {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            border: none;
-            border-radius: 30px;
-            padding: 0 18px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .comments-list { max-height: 250px; overflow-y: auto; }
-        .comment-item {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .comment-author { font-weight: bold; color: #ff6b6b; font-size: 12px; }
-        .comment-date { font-size: 10px; color: #aaa; margin-left: 10px; }
-        .comment-text { font-size: 13px; color: #ddd; margin-top: 5px; }
-        .delete-comment-btn {
-            background: rgba(255,68,68,0.2);
-            border: none;
-            color: #ff6b6b;
-            cursor: pointer;
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 12px;
-        }
-        .modal-recommended { flex: 1; min-width: 260px; max-width: 340px; overflow-y: auto; }
-        .mais-videos-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: #ff6b6b; }
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 28px;
-            cursor: pointer;
-            background: rgba(0,0,0,0.6);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 30;
-        }
-        .toast-message {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2ecc71;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: bold;
-            z-index: 4000;
-            animation: fadeOut 3s ease forwards;
-            font-size: 13px;
-        }
-        .toast-error { background: #e74c3c; }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; visibility: hidden; }
-        }
-        .contador {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.7);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-family: monospace;
-            border: 1px solid #ff6b6b;
-            z-index: 1000;
-        }
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            main { margin-left: 0; }
-            .modal-container { flex-direction: column; }
-            .modal-recommended { max-width: 100%; }
-            .upload-container { width: 320px; }
-        }
-    </style>
-</head>
-<body>
-
-<div id="ageVerification" class="age-verification">
-    <div class="age-container">
-        <div class="age-icon">🔞</div>
-        <h1>WolfTube</h1>
-        <p class="age-text">⚠️ <strong>CONTEÚDO PARA MAIORES DE 18 ANOS</strong></p>
-        <div class="age-warning">🔞 Você confirma que tem 18 anos ou mais?</div>
-        <div class="age-buttons">
-            <button class="age-btn yes" id="ageYesBtn">✅ SIM</button>
-            <button class="age-btn no" id="ageNoBtn">❌ NÃO</button>
-        </div>
-    </div>
-</div>
-
-<div class="main-content" id="mainContentWrap">
-<header>
-    <div class="logo" id="homeButton"><span class="logo-emoji">🐺</span><span>WolfTube</span></div>
-    <div class="header-icons">
-        <div id="uploadButtonContainer"></div>
-        <div id="authButton"><button class="login-btn" id="loginBtn">🔑 Entrar</button></div>
-    </div>
-</header>
-
-<div class="sidebar">
-    <div class="sidebar-item" id="homeSidebar">🏠 Início</div>
-    <div class="sidebar-item" id="galeriaSidebar" style="display: none;">🎬 Minha Galeria</div>
-    <div class="sidebar-item" id="adminSidebar" style="display: none;">👑 Painel Admin</div>
-    <hr>
-    <div class="sidebar-item" id="configSidebar" style="display: none;">⚙️ Configurações</div>
-</div>
-
-<main id="mainContent">
-    <div class="video-grid" id="videoGrid"></div>
-</main>
-
-<div class="contador" id="contador">📹 0 vídeos</div>
-
-<!-- MODAL DE UPLOAD (PEQUENO) -->
-<div id="uploadModal" class="upload-modal">
-    <div class="upload-container">
-        <h2>📤 Publicar Vídeo</h2>
-        
-        <div class="upload-tabs">
-            <div class="upload-tab" id="tabLink">🔗 Postar por Link</div>
-            <div class="upload-tab" id="tabUpload">📁 Upload</div>
-        </div>
-        
-        <div id="panelLink" class="upload-panel">
-            <div class="info-box">💡 Cole o link do vídeo (YouTube ou Google Drive)</div>
-            <input type="text" id="videoUrl" placeholder="Link do vídeo">
-            <input type="text" id="videoTitleLink" placeholder="Título">
-            <textarea id="videoDescLink" placeholder="Descrição" rows="2"></textarea>
-        </div>
-        
-        <div id="panelUpload" class="upload-panel">
-            <div class="google-drive-section">
-                <button type="button" id="googleDriveAuthBtn" class="google-drive-btn">🔐 Conectar Google</button>
-                <div id="googleDriveStatus" class="google-status">⚠️ Conecte sua conta Google</div>
-                <div class="file-upload-area">
-                    <label for="videoFileUpload" class="file-upload-label">📁 Selecionar vídeo</label>
-                    <input type="file" id="videoFileUpload" accept="video/*" style="display: none;" disabled>
-                    <div id="videoPreviewArea" class="video-preview">
-                        <video id="videoPreview" controls style="width:100%"></video>
-                    </div>
-                </div>
-                <div id="uploadProgress" class="upload-progress">
-                    <div id="uploadProgressBar" class="upload-progress-bar"></div>
-                </div>
-            </div>
-            <input type="text" id="videoTitleUpload" placeholder="Título">
-            <textarea id="videoDescUpload" placeholder="Descrição" rows="2"></textarea>
-        </div>
-        
-        <div class="upload-buttons">
-            <button class="cancel-upload" id="cancelUploadBtn">Cancelar</button>
-            <button class="submit-upload" id="submitUploadBtn">Publicar</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DE LOGIN -->
-<div id="loginModal" class="login-modal">
-    <div class="login-container">
-        <span class="close-login" id="closeLogin">&times;</span>
-        <h2>🐺 WolfTube</h2>
-        <div class="opcoes-login">
-            <div class="opcao-login" id="opcaoUsuario">
-                <div class="opcao-icon">👤</div>
-                <div class="opcao-title">Usuário</div>
-                <div class="opcao-desc">Assistir e comentar</div>
-            </div>
-            <div class="opcao-login creator" id="opcaoCriador">
-                <div class="opcao-icon">🎬</div>
-                <div class="opcao-title">Criador</div>
-                <div class="opcao-desc">Postar vídeos</div>
-            </div>
-        </div>
-        <div id="loginFormArea"></div>
-        <div id="loginError" class="error-msg" style="display:none"></div>
-    </div>
-</div>
-
-<!-- MODAL DE VÍDEO -->
-<div id="videoModal" class="modal">
-    <span class="close-modal">&times;</span>
-    <div class="modal-container">
-        <div class="modal-video-column">
-            <div class="modal-video-container">
-                <div id="playerWrapper"></div>
-                <div class="video-censura-topo"></div>
-                <div class="watermark">🐺 WolfTube</div>
-            </div>
-            <div class="video-info-modal">
-                <div class="video-title-modal" id="modalTitle"></div>
-                <div class="video-stats" id="modalStats"></div>
-                <div class="video-actions">
-                    <button class="action-btn" id="likeBtn">👍 <span id="likeCount">0</span></button>
-                    <button class="action-btn" id="dislikeBtn">👎 <span id="dislikeCount">0</span></button>
-                </div>
-                <div class="comments-section">
-                    <div class="comments-title">💬 Comentários (<span id="commentsCount">0</span>)</div>
-                    <div class="comment-input-area">
-                        <input type="text" class="comment-input" id="commentInput" placeholder="Adicione um comentário...">
-                        <button class="comment-submit-btn" id="submitCommentBtn">Publicar</button>
-                    </div>
-                    <div class="comments-list" id="commentsList"></div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-recommended">
-            <div class="mais-videos-title">📺 MAIS VÍDEOS</div>
-            <div id="recommendedList"></div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL ADMIN -->
-<div id="adminModal" class="login-modal">
-    <div class="login-container">
-        <span class="close-login" id="closeAdminBtn">&times;</span>
-        <h2>👑 Área do Administrador</h2>
-        <div id="adminContent"></div>
-    </div>
-</div>
-</div>
-
 <script>
     // ==================== CONFIGURAÇÃO DO GOOGLE DRIVE ====================
     const CLIENT_ID = '367616920639-pi7tcbr6sdqvrikechge2hd56unrmp9f.apps.googleusercontent.com';
@@ -842,7 +7,6 @@
     let accessToken = null;
     let isGoogleConnected = false;
     let selectedVideoFile = null;
-    let selectedThumbnail = null;
     let currentUser = null;
     let currentCreator = null;
     let videosData = [];
@@ -857,51 +21,55 @@
     const SENHA_ADMIN = "wolfadmin2010";
     const EMAIL_ADMIN = "admin@wolftube.com";
     
+    function showMessage(msg, isError = false) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-message' + (isError ? ' toast-error' : '');
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Inicializar Google API
     function initGoogleAPI() {
-        return new Promise((resolve) => {
-            if (typeof gapi !== 'undefined' && gapi.client) {
-                gapi.load('client', async () => {
-                    try {
-                        await gapi.client.init({
-                            apiKey: API_KEY,
-                            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-                        });
-                        resolve();
-                    } catch(e) { resolve(); }
-                });
-            } else { resolve(); }
-        });
+        if (typeof gapi !== 'undefined') {
+            gapi.load('client', () => {
+                gapi.client.init({ apiKey: API_KEY, discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'] });
+            });
+        }
     }
     
     function initGIS() {
-        return new Promise((resolve) => {
-            if (typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
-                tokenClient = google.accounts.oauth2.initTokenClient({
-                    client_id: CLIENT_ID,
-                    scope: 'https://www.googleapis.com/auth/drive.file',
-                    callback: (tokenResponse) => {
-                        if (tokenResponse.access_token) {
-                            accessToken = tokenResponse.access_token;
-                            isGoogleConnected = true;
-                            document.getElementById('googleDriveStatus').innerHTML = '✅ Conectado! Selecione um vídeo.';
-                            document.getElementById('googleDriveStatus').style.color = '#2ecc71';
-                            document.getElementById('videoFileUpload').disabled = false;
-                            showMessage('✅ Google Drive conectado!');
-                        }
-                    },
-                });
-                resolve();
-            } else { resolve(); }
-        });
+        if (typeof google !== 'undefined' && google.accounts) {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: 'https://www.googleapis.com/auth/drive.file',
+                callback: (tokenResponse) => {
+                    if (tokenResponse.access_token) {
+                        accessToken = tokenResponse.access_token;
+                        isGoogleConnected = true;
+                        document.getElementById('googleDriveStatus').innerHTML = '✅ Conectado!';
+                        document.getElementById('googleDriveStatus').style.color = '#2ecc71';
+                        document.getElementById('videoFileUpload').disabled = false;
+                        showMessage('✅ Google Drive conectado!');
+                    }
+                },
+            });
+        }
     }
     
     function connectGoogleDrive() {
         if (tokenClient) {
             tokenClient.requestAccessToken({ prompt: 'consent' });
         } else {
-            initGIS().then(() => {
-                if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
-            });
+            initGIS();
+            setTimeout(() => { if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' }); }, 500);
         }
     }
     
@@ -920,44 +88,15 @@
                 if (xhr.status === 200) {
                     const data = JSON.parse(xhr.responseText);
                     resolve(`https://drive.google.com/file/d/${data.id}/preview`);
-                } else { reject('Erro no upload: ' + xhr.status); }
+                } else { reject('Erro no upload'); }
             };
             xhr.onerror = () => reject('Erro de conexão');
             xhr.send(form);
         });
     }
     
-    function showMessage(msg, isError = false) {
-        const toast = document.createElement('div');
-        toast.className = 'toast-message' + (isError ? ' toast-error' : '');
-        toast.innerText = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    function atualizarContador() {
-        const contador = document.getElementById('contador');
-        if (contador) {
-            if (modoGaleria && currentCreator) {
-                contador.innerHTML = `🎬 ${getVideosDoCriador().length} vídeo(s) na galeria`;
-            } else {
-                contador.innerHTML = `📹 ${videosData.length} vídeo(s)`;
-            }
-        }
-    }
-    
-    function carregarCriadores() {
-        const salvos = localStorage.getItem('wolfTube_creators');
-        return salvos ? JSON.parse(salvos) : {};
-    }
-    
+    // Gerenciar criadores
+    function carregarCriadores() { return JSON.parse(localStorage.getItem('wolfTube_creators') || '{}'); }
     function salvarCriadores(creators) { localStorage.setItem('wolfTube_creators', JSON.stringify(creators)); }
     
     function registrarCriador(nome, senha) {
@@ -1013,11 +152,8 @@
         return videosData.filter(video => currentCreator.videosIds.includes(video.id));
     }
     
-    function carregarUsuarios() {
-        const salvos = localStorage.getItem('wolfTube_users');
-        return salvos ? JSON.parse(salvos) : {};
-    }
-    
+    // Gerenciar usuários
+    function carregarUsuarios() { return JSON.parse(localStorage.getItem('wolfTube_users') || '{}'); }
     function salvarUsuarios(users) { localStorage.setItem('wolfTube_users', JSON.stringify(users)); }
     
     function registrarUsuario(email, nome, senha) {
@@ -1072,30 +208,17 @@
     
     function isAdmin() { return currentUser && currentUser.isAdmin === true; }
     
+    // Login modal
     function abrirLoginModal() {
         document.getElementById('loginModal').style.display = 'flex';
         tipoLoginSelecionado = "usuario";
-        atualizarOpcoesLogin();
         atualizarFormularioLogin();
     }
     
     function fecharLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
     
-    function atualizarOpcoesLogin() {
-        const opcaoUsuario = document.getElementById('opcaoUsuario');
-        const opcaoCriador = document.getElementById('opcaoCriador');
-        if (tipoLoginSelecionado === "usuario") {
-            opcaoUsuario.classList.add('selected');
-            opcaoCriador.classList.remove('selected');
-        } else {
-            opcaoCriador.classList.add('selected');
-            opcaoUsuario.classList.remove('selected');
-        }
-    }
-    
     function atualizarFormularioLogin() {
         const formArea = document.getElementById('loginFormArea');
-        document.getElementById('loginError').style.display = 'none';
         if (tipoLoginSelecionado === "usuario") {
             formArea.innerHTML = `
                 <div class="input-group"><input type="email" id="loginEmail" class="input-field" placeholder="Seu email"></div>
@@ -1104,6 +227,17 @@
                 <button id="loginSubmitBtn" class="login-submit-btn">🔓 Entrar</button>
                 <button id="registerSubmitBtn" class="register-btn">✨ Criar conta</button>
             `;
+            document.getElementById('loginSubmitBtn')?.onclick = () => {
+                const email = document.getElementById('loginEmail').value.trim();
+                const senha = document.getElementById('loginSenha').value;
+                if (loginUsuario(email, senha)) fecharLoginModal();
+            };
+            document.getElementById('registerSubmitBtn')?.onclick = () => {
+                const email = document.getElementById('loginEmail').value.trim();
+                const nome = document.getElementById('loginNome').value.trim();
+                const senha = document.getElementById('loginSenha').value;
+                registrarUsuario(email, nome, senha);
+            };
         } else {
             formArea.innerHTML = `
                 <div class="input-group"><input type="text" id="creatorNome" class="input-field" placeholder="Nome de criador"></div>
@@ -1111,43 +245,23 @@
                 <button id="creatorLoginBtn" class="login-submit-btn">🎬 Entrar</button>
                 <button id="creatorRegisterBtn" class="register-btn">✨ Criar conta</button>
             `;
-        }
-        if (tipoLoginSelecionado === "usuario") {
-            document.getElementById('loginSubmitBtn')?.addEventListener('click', () => {
-                const email = document.getElementById('loginEmail').value.trim();
-                const senha = document.getElementById('loginSenha').value;
-                if (loginUsuario(email, senha)) fecharLoginModal();
-            });
-            document.getElementById('registerSubmitBtn')?.addEventListener('click', () => {
-                const email = document.getElementById('loginEmail').value.trim();
-                const nome = document.getElementById('loginNome').value.trim();
-                const senha = document.getElementById('loginSenha').value;
-                if (registrarUsuario(email, nome, senha)) {
-                    document.getElementById('loginError').style.display = 'none';
-                } else {
-                    document.getElementById('loginError').style.display = 'block';
-                    document.getElementById('loginError').innerText = "❌ Preencha todos os campos!";
-                }
-            });
-        } else {
-            document.getElementById('creatorLoginBtn')?.addEventListener('click', () => {
+            document.getElementById('creatorLoginBtn')?.onclick = () => {
                 const nome = document.getElementById('creatorNome').value.trim();
                 const senha = document.getElementById('creatorSenha').value;
                 if (loginCriador(nome, senha)) fecharLoginModal();
-            });
-            document.getElementById('creatorRegisterBtn')?.addEventListener('click', () => {
+            };
+            document.getElementById('creatorRegisterBtn')?.onclick = () => {
                 const nome = document.getElementById('creatorNome').value.trim();
                 const senha = document.getElementById('creatorSenha').value;
-                if (registrarCriador(nome, senha)) {
-                    document.getElementById('loginError').style.display = 'none';
-                } else {
-                    document.getElementById('loginError').style.display = 'block';
-                    document.getElementById('loginError').innerText = "❌ Preencha todos os campos!";
-                }
-            });
+                registrarCriador(nome, senha);
+            };
         }
     }
     
+    document.getElementById('opcaoUsuario')?.onclick = () => { tipoLoginSelecionado = "usuario"; atualizarFormularioLogin(); };
+    document.getElementById('opcaoCriador')?.onclick = () => { tipoLoginSelecionado = "criador"; atualizarFormularioLogin(); };
+    
+    // Vídeos
     const VIDEOS_INICIAIS = [
         { id: 1, embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", title: "🎬 Vídeo Exemplo", views: "1K visualizações", description: "Conteúdo exclusivo! 🔞", thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg", autor: "", isUpload: false }
     ];
@@ -1155,174 +269,24 @@
     function carregarVideos() {
         const salvos = localStorage.getItem('wolfTube_videos');
         if (salvos) {
-            try {
-                videosData = JSON.parse(salvos);
-                const maxId = Math.max(...videosData.map(v => v.id || 0), 0);
-                nextId = maxId + 1;
-            } catch(e) { videosData = [...VIDEOS_INICIAIS]; nextId = 2; }
+            try { videosData = JSON.parse(salvos); nextId = Math.max(...videosData.map(v => v.id || 0), 0) + 1; }
+            catch(e) { videosData = [...VIDEOS_INICIAIS]; nextId = 2; }
         } else { videosData = [...VIDEOS_INICIAIS]; nextId = 2; }
         atualizarContador();
     }
     
-    function salvarVideos() {
-        localStorage.setItem('wolfTube_videos', JSON.stringify(videosData));
-        atualizarContador();
-    }
+    function salvarVideos() { localStorage.setItem('wolfTube_videos', JSON.stringify(videosData)); atualizarContador(); }
     
-    async function excluirVideo(videoId) {
-        if (!isAdmin()) { showMessage("❌ Apenas administradores!", true); return; }
-        if (confirm(`Excluir este vídeo?`)) {
-            videosData = videosData.filter(v => v.id !== videoId);
-            delete commentsData[videoId];
-            delete likesData[videoId];
-            delete dislikesData[videoId];
-            salvarVideos();
-            salvarComentarios();
-            salvarLikes();
-            renderizarVideos();
-            showMessage(`🗑️ Vídeo excluído!`);
+    function atualizarContador() {
+        const contador = document.getElementById('contador');
+        if (contador) {
+            if (modoGaleria && currentCreator) contador.innerHTML = `🎬 ${getVideosDoCriador().length} vídeos`;
+            else contador.innerHTML = `📹 ${videosData.length} vídeos`;
         }
     }
     
-    async function publicarPorUpload() {
-        if (!currentCreator) { showMessage("❌ Faça login como criador!", true); return false; }
-        if (!selectedVideoFile) { showMessage("❌ Selecione um vídeo!", true); return false; }
-        if (!isGoogleConnected) { showMessage("❌ Conecte ao Google Drive!", true); return false; }
-        
-        const titulo = document.getElementById('videoTitleUpload').value.trim();
-        const descricao = document.getElementById('videoDescUpload').value.trim();
-        const videoId = nextId++;
-        
-        showMessage('⏳ Enviando para o Google Drive...');
-        const progressDiv = document.getElementById('uploadProgress');
-        const progressBar = document.getElementById('uploadProgressBar');
-        progressDiv.style.display = 'block';
-        progressBar.style.width = '0%';
-        
-        try {
-            const videoLink = await uploadToGoogleDrive(selectedVideoFile, titulo || 'video', (p) => { progressBar.style.width = p + '%'; });
-            let thumbnail = selectedThumbnail || 'https://via.placeholder.com/300x169?text=WolfTube';
-            const novoVideo = {
-                id: videoId,
-                embedUrl: videoLink,
-                title: titulo || "Meu Vídeo",
-                views: "0 visualizações",
-                description: descricao || "📹 Vídeo enviado",
-                thumbnail: thumbnail,
-                dataPostagem: new Date().toISOString(),
-                autor: currentCreator.nome,
-                isUpload: true
-            };
-            videosData.unshift(novoVideo);
-            adicionarVideoAoCriador(videoId);
-            salvarVideos();
-            progressDiv.style.display = 'none';
-            progressBar.style.width = '0%';
-            return true;
-        } catch(error) {
-            progressDiv.style.display = 'none';
-            showMessage('❌ Erro no upload: ' + error, true);
-            return false;
-        }
-    }
-    
-    async function publicarVideo() {
-        let success = false;
-        if (activeTab === "upload") success = await publicarPorUpload();
-        if (success) {
-            document.getElementById('uploadModal').style.display = 'none';
-            selectedVideoFile = null;
-            document.getElementById('videoPreviewArea').style.display = 'none';
-            document.getElementById('videoTitleUpload').value = '';
-            document.getElementById('videoDescUpload').value = '';
-            document.getElementById('videoFileUpload').value = '';
-            renderizarVideos();
-            showMessage(`✅ Vídeo publicado!`);
-        }
-    }
-    
-    function abrirUploadModal() {
-        if (!currentCreator) { showMessage("❌ Faça login como CRIADOR!", true); return; }
-        document.getElementById('uploadModal').style.display = 'flex';
-        activeTab = "upload";
-        document.getElementById('tabUpload').classList.add('active');
-        document.getElementById('tabLink').classList.remove('active');
-        document.getElementById('panelUpload').classList.add('active');
-        document.getElementById('panelLink').classList.remove('active');
-    }
-    
-    function renderizarVideos() {
-        const grid = document.getElementById('videoGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        let videosParaExibir = modoGaleria && currentCreator ? getVideosDoCriador() : videosData;
-        if (videosParaExibir.length === 0) {
-            grid.innerHTML = '<div style="text-align:center;padding:50px;color:#aaa;">🎬 Nenhum vídeo disponível.</div>';
-            atualizarContador();
-            return;
-        }
-        for (let video of videosParaExibir) {
-            const thumbnail = video.thumbnail || 'https://via.placeholder.com/300x169?text=WolfTube';
-            const commentsCount = (commentsData[video.id] || []).length;
-            const card = document.createElement('div');
-            card.className = 'video-card';
-            card.setAttribute('data-id', video.id);
-            let deleteBtn = isAdmin() ? `<button class="delete-video-btn" data-id="${video.id}" style="position:absolute; top:5px; left:5px; background:#ff4444; border:none; color:white; font-size:10px; padding:3px 8px; border-radius:12px; cursor:pointer; z-index:20;">🗑️</button>` : '';
-            card.innerHTML = `
-                ${deleteBtn}
-                <div class="thumbnail" onclick="abrirVideo(${video.id})">
-                    <img src="${thumbnail}" onerror="this.src='https://via.placeholder.com/300x169'">
-                </div>
-                <div class="video-text" onclick="abrirVideo(${video.id})">
-                    <h3>${escapeHtml(video.title)}</h3>
-                    <p class="video-meta">${video.views} • 💬 ${commentsCount}</p>
-                </div>
-            `;
-            grid.appendChild(card);
-        }
-        if (isAdmin()) {
-            document.querySelectorAll('.delete-video-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); excluirVideo(parseInt(btn.getAttribute('data-id'))); });
-            });
-        }
-        atualizarContador();
-    }
-    
-    window.abrirVideo = async function(videoId) {
-        const video = videosData.find(v => v.id === videoId);
-        if (!video) return;
-        document.getElementById('playerWrapper').innerHTML = `<iframe src="${video.embedUrl}" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe>`;
-        document.getElementById('modalTitle').innerText = video.title;
-        document.getElementById('modalStats').innerText = video.views;
-        atualizarUIlikes(video.id);
-        exibirComentarios(videoId);
-        document.getElementById('videoModal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        
-        const recList = document.getElementById('recommendedList');
-        recList.innerHTML = '';
-        for (let rec of videosData.filter(v => v.id !== video.id).slice(0, 5)) {
-            const div = document.createElement('div');
-            div.style.cssText = 'display:flex; gap:10px; margin-bottom:12px; cursor:pointer; padding:6px; border-radius:8px;';
-            div.onmouseover = () => div.style.backgroundColor = '#272727';
-            div.onmouseout = () => div.style.backgroundColor = 'transparent';
-            div.innerHTML = `<div style="width:100px;"><img src="${rec.thumbnail}" style="width:100%; border-radius:6px;"></div><div><div style="font-weight:500; font-size:13px;">${escapeHtml(rec.title)}</div><div style="font-size:11px; color:#aaa;">${rec.views}</div></div>`;
-            div.addEventListener('click', () => window.abrirVideo(rec.id));
-            recList.appendChild(div);
-        }
-    };
-    
-    function fecharModal() {
-        document.getElementById('videoModal').style.display = 'none';
-        document.getElementById('playerWrapper').innerHTML = '';
-        document.body.style.overflow = '';
-    }
-    
-    function carregarComentarios() {
-        const salvos = localStorage.getItem('wolfTube_comments');
-        commentsData = salvos ? JSON.parse(salvos) : {};
-    }
-    
+    // Comentários
+    function carregarComentarios() { commentsData = JSON.parse(localStorage.getItem('wolfTube_comments') || '{}'); }
     function salvarComentarios() { localStorage.setItem('wolfTube_comments', JSON.stringify(commentsData)); }
     
     function adicionarComentario(videoId, texto) {
@@ -1337,67 +301,150 @@
         return true;
     }
     
-    function excluirComentario(videoId, comentarioId) {
-        if (isAdmin() || currentCreator) {
-            commentsData[videoId] = commentsData[videoId].filter(c => c.id !== comentarioId);
-            salvarComentarios();
-            exibirComentarios(videoId);
-        }
-    }
-    
     function exibirComentarios(videoId) {
         const commentsList = document.getElementById('commentsList');
         const commentsCountSpan = document.getElementById('commentsCount');
         const comentarios = commentsData[videoId] || [];
         commentsCountSpan.innerText = comentarios.length;
-        if (comentarios.length === 0) {
-            commentsList.innerHTML = '<div class="no-comments">Nenhum comentário ainda.</div>';
-            return;
-        }
+        if (comentarios.length === 0) { commentsList.innerHTML = '<div class="no-comments">Nenhum comentário ainda.</div>'; return; }
         commentsList.innerHTML = '';
         for (let c of comentarios) {
-            const data = new Date(c.data).toLocaleDateString('pt-BR');
             const div = document.createElement('div');
             div.className = 'comment-item';
-            div.innerHTML = `
-                <div class="comment-header"><span class="comment-author">${escapeHtml(c.autor)}</span><span class="comment-date">${data}</span></div>
-                <div class="comment-text">${escapeHtml(c.texto)}</div>
-                ${(isAdmin() || currentCreator) ? `<button class="delete-comment-btn" data-id="${c.id}">🗑️</button>` : ''}
-            `;
+            div.innerHTML = `<div><span class="comment-author">${escapeHtml(c.autor)}</span><span class="comment-date">${new Date(c.data).toLocaleDateString()}</span></div><div class="comment-text">${escapeHtml(c.texto)}</div>`;
             commentsList.appendChild(div);
         }
-        document.querySelectorAll('.delete-comment-btn').forEach(btn => {
-            btn.addEventListener('click', () => excluirComentario(videoId, parseInt(btn.getAttribute('data-id'))));
-        });
     }
     
-    function carregarLikes() {
-        likesData = JSON.parse(localStorage.getItem('wolfTube_likes') || '{}');
-        dislikesData = JSON.parse(localStorage.getItem('wolfTube_dislikes') || '{}');
-    }
-    
-    function salvarLikes() {
-        localStorage.setItem('wolfTube_likes', JSON.stringify(likesData));
-        localStorage.setItem('wolfTube_dislikes', JSON.stringify(dislikesData));
-    }
-    
-    function darLike(videoId) {
-        if (!currentUser && !currentCreator) { showMessage("🔐 Faça login!", true); return; }
-        likesData[videoId] = (likesData[videoId] || 0) + 1;
-        salvarLikes();
-        atualizarUIlikes(videoId);
-    }
-    
-    function darDislike(videoId) {
-        if (!currentUser && !currentCreator) { showMessage("🔐 Faça login!", true); return; }
-        dislikesData[videoId] = (dislikesData[videoId] || 0) + 1;
-        salvarLikes();
-        atualizarUIlikes(videoId);
-    }
+    // Likes
+    function carregarLikes() { likesData = JSON.parse(localStorage.getItem('wolfTube_likes') || '{}'); dislikesData = JSON.parse(localStorage.getItem('wolfTube_dislikes') || '{}'); }
+    function salvarLikes() { localStorage.setItem('wolfTube_likes', JSON.stringify(likesData)); localStorage.setItem('wolfTube_dislikes', JSON.stringify(dislikesData)); }
     
     function atualizarUIlikes(videoId) {
         document.getElementById('likeCount').innerText = likesData[videoId] || 0;
         document.getElementById('dislikeCount').innerText = dislikesData[videoId] || 0;
+    }
+    
+    // Publicar vídeo
+    async function publicarVideo() {
+        if (!currentCreator) { showMessage("❌ Faça login como criador!", true); return; }
+        if (!selectedVideoFile) { showMessage("❌ Selecione um vídeo!", true); return; }
+        if (!isGoogleConnected) { showMessage("❌ Conecte ao Google Drive primeiro! Clique em 'Conectar Google'", true); return; }
+        
+        const titulo = document.getElementById('videoTitleUpload').value.trim() || "Meu Vídeo";
+        const descricao = document.getElementById('videoDescUpload').value.trim() || "📹 Vídeo enviado";
+        const videoId = nextId++;
+        
+        showMessage('⏳ Enviando para o Google Drive...');
+        const progressDiv = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('uploadProgressBar');
+        progressDiv.style.display = 'block';
+        progressBar.style.width = '0%';
+        
+        try {
+            const videoLink = await uploadToGoogleDrive(selectedVideoFile, titulo, (p) => { progressBar.style.width = p + '%'; });
+            const novoVideo = {
+                id: videoId,
+                embedUrl: videoLink,
+                title: titulo,
+                views: "0 visualizações",
+                description: descricao,
+                thumbnail: 'https://via.placeholder.com/300x169?text=WolfTube',
+                autor: currentCreator.nome,
+                isUpload: true
+            };
+            videosData.unshift(novoVideo);
+            adicionarVideoAoCriador(videoId);
+            salvarVideos();
+            progressDiv.style.display = 'none';
+            progressBar.style.width = '0%';
+            document.getElementById('uploadModal').style.display = 'none';
+            selectedVideoFile = null;
+            document.getElementById('videoPreviewArea').style.display = 'none';
+            document.getElementById('videoTitleUpload').value = '';
+            document.getElementById('videoDescUpload').value = '';
+            document.getElementById('videoFileUpload').value = '';
+            renderizarVideos();
+            showMessage(`✅ Vídeo publicado com sucesso!`);
+        } catch(error) {
+            progressDiv.style.display = 'none';
+            showMessage('❌ Erro no upload: ' + error, true);
+        }
+    }
+    
+    function abrirUploadModal() {
+        if (!currentCreator) { showMessage("❌ Faça login como CRIADOR!", true); return; }
+        document.getElementById('uploadModal').style.display = 'flex';
+    }
+    
+    // Renderizar vídeos
+    function renderizarVideos() {
+        const grid = document.getElementById('videoGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        let videosParaExibir = modoGaleria && currentCreator ? getVideosDoCriador() : videosData;
+        if (videosParaExibir.length === 0) {
+            grid.innerHTML = '<div style="text-align:center;padding:50px;color:#aaa;">🎬 Nenhum vídeo disponível.</div>';
+            return;
+        }
+        for (let video of videosParaExibir) {
+            const thumbnail = video.thumbnail || 'https://via.placeholder.com/300x169?text=WolfTube';
+            const commentsCount = (commentsData[video.id] || []).length;
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `
+                <div class="thumbnail" onclick="abrirVideo(${video.id})">
+                    <img src="${thumbnail}" onerror="this.src='https://via.placeholder.com/300x169'">
+                </div>
+                <div class="video-text" onclick="abrirVideo(${video.id})">
+                    <h3>${escapeHtml(video.title)}</h3>
+                    <p class="video-meta">${video.views} • 💬 ${commentsCount}</p>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+        atualizarContador();
+    }
+    
+    window.abrirVideo = function(videoId) {
+        const video = videosData.find(v => v.id === videoId);
+        if (!video) return;
+        document.getElementById('playerWrapper').innerHTML = `<iframe src="${video.embedUrl}" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe>`;
+        document.getElementById('modalTitle').innerText = video.title;
+        document.getElementById('modalStats').innerText = video.views;
+        atualizarUIlikes(video.id);
+        exibirComentarios(videoId);
+        document.getElementById('videoModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        // Recomendados
+        const recList = document.getElementById('recommendedList');
+        recList.innerHTML = '';
+        for (let rec of videosData.filter(v => v.id !== video.id).slice(0, 5)) {
+            const div = document.createElement('div');
+            div.style.cssText = 'display:flex; gap:10px; margin-bottom:12px; cursor:pointer; padding:6px; border-radius:8px;';
+            div.onmouseover = () => div.style.backgroundColor = '#272727';
+            div.onmouseout = () => div.style.backgroundColor = 'transparent';
+            div.innerHTML = `<div style="width:100px;"><img src="${rec.thumbnail}" style="width:100%; border-radius:6px;"></div><div><div style="font-weight:500; font-size:13px;">${escapeHtml(rec.title)}</div><div style="font-size:11px; color:#aaa;">${rec.views}</div></div>`;
+            div.onclick = () => window.abrirVideo(rec.id);
+            recList.appendChild(div);
+        }
+        
+        // Configurar botão de comentário
+        const submitBtn = document.getElementById('submitCommentBtn');
+        const commentInput = document.getElementById('commentInput');
+        submitBtn.onclick = () => { if (adicionarComentario(video.id, commentInput.value)) commentInput.value = ''; };
+        commentInput.onkeypress = (e) => { if (e.key === 'Enter' && adicionarComentario(video.id, commentInput.value)) commentInput.value = ''; };
+        
+        // Configurar likes
+        document.getElementById('likeBtn').onclick = () => { likesData[video.id] = (likesData[video.id] || 0) + 1; salvarLikes(); atualizarUIlikes(video.id); };
+        document.getElementById('dislikeBtn').onclick = () => { dislikesData[video.id] = (dislikesData[video.id] || 0) + 1; salvarLikes(); atualizarUIlikes(video.id); };
+    };
+    
+    function fecharModal() {
+        document.getElementById('videoModal').style.display = 'none';
+        document.getElementById('playerWrapper').innerHTML = '';
+        document.body.style.overflow = '';
     }
     
     function entrarNaGaleria() {
@@ -1417,6 +464,7 @@
         const uploadContainer = document.getElementById('uploadButtonContainer');
         const galeriaSidebar = document.getElementById('galeriaSidebar');
         const adminSidebar = document.getElementById('adminSidebar');
+        
         if (isAdmin()) {
             uploadContainer.innerHTML = `<button class="upload-btn" id="uploadBtn">📤 Postar</button>`;
             if (adminSidebar) adminSidebar.style.display = 'flex';
@@ -1445,6 +493,7 @@
         renderizarVideos();
     }
     
+    // Eventos de upload
     function setupUploadEvents() {
         document.getElementById('videoFileUpload')?.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -1457,23 +506,16 @@
                 showMessage('✅ Vídeo selecionado!');
             }
         });
+        
         document.getElementById('googleDriveAuthBtn')?.addEventListener('click', connectGoogleDrive);
-        document.getElementById('tabUpload')?.addEventListener('click', () => {
-            activeTab = "upload";
-            document.getElementById('tabUpload').classList.add('active');
-            document.getElementById('tabLink').classList.remove('active');
-            document.getElementById('panelUpload').classList.add('active');
-            document.getElementById('panelLink').classList.remove('active');
-        });
-        document.getElementById('tabLink')?.addEventListener('click', () => {
-            activeTab = "link";
-            document.getElementById('tabLink').classList.add('active');
-            document.getElementById('tabUpload').classList.remove('active');
-            document.getElementById('panelLink').classList.add('active');
-            document.getElementById('panelUpload').classList.remove('active');
+        document.getElementById('cancelUploadBtn')?.addEventListener('click', () => document.getElementById('uploadModal').style.display = 'none');
+        document.getElementById('submitUploadBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            publicarVideo();
         });
     }
     
+    // Inicializar
     function inicializar() {
         carregarVideos();
         carregarComentarios();
@@ -1482,6 +524,7 @@
         renderizarVideos();
         setupUploadEvents();
         
+        // Carregar APIs do Google
         const scriptGapi = document.createElement('script');
         scriptGapi.src = 'https://apis.google.com/js/api.js';
         scriptGapi.onload = () => initGoogleAPI();
@@ -1492,28 +535,15 @@
         scriptGis.onload = () => initGIS();
         document.head.appendChild(scriptGis);
         
-        document.getElementById('cancelUploadBtn')?.addEventListener('click', () => document.getElementById('uploadModal').style.display = 'none');
-        document.getElementById('submitUploadBtn')?.addEventListener('click', () => publicarVideo());
         document.getElementById('closeLogin')?.addEventListener('click', fecharLoginModal);
         document.querySelector('.close-modal')?.addEventListener('click', fecharModal);
         document.getElementById('homeButton')?.addEventListener('click', () => { fecharModal(); sairDaGaleria(); renderizarVideos(); });
         document.getElementById('homeSidebar')?.addEventListener('click', () => { fecharModal(); sairDaGaleria(); renderizarVideos(); });
         document.getElementById('videoModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('videoModal')) fecharModal(); });
         document.getElementById('uploadModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('uploadModal')) document.getElementById('uploadModal').style.display = 'none'; });
-        
-        const submitComment = document.getElementById('submitCommentBtn');
-        const commentInput = document.getElementById('commentInput');
-        if (submitComment && commentInput) {
-            submitComment.onclick = () => {
-                const video = videosData.find(v => v.embedUrl === document.getElementById('playerWrapper').querySelector('iframe')?.src);
-                if (video && adicionarComentario(video.id, commentInput.value)) commentInput.value = '';
-            };
-        }
     }
     
-    window.abrirVideo = abrirVideo;
-    window.abrirUploadModal = abrirUploadModal;
-    
+    // Verificação de idade
     function verificarIdade() {
         if (localStorage.getItem('wolfTube_ageConfirmed') === 'true') {
             document.getElementById('ageVerification').style.display = 'none';
@@ -1538,5 +568,3 @@
     document.getElementById('ageNoBtn')?.addEventListener('click', negarMaiorIdade);
     verificarIdade();
 </script>
-</body>
-</html>
