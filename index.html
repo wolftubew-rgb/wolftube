@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>WolfTube • Admin + Criador</title>
+    <title>WolfTube</title>
     <style>
         * {
             margin: 0;
@@ -158,14 +158,6 @@
             margin-left: 5px;
             color: white;
         }
-        .admin-badge {
-            background: linear-gradient(135deg, #ff6b6b, #ff4757);
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 20px;
-            margin-left: 5px;
-            color: white;
-        }
 
         .user-menu {
             position: absolute;
@@ -266,7 +258,6 @@
         }
         .video-meta { font-size: 14px; color: #aaa; }
 
-        /* MODAL DE POSTAGEM - COM DUAS ABAS */
         .upload-modal {
             display: none;
             position: fixed;
@@ -400,7 +391,6 @@
         .submit-upload { background: linear-gradient(135deg, #ff6b6b, #4ecdc4); color: white; }
         .cancel-upload { background: #444; color: white; }
 
-        /* MODAL DE LOGIN */
         .login-modal {
             display: none;
             position: fixed;
@@ -897,7 +887,6 @@
 
 <div class="contador" id="contador">📹 0 vídeos</div>
 
-<!-- MODAL DE POSTAGEM COM DUAS ABAS -->
 <div id="uploadModal" class="upload-modal">
     <div class="upload-container">
         <h2>📤 Publicar Vídeo</h2>
@@ -907,13 +896,9 @@
             <div class="upload-tab" id="tabUpload">📁 Upload de Arquivo</div>
         </div>
         
-        <!-- PAINEL DE LINK (APENAS ADMIN) -->
         <div id="panelLink" class="upload-panel">
-            <div class="info-box">
-                💡 Cole o link do vídeo (YouTube ou Google Drive)
-            </div>
+            <div class="info-box">💡 Cole o link do vídeo (YouTube ou Google Drive)</div>
             <input type="text" id="videoUrl" placeholder="Link do vídeo">
-            
             <div class="thumbnail-upload-area">
                 <div style="margin-bottom: 10px;">🎨 Escolha a Capa do Vídeo (opcional):</div>
                 <label for="thumbnailUploadLink" class="thumbnail-upload-label">📁 Clique para selecionar uma imagem</label>
@@ -924,12 +909,10 @@
                     <div class="success-text">Esta será a capa do seu vídeo</div>
                 </div>
             </div>
-            
             <input type="text" id="videoTitleLink" placeholder="Título do vídeo">
             <textarea id="videoDescLink" placeholder="Descrição do vídeo" rows="3"></textarea>
         </div>
         
-        <!-- PAINEL DE UPLOAD (APENAS CRIADOR) -->
         <div id="panelUpload" class="upload-panel">
             <div class="file-upload-area">
                 <div style="margin-bottom: 10px;">🎬 Selecione o arquivo de vídeo:</div>
@@ -941,7 +924,6 @@
                     <div class="success-text">Pré-visualização do seu vídeo</div>
                 </div>
             </div>
-            
             <div class="thumbnail-upload-area">
                 <div style="margin-bottom: 10px;">🎨 Escolha a Capa do Vídeo (opcional):</div>
                 <label for="thumbnailUploadFile" class="thumbnail-upload-label">📁 Clique para selecionar uma imagem</label>
@@ -952,7 +934,6 @@
                     <div class="success-text">Esta será a capa do seu vídeo</div>
                 </div>
             </div>
-            
             <input type="text" id="videoTitleUpload" placeholder="Título do vídeo">
             <textarea id="videoDescUpload" placeholder="Descrição do vídeo" rows="3"></textarea>
         </div>
@@ -964,7 +945,6 @@
     </div>
 </div>
 
-<!-- MODAL DE LOGIN -->
 <div id="loginModal" class="login-modal">
     <div class="login-container">
         <span class="close-login" id="closeLogin">&times;</span>
@@ -985,13 +965,8 @@
             </div>
         </div>
         
-        <div id="loginFormArea">
-            <!-- Formulário dinâmico -->
-        </div>
-        
+        <div id="loginFormArea"></div>
         <div id="loginError" class="login-error"></div>
-        
-        <!-- MENSAGEM ADMIN REMOVIDA -->
     </div>
 </div>
 
@@ -1051,7 +1026,6 @@
 </div>
 
 <script>
-    // ==================== CONFIGURAÇÕES ====================
     const SENHA_ADMIN = "wolfadmin2010";
     const EMAIL_ADMIN = "admin@wolftube.com";
     
@@ -1067,10 +1041,8 @@
     let modoGaleria = false;
     let tipoLoginSelecionado = "usuario";
     let activeTab = "link";
-
-    // ==================== INDEXEDDB PARA VÍDEOS UPLOAD ====================
     let db = null;
-    
+
     function abrirDB() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open('WolfTubeDB', 1);
@@ -1122,7 +1094,6 @@
         });
     }
 
-    // ==================== FUNÇÕES AUXILIARES ====================
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
@@ -1150,11 +1121,9 @@
         }
     }
 
-    // ==================== GERENCIAMENTO DE CRIADORES ====================
     function carregarCriadores() {
         const salvos = localStorage.getItem('wolfTube_creators');
-        if (salvos) return JSON.parse(salvos);
-        return {};
+        return salvos ? JSON.parse(salvos) : {};
     }
 
     function salvarCriadores(creators) {
@@ -1231,11 +1200,9 @@
         return videosData.filter(video => currentCreator.videosIds.includes(video.id));
     }
 
-    // ==================== GERENCIAMENTO DE USUÁRIOS ====================
     function carregarUsuarios() {
         const salvos = localStorage.getItem('wolfTube_users');
-        if (salvos) return JSON.parse(salvos);
-        return {};
+        return salvos ? JSON.parse(salvos) : {};
     }
 
     function salvarUsuarios(users) {
@@ -1323,7 +1290,6 @@
         return (currentUser && currentUser.isAdmin === true);
     }
 
-    // ==================== INTERFACE DE LOGIN ====================
     function abrirLoginModal() {
         document.getElementById('loginModal').style.display = 'flex';
         tipoLoginSelecionado = "usuario";
@@ -1412,14 +1378,12 @@
         }
     }
 
-    // ==================== VÍDEOS INICIAIS ====================
     const VIDEOS_INICIAIS = [
-        { id: 1, embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", title: "🎬 Vídeo Exemplo 1", views: "1.2K visualizações", description: "Conteúdo exclusivo! 🔞", thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg", autor: "Sistema", isUpload: false },
-        { id: 2, embedUrl: "https://www.youtube.com/embed/9bZkp7q19f0", title: "🎬 Vídeo Exemplo 2", views: "892 visualizações", description: "Conteúdo exclusivo! 🔞", thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg", autor: "Sistema", isUpload: false },
-        { id: 3, embedUrl: "https://www.youtube.com/embed/3JZ_D3ELwOQ", title: "🎬 Vídeo Exemplo 3", views: "2.1K visualizações", description: "Conteúdo exclusivo! 🔞", thumbnail: "https://img.youtube.com/vi/3JZ_D3ELwOQ/maxresdefault.jpg", autor: "Sistema", isUpload: false }
+        { id: 1, embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", title: "🎬 Vídeo 1", views: "1.2K visualizações", description: "Conteúdo exclusivo! 🔞", thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg", autor: "", isUpload: false },
+        { id: 2, embedUrl: "https://www.youtube.com/embed/9bZkp7q19f0", title: "🎬 Vídeo 2", views: "892 visualizações", description: "Conteúdo exclusivo! 🔞", thumbnail: "https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg", autor: "", isUpload: false },
+        { id: 3, embedUrl: "https://www.youtube.com/embed/3JZ_D3ELwOQ", title: "🎬 Vídeo 3", views: "2.1K visualizações", description: "Conteúdo exclusivo! 🔞", thumbnail: "https://img.youtube.com/vi/3JZ_D3ELwOQ/maxresdefault.jpg", autor: "", isUpload: false }
     ];
 
-    // ==================== GERENCIAMENTO DE VÍDEOS ====================
     function carregarVideos() {
         const salvos = localStorage.getItem('wolfTube_videos');
         if (salvos) {
@@ -1475,7 +1439,6 @@
         }
     }
 
-    // POSTAGEM POR LINK (APENAS ADMIN)
     async function publicarPorLink() {
         if (!isAdmin()) {
             showMessage("❌ Apenas administradores podem postar por link!", true);
@@ -1513,18 +1476,18 @@
             thumbnail = 'https://via.placeholder.com/300x169?text=WolfTube';
         }
         
-        const novoTitulo = titulo.trim() || "Vídeo do Admin";
-        const novaDesc = descricao.trim() || "📹 Vídeo postado pelo Administrador!";
+        const novoTitulo = titulo.trim() || "Vídeo";
+        const novaDesc = descricao.trim() || "📹 Vídeo postado!";
         
         const novoVideo = {
             id: nextId++,
             embedUrl: embedUrl,
-            title: `👑 ${novoTitulo}`,
+            title: `${novoTitulo}`,
             views: "0 visualizações",
             description: novaDesc,
             thumbnail: thumbnail,
             dataPostagem: new Date().toISOString(),
-            autor: "Administrador",
+            autor: "",
             isUpload: false
         };
         
@@ -1533,7 +1496,6 @@
         return true;
     }
 
-    // POSTAGEM POR UPLOAD (APENAS CRIADOR)
     async function publicarPorUpload() {
         if (!currentCreator) {
             showMessage("❌ Apenas criadores podem postar por upload!", true);
@@ -1558,17 +1520,17 @@
         }
         
         const novoTitulo = titulo || "Meu Vídeo";
-        const novaDesc = descricao || "📹 Vídeo enviado do computador";
+        const novaDesc = descricao || "📹 Vídeo enviado";
         
         const novoVideo = {
             id: videoId,
             embedUrl: videoURL,
-            title: `🎬 ${novoTitulo}`,
+            title: `${novoTitulo}`,
             views: "0 visualizações",
             description: novaDesc,
             thumbnail: thumbnail,
             dataPostagem: new Date().toISOString(),
-            autor: currentCreator.nome,
+            autor: "",
             isUpload: true,
             videoBlobId: videoId
         };
@@ -1591,7 +1553,6 @@
         if (success) {
             document.getElementById('uploadModal').style.display = 'none';
             
-            // Limpar formulários
             selectedVideoFile = null;
             selectedThumbnail = null;
             document.getElementById('videoPreviewArea').style.display = 'none';
@@ -1617,14 +1578,12 @@
             return;
         }
         
-        // Configurar abas conforme o tipo de usuário
         const tabLink = document.getElementById('tabLink');
         const tabUpload = document.getElementById('tabUpload');
         const panelLink = document.getElementById('panelLink');
         const panelUpload = document.getElementById('panelUpload');
         
         if (isAdmin()) {
-            // Admin pode usar as duas abas
             tabLink.style.display = 'block';
             tabUpload.style.display = 'block';
             if (activeTab === "link") {
@@ -1639,7 +1598,6 @@
                 panelUpload.classList.add('active');
             }
         } else if (currentCreator) {
-            // Criador só pode usar upload
             tabLink.style.display = 'none';
             tabUpload.style.display = 'block';
             activeTab = "upload";
@@ -1683,20 +1641,12 @@
             
             const thumbnail = video.thumbnail || 'https://via.placeholder.com/300x169?text=WolfTube';
             const commentsCount = (commentsData[video.id] || []).length;
-            const isMeuVideo = currentCreator && currentCreator.videosIds.includes(video.id);
             
             const card = document.createElement('div');
             card.className = 'video-card';
             card.setAttribute('data-id', video.id);
             
-            let badge = '';
             let deleteBtn = '';
-            
-            if (video.autor === "Administrador") {
-                badge = '<span style="position:absolute; top:10px; right:10px; background:#ff6b6b; color:white; font-size:10px; padding:2px 6px; border-radius:20px; z-index:15;">👑 ADMIN</span>';
-            } else if (isMeuVideo && modoGaleria) {
-                badge = '<span style="position:absolute; top:10px; right:10px; background:#4ecdc4; color:white; font-size:10px; padding:2px 6px; border-radius:20px; z-index:15;">🎬 MEU</span>';
-            }
             
             if (isAdmin()) {
                 deleteBtn = `<button class="delete-video-btn" data-id="${video.id}" style="position:absolute; top:10px; left:10px; background:#ff4444; border:none; color:white; font-size:11px; padding:4px 8px; border-radius:15px; cursor:pointer; z-index:20;">🗑️</button>`;
@@ -1704,10 +1654,8 @@
             
             card.innerHTML = `
                 ${deleteBtn}
-                ${badge}
                 <div class="thumbnail" onclick="abrirVideo(${video.id})">
                     <img src="${thumbnail}" onerror="this.src='https://via.placeholder.com/300x169?text=WolfTube'">
-                    <span style="position:absolute; bottom:5px; right:5px; background:#ff6b6b; color:white; font-size:10px; padding:2px 6px; border-radius:20px;">🔞 +18</span>
                 </div>
                 <div class="video-text" onclick="abrirVideo(${video.id})">
                     <h3>${escapeHtml(video.title)}</h3>
@@ -1730,7 +1678,6 @@
         atualizarContador();
     }
 
-    // ==================== ABRIR VÍDEO ====================
     window.abrirVideo = async function(videoId) {
         const video = videosData.find(v => v.id === videoId);
         if (!video) return;
@@ -1801,7 +1748,6 @@
         document.body.style.overflow = '';
     }
 
-    // ==================== FUNÇÕES DE COMENTÁRIOS ====================
     function carregarComentarios() {
         const salvos = localStorage.getItem('wolfTube_comments');
         commentsData = salvos ? JSON.parse(salvos) : {};
@@ -1822,8 +1768,7 @@
         }
         
         let nome = currentUser ? currentUser.nome : currentCreator.nome;
-        if (isAdmin()) nome = `👑 ${nome}`;
-        if (currentCreator && !currentUser) nome = `${nome} 🎬`;
+        if (currentCreator && !currentUser) nome = `${nome}`;
         
         if (!commentsData[videoId]) commentsData[videoId] = [];
         commentsData[videoId].unshift({
@@ -1885,7 +1830,6 @@
         });
     }
 
-    // ==================== FUNÇÕES DE LIKES ====================
     function carregarLikes() {
         const salvos = localStorage.getItem('wolfTube_likes');
         likesData = salvos ? JSON.parse(salvos) : {};
@@ -1921,7 +1865,6 @@
         document.getElementById('dislikeCount').innerText = dislikesData[videoId] || 0;
     }
 
-    // ==================== INTERFACE DO USUÁRIO ====================
     function entrarNaGaleria() {
         if (!currentCreator) {
             showMessage("❌ Faça login como criador para acessar sua galeria!", true);
@@ -2030,7 +1973,6 @@
         const adminSidebar = document.getElementById('adminSidebar');
         const configSidebar = document.getElementById('configSidebar');
         
-        // ADMIN
         if (isAdmin()) {
             uploadContainer.innerHTML = `<button class="upload-btn" id="uploadBtn">📤 Postar Vídeo</button>`;
             if (adminSidebar) adminSidebar.style.display = 'flex';
@@ -2072,7 +2014,6 @@
             return;
         }
         
-        // CRIADOR
         if (currentCreator) {
             uploadContainer.innerHTML = `<button class="upload-btn" id="uploadBtn">📤 Postar Vídeo</button>`;
             if (galeriaSidebar) galeriaSidebar.style.display = 'flex';
@@ -2119,7 +2060,6 @@
             return;
         }
         
-        // USUÁRIO COMUM
         if (currentUser) {
             uploadContainer.innerHTML = '';
             if (galeriaSidebar) galeriaSidebar.style.display = 'none';
@@ -2151,7 +2091,6 @@
             return;
         }
         
-        // DESLOGADO
         uploadContainer.innerHTML = '';
         if (galeriaSidebar) galeriaSidebar.style.display = 'none';
         if (adminSidebar) adminSidebar.style.display = 'none';
@@ -2162,9 +2101,7 @@
         renderizarVideos();
     }
 
-    // ==================== EVENTOS DE UPLOAD ====================
     function setupUploadEvents() {
-        // Upload de vídeo
         document.getElementById('videoFileUpload')?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file && file.type.startsWith('video/')) {
@@ -2193,7 +2130,6 @@
             }
         });
         
-        // Thumbnail para link
         document.getElementById('thumbnailUploadLink')?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file && file.type.startsWith('image/')) {
@@ -2208,7 +2144,6 @@
             }
         });
         
-        // Thumbnail para upload
         document.getElementById('thumbnailUploadFile')?.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file && file.type.startsWith('image/')) {
@@ -2223,7 +2158,6 @@
             }
         });
         
-        // Abas
         document.getElementById('tabLink')?.addEventListener('click', () => {
             activeTab = "link";
             document.getElementById('tabLink').classList.add('active');
@@ -2241,7 +2175,6 @@
         });
     }
 
-    // ==================== INICIALIZAÇÃO ====================
     function inicializar() {
         carregarVideos();
         carregarComentarios();
@@ -2292,11 +2225,9 @@
         });
     }
 
-    // EXPORTAR FUNÇÕES GLOBAIS
     window.abrirVideo = abrirVideo;
     window.abrirUploadModal = abrirUploadModal;
 
-    // ==================== VERIFICAÇÃO DE IDADE ====================
     function verificarIdade() {
         const idadeConfirmada = localStorage.getItem('wolfTube_ageConfirmed');
         if (idadeConfirmada === 'true') {
