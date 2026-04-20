@@ -17,7 +17,6 @@
             overflow: hidden;
         }
         
-        /* VERIFICAÇÃO DE IDADE */
         .age-verification {
             position: fixed;
             top: 0;
@@ -123,11 +122,6 @@
             position: relative;
             cursor: pointer;
         }
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
         .user-avatar {
             width: 34px;
             height: 34px;
@@ -160,29 +154,6 @@
             margin-left: 4px;
             color: white;
         }
-        .user-menu {
-            position: absolute;
-            top: 45px;
-            right: 0;
-            background: #1e1e1e;
-            border-radius: 12px;
-            padding: 8px 0;
-            min-width: 160px;
-            z-index: 2000;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-            display: none;
-        }
-        .user-menu.show { display: block; }
-        .user-menu-item {
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #ddd;
-            font-size: 14px;
-        }
-        .user-menu-item:hover { background-color: #333; }
-        .user-menu-item.logout { color: #ff6b6b; border-top: 1px solid #333; margin-top: 5px; }
         .login-btn {
             background: linear-gradient(135deg, #3ea6ff, #0088cc);
             border: none;
@@ -252,7 +223,6 @@
         }
         .video-meta { font-size: 13px; color: #aaa; }
         
-        /* MODAL DE UPLOAD - VERSÃO PEQUENA */
         .upload-modal {
             display: none;
             position: fixed;
@@ -390,7 +360,6 @@
             transition: width 0.3s;
         }
         
-        /* MODAL DE LOGIN */
         .login-modal {
             display: none;
             position: fixed;
@@ -438,9 +407,6 @@
             border-color: #3ea6ff;
             background: rgba(62,166,255,0.1);
         }
-        .opcao-login.creator.selected {
-            border-color: #4ecdc4;
-        }
         .opcao-icon { font-size: 30px; margin-bottom: 8px; }
         .opcao-title { font-weight: bold; font-size: 14px; }
         .opcao-desc { font-size: 10px; color: #aaa; }
@@ -483,7 +449,6 @@
             color: #888;
         }
         
-        /* MODAL DE VÍDEO */
         .modal {
             display: none;
             position: fixed;
@@ -680,23 +645,18 @@
 
 <div class="contador" id="contador">📹 0 vídeos</div>
 
-<!-- MODAL DE UPLOAD -->
 <div id="uploadModal" class="upload-modal">
     <div class="upload-container">
         <h2>📤 Publicar Vídeo</h2>
-        
         <div class="upload-tabs">
-            <div class="upload-tab" id="tabLink">🔗 Postar por Link</div>
+            <div class="upload-tab" id="tabLink">🔗 Link</div>
             <div class="upload-tab" id="tabUpload">📁 Upload</div>
         </div>
-        
         <div id="panelLink" class="upload-panel">
-            <div class="info-box">💡 Cole o link do vídeo (YouTube ou Google Drive)</div>
             <input type="text" id="videoUrl" placeholder="Link do vídeo">
             <input type="text" id="videoTitleLink" placeholder="Título">
             <textarea id="videoDescLink" placeholder="Descrição" rows="2"></textarea>
         </div>
-        
         <div id="panelUpload" class="upload-panel">
             <div class="google-drive-section">
                 <button type="button" id="googleDriveAuthBtn" class="google-drive-btn">🔐 Conectar Google</button>
@@ -715,7 +675,6 @@
             <input type="text" id="videoTitleUpload" placeholder="Título">
             <textarea id="videoDescUpload" placeholder="Descrição" rows="2"></textarea>
         </div>
-        
         <div class="upload-buttons">
             <button class="cancel-upload" id="cancelUploadBtn">Cancelar</button>
             <button class="submit-upload" id="submitUploadBtn">Publicar</button>
@@ -723,7 +682,6 @@
     </div>
 </div>
 
-<!-- MODAL DE LOGIN -->
 <div id="loginModal" class="login-modal">
     <div class="login-container">
         <span class="close-login" id="closeLogin">&times;</span>
@@ -744,7 +702,6 @@
     </div>
 </div>
 
-<!-- MODAL DE VÍDEO -->
 <div id="videoModal" class="modal">
     <span class="close-modal">&times;</span>
     <div class="modal-container">
@@ -833,9 +790,13 @@
                     if (tokenResponse.access_token) {
                         accessToken = tokenResponse.access_token;
                         isGoogleConnected = true;
-                        document.getElementById('googleDriveStatus').innerHTML = '✅ Conectado!';
-                        document.getElementById('googleDriveStatus').style.color = '#2ecc71';
-                        document.getElementById('videoFileUpload').disabled = false;
+                        const statusDiv = document.getElementById('googleDriveStatus');
+                        if (statusDiv) {
+                            statusDiv.innerHTML = '✅ Conectado!';
+                            statusDiv.style.color = '#2ecc71';
+                        }
+                        const fileInput = document.getElementById('videoFileUpload');
+                        if (fileInput) fileInput.disabled = false;
                         showMessage('✅ Google Drive conectado!');
                     }
                 },
@@ -995,6 +956,7 @@
     
     function atualizarFormularioLogin() {
         const formArea = document.getElementById('loginFormArea');
+        if (!formArea) return;
         if (tipoLoginSelecionado === "usuario") {
             formArea.innerHTML = `
                 <div class="input-group"><input type="email" id="loginEmail" class="input-field" placeholder="Seu email"></div>
@@ -1004,15 +966,15 @@
                 <button id="registerSubmitBtn" class="register-btn">✨ Criar conta</button>
             `;
             document.getElementById('loginSubmitBtn')?.onclick = () => {
-                const email = document.getElementById('loginEmail').value.trim();
-                const senha = document.getElementById('loginSenha').value;
-                if (loginUsuario(email, senha)) fecharLoginModal();
+                const email = document.getElementById('loginEmail')?.value.trim();
+                const senha = document.getElementById('loginSenha')?.value;
+                if (email && senha && loginUsuario(email, senha)) fecharLoginModal();
             };
             document.getElementById('registerSubmitBtn')?.onclick = () => {
-                const email = document.getElementById('loginEmail').value.trim();
-                const nome = document.getElementById('loginNome').value.trim();
-                const senha = document.getElementById('loginSenha').value;
-                registrarUsuario(email, nome, senha);
+                const email = document.getElementById('loginEmail')?.value.trim();
+                const nome = document.getElementById('loginNome')?.value.trim();
+                const senha = document.getElementById('loginSenha')?.value;
+                if (email && nome && senha) registrarUsuario(email, nome, senha);
             };
         } else {
             formArea.innerHTML = `
@@ -1022,14 +984,14 @@
                 <button id="creatorRegisterBtn" class="register-btn">✨ Criar conta</button>
             `;
             document.getElementById('creatorLoginBtn')?.onclick = () => {
-                const nome = document.getElementById('creatorNome').value.trim();
-                const senha = document.getElementById('creatorSenha').value;
-                if (loginCriador(nome, senha)) fecharLoginModal();
+                const nome = document.getElementById('creatorNome')?.value.trim();
+                const senha = document.getElementById('creatorSenha')?.value;
+                if (nome && senha && loginCriador(nome, senha)) fecharLoginModal();
             };
             document.getElementById('creatorRegisterBtn')?.onclick = () => {
-                const nome = document.getElementById('creatorNome').value.trim();
-                const senha = document.getElementById('creatorSenha').value;
-                registrarCriador(nome, senha);
+                const nome = document.getElementById('creatorNome')?.value.trim();
+                const senha = document.getElementById('creatorSenha')?.value;
+                if (nome && senha) registrarCriador(nome, senha);
             };
         }
     }
@@ -1075,8 +1037,9 @@
     function exibirComentarios(videoId) {
         const commentsList = document.getElementById('commentsList');
         const commentsCountSpan = document.getElementById('commentsCount');
+        if (!commentsList) return;
         const comentarios = commentsData[videoId] || [];
-        commentsCountSpan.innerText = comentarios.length;
+        if (commentsCountSpan) commentsCountSpan.innerText = comentarios.length;
         if (comentarios.length === 0) { commentsList.innerHTML = '<div class="no-comments">Nenhum comentário ainda.</div>'; return; }
         commentsList.innerHTML = '';
         for (let c of comentarios) {
@@ -1091,8 +1054,10 @@
     function salvarLikes() { localStorage.setItem('wolfTube_likes', JSON.stringify(likesData)); localStorage.setItem('wolfTube_dislikes', JSON.stringify(dislikesData)); }
     
     function atualizarUIlikes(videoId) {
-        document.getElementById('likeCount').innerText = likesData[videoId] || 0;
-        document.getElementById('dislikeCount').innerText = dislikesData[videoId] || 0;
+        const likeSpan = document.getElementById('likeCount');
+        const dislikeSpan = document.getElementById('dislikeCount');
+        if (likeSpan) likeSpan.innerText = likesData[videoId] || 0;
+        if (dislikeSpan) dislikeSpan.innerText = dislikesData[videoId] || 0;
     }
     
     async function publicarVideo() {
@@ -1100,18 +1065,18 @@
         if (!selectedVideoFile) { showMessage("❌ Selecione um vídeo!", true); return; }
         if (!isGoogleConnected) { showMessage("❌ Conecte ao Google Drive primeiro!", true); return; }
         
-        const titulo = document.getElementById('videoTitleUpload').value.trim() || "Meu Vídeo";
-        const descricao = document.getElementById('videoDescUpload').value.trim() || "📹 Vídeo enviado";
+        const titulo = document.getElementById('videoTitleUpload')?.value.trim() || "Meu Vídeo";
+        const descricao = document.getElementById('videoDescUpload')?.value.trim() || "📹 Vídeo enviado";
         const videoId = nextId++;
         
         showMessage('⏳ Enviando para o Google Drive...');
         const progressDiv = document.getElementById('uploadProgress');
         const progressBar = document.getElementById('uploadProgressBar');
-        progressDiv.style.display = 'block';
-        progressBar.style.width = '0%';
+        if (progressDiv) progressDiv.style.display = 'block';
+        if (progressBar) progressBar.style.width = '0%';
         
         try {
-            const videoLink = await uploadToGoogleDrive(selectedVideoFile, titulo, (p) => { progressBar.style.width = p + '%'; });
+            const videoLink = await uploadToGoogleDrive(selectedVideoFile, titulo, (p) => { if (progressBar) progressBar.style.width = p + '%'; });
             const novoVideo = {
                 id: videoId,
                 embedUrl: videoLink,
@@ -1125,18 +1090,22 @@
             videosData.unshift(novoVideo);
             adicionarVideoAoCriador(videoId);
             salvarVideos();
-            progressDiv.style.display = 'none';
-            progressBar.style.width = '0%';
+            if (progressDiv) progressDiv.style.display = 'none';
+            if (progressBar) progressBar.style.width = '0%';
             document.getElementById('uploadModal').style.display = 'none';
             selectedVideoFile = null;
-            document.getElementById('videoPreviewArea').style.display = 'none';
-            document.getElementById('videoTitleUpload').value = '';
-            document.getElementById('videoDescUpload').value = '';
-            document.getElementById('videoFileUpload').value = '';
+            const previewArea = document.getElementById('videoPreviewArea');
+            if (previewArea) previewArea.style.display = 'none';
+            const titleInput = document.getElementById('videoTitleUpload');
+            const descInput = document.getElementById('videoDescUpload');
+            const fileInput = document.getElementById('videoFileUpload');
+            if (titleInput) titleInput.value = '';
+            if (descInput) descInput.value = '';
+            if (fileInput) fileInput.value = '';
             renderizarVideos();
             showMessage(`✅ Vídeo publicado com sucesso!`);
         } catch(error) {
-            progressDiv.style.display = 'none';
+            if (progressDiv) progressDiv.style.display = 'none';
             showMessage('❌ Erro no upload: ' + error, true);
         }
     }
@@ -1161,10 +1130,10 @@
             const card = document.createElement('div');
             card.className = 'video-card';
             card.innerHTML = `
-                <div class="thumbnail" onclick="abrirVideo(${video.id})">
+                <div class="thumbnail" onclick="window.abrirVideo(${video.id})">
                     <img src="${thumbnail}" onerror="this.src='https://via.placeholder.com/300x169'">
                 </div>
-                <div class="video-text" onclick="abrirVideo(${video.id})">
+                <div class="video-text" onclick="window.abrirVideo(${video.id})">
                     <h3>${escapeHtml(video.title)}</h3>
                     <p class="video-meta">${video.views} • 💬 ${commentsCount}</p>
                 </div>
@@ -1177,37 +1146,44 @@
     window.abrirVideo = function(videoId) {
         const video = videosData.find(v => v.id === videoId);
         if (!video) return;
-        document.getElementById('playerWrapper').innerHTML = `<iframe src="${video.embedUrl}" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe>`;
-        document.getElementById('modalTitle').innerText = video.title;
-        document.getElementById('modalStats').innerText = video.views;
+        const playerWrapper = document.getElementById('playerWrapper');
+        if (playerWrapper) playerWrapper.innerHTML = `<iframe src="${video.embedUrl}" frameborder="0" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%;"></iframe>`;
+        const titleElem = document.getElementById('modalTitle');
+        const statsElem = document.getElementById('modalStats');
+        if (titleElem) titleElem.innerText = video.title;
+        if (statsElem) statsElem.innerText = video.views;
         atualizarUIlikes(video.id);
         exibirComentarios(videoId);
         document.getElementById('videoModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
         const recList = document.getElementById('recommendedList');
-        recList.innerHTML = '';
-        for (let rec of videosData.filter(v => v.id !== video.id).slice(0, 5)) {
-            const div = document.createElement('div');
-            div.style.cssText = 'display:flex; gap:10px; margin-bottom:12px; cursor:pointer; padding:6px; border-radius:8px;';
-            div.onmouseover = () => div.style.backgroundColor = '#272727';
-            div.onmouseout = () => div.style.backgroundColor = 'transparent';
-            div.innerHTML = `<div style="width:100px;"><img src="${rec.thumbnail}" style="width:100%; border-radius:6px;"></div><div><div style="font-weight:500; font-size:13px;">${escapeHtml(rec.title)}</div><div style="font-size:11px; color:#aaa;">${rec.views}</div></div>`;
-            div.onclick = () => window.abrirVideo(rec.id);
-            recList.appendChild(div);
+        if (recList) {
+            recList.innerHTML = '';
+            for (let rec of videosData.filter(v => v.id !== video.id).slice(0, 5)) {
+                const div = document.createElement('div');
+                div.style.cssText = 'display:flex; gap:10px; margin-bottom:12px; cursor:pointer; padding:6px; border-radius:8px;';
+                div.onmouseover = () => div.style.backgroundColor = '#272727';
+                div.onmouseout = () => div.style.backgroundColor = 'transparent';
+                div.innerHTML = `<div style="width:100px;"><img src="${rec.thumbnail}" style="width:100%; border-radius:6px;"></div><div><div style="font-weight:500; font-size:13px;">${escapeHtml(rec.title)}</div><div style="font-size:11px; color:#aaa;">${rec.views}</div></div>`;
+                div.onclick = () => window.abrirVideo(rec.id);
+                recList.appendChild(div);
+            }
         }
         
-        document.getElementById('submitCommentBtn').onclick = () => {
-            const input = document.getElementById('commentInput');
-            if (adicionarComentario(video.id, input.value)) input.value = '';
-        };
-        document.getElementById('likeBtn').onclick = () => { likesData[video.id] = (likesData[video.id] || 0) + 1; salvarLikes(); atualizarUIlikes(video.id); };
-        document.getElementById('dislikeBtn').onclick = () => { dislikesData[video.id] = (dislikesData[video.id] || 0) + 1; salvarLikes(); atualizarUIlikes(video.id); };
+        const submitBtn = document.getElementById('submitCommentBtn');
+        const commentInput = document.getElementById('commentInput');
+        if (submitBtn) submitBtn.onclick = () => { if (adicionarComentario(video.id, commentInput?.value || '')) if (commentInput) commentInput.value = ''; };
+        const likeBtn = document.getElementById('likeBtn');
+        const dislikeBtn = document.getElementById('dislikeBtn');
+        if (likeBtn) likeBtn.onclick = () => { likesData[video.id] = (likesData[video.id] || 0) + 1; salvarLikes(); atualizarUIlikes(video.id); };
+        if (dislikeBtn) dislikeBtn.onclick = () => { dislikesData[video.id] = (dislikesData[video.id] || 0) + 1; salvarLikes(); atualizarUIlikes(video.id); };
     };
     
     function fecharModal() {
         document.getElementById('videoModal').style.display = 'none';
-        document.getElementById('playerWrapper').innerHTML = '';
+        const playerWrapper = document.getElementById('playerWrapper');
+        if (playerWrapper) playerWrapper.innerHTML = '';
         document.body.style.overflow = '';
     }
     
@@ -1230,65 +1206,80 @@
         const adminSidebar = document.getElementById('adminSidebar');
         
         if (isAdmin()) {
-            uploadContainer.innerHTML = `<button class="upload-btn" id="uploadBtn">📤 Postar</button>`;
+            if (uploadContainer) uploadContainer.innerHTML = `<button class="upload-btn" id="uploadBtn">📤 Postar</button>`;
             if (adminSidebar) adminSidebar.style.display = 'flex';
             if (galeriaSidebar) galeriaSidebar.style.display = 'none';
-            authBtn.innerHTML = `<div class="user-container"><div class="user-avatar">👑</div><div class="user-name">Admin</div></div>`;
-            document.getElementById('uploadBtn')?.addEventListener('click', () => abrirUploadModal());
+            if (authBtn) authBtn.innerHTML = `<div class="user-container"><div class="user-avatar">👑</div><div class="user-name">Admin</div></div>`;
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) uploadBtn.addEventListener('click', () => abrirUploadModal());
         } else if (currentCreator) {
-            uploadContainer.innerHTML = `<button class="upload-btn" id="uploadBtn">📤 Postar</button>`;
+            if (uploadContainer) uploadContainer.innerHTML = `<button class="upload-btn" id="uploadBtn">📤 Postar</button>`;
             if (galeriaSidebar) galeriaSidebar.style.display = 'flex';
             if (adminSidebar) adminSidebar.style.display = 'none';
-            authBtn.innerHTML = `<div class="user-container"><div class="user-avatar">🎬</div><div class="user-name">${escapeHtml(currentCreator.nome)}<span class="creator-badge">CRIADOR</span></div></div>`;
-            document.getElementById('uploadBtn')?.addEventListener('click', () => abrirUploadModal());
-            document.getElementById('galeriaSidebar')?.addEventListener('click', () => entrarNaGaleria());
+            if (authBtn) authBtn.innerHTML = `<div class="user-container"><div class="user-avatar">🎬</div><div class="user-name">${escapeHtml(currentCreator.nome)}<span class="creator-badge">CRIADOR</span></div></div>`;
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) uploadBtn.addEventListener('click', () => abrirUploadModal());
+            if (galeriaSidebar) galeriaSidebar.addEventListener('click', () => entrarNaGaleria());
         } else if (currentUser) {
-            uploadContainer.innerHTML = '';
+            if (uploadContainer) uploadContainer.innerHTML = '';
             if (galeriaSidebar) galeriaSidebar.style.display = 'none';
             if (adminSidebar) adminSidebar.style.display = 'none';
-            authBtn.innerHTML = `<div class="user-container"><div class="user-avatar">👤</div><div class="user-name">${escapeHtml(currentUser.nome)}<span class="user-badge">USUÁRIO</span></div></div>`;
+            if (authBtn) authBtn.innerHTML = `<div class="user-container"><div class="user-avatar">👤</div><div class="user-name">${escapeHtml(currentUser.nome)}<span class="user-badge">USUÁRIO</span></div></div>`;
         } else {
-            uploadContainer.innerHTML = '';
+            if (uploadContainer) uploadContainer.innerHTML = '';
             if (galeriaSidebar) galeriaSidebar.style.display = 'none';
             if (adminSidebar) adminSidebar.style.display = 'none';
-            authBtn.innerHTML = `<button class="login-btn" id="loginBtn">🔑 Entrar</button>`;
-            document.getElementById('loginBtn')?.addEventListener('click', () => abrirLoginModal());
+            if (authBtn) authBtn.innerHTML = `<button class="login-btn" id="loginBtn">🔑 Entrar</button>`;
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) loginBtn.addEventListener('click', () => abrirLoginModal());
         }
         renderizarVideos();
     }
     
     function setupUploadEvents() {
-        document.getElementById('videoFileUpload')?.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('video/')) {
-                selectedVideoFile = file;
-                const videoPreview = document.getElementById('videoPreview');
-                const previewArea = document.getElementById('videoPreviewArea');
-                videoPreview.src = URL.createObjectURL(file);
-                previewArea.style.display = 'block';
-                showMessage('✅ Vídeo selecionado!');
-            }
+        const fileInput = document.getElementById('videoFileUpload');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('video/')) {
+                    selectedVideoFile = file;
+                    const videoPreview = document.getElementById('videoPreview');
+                    const previewArea = document.getElementById('videoPreviewArea');
+                    if (videoPreview) videoPreview.src = URL.createObjectURL(file);
+                    if (previewArea) previewArea.style.display = 'block';
+                    showMessage('✅ Vídeo selecionado!');
+                }
+            });
+        }
+        
+        const googleBtn = document.getElementById('googleDriveAuthBtn');
+        if (googleBtn) googleBtn.addEventListener('click', connectGoogleDrive);
+        
+        const cancelBtn = document.getElementById('cancelUploadBtn');
+        if (cancelBtn) cancelBtn.addEventListener('click', () => document.getElementById('uploadModal').style.display = 'none');
+        
+        const submitBtn = document.getElementById('submitUploadBtn');
+        if (submitBtn) submitBtn.addEventListener('click', (e) => { e.preventDefault(); publicarVideo(); });
+        
+        const tabUpload = document.getElementById('tabUpload');
+        const tabLink = document.getElementById('tabLink');
+        const panelUpload = document.getElementById('panelUpload');
+        const panelLink = document.getElementById('panelLink');
+        
+        if (tabUpload) tabUpload.addEventListener('click', () => {
+            activeTab = "upload";
+            tabUpload.classList.add('active');
+            if (tabLink) tabLink.classList.remove('active');
+            if (panelUpload) panelUpload.classList.add('active');
+            if (panelLink) panelLink.classList.remove('active');
         });
         
-        document.getElementById('googleDriveAuthBtn')?.addEventListener('click', connectGoogleDrive);
-        document.getElementById('cancelUploadBtn')?.addEventListener('click', () => document.getElementById('uploadModal').style.display = 'none');
-        document.getElementById('submitUploadBtn')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            publicarVideo();
-        });
-        document.getElementById('tabUpload')?.addEventListener('click', () => {
-            activeTab = "upload";
-            document.getElementById('tabUpload').classList.add('active');
-            document.getElementById('tabLink').classList.remove('active');
-            document.getElementById('panelUpload').classList.add('active');
-            document.getElementById('panelLink').classList.remove('active');
-        });
-        document.getElementById('tabLink')?.addEventListener('click', () => {
+        if (tabLink) tabLink.addEventListener('click', () => {
             activeTab = "link";
-            document.getElementById('tabLink').classList.add('active');
-            document.getElementById('tabUpload').classList.remove('active');
-            document.getElementById('panelLink').classList.add('active');
-            document.getElementById('panelUpload').classList.remove('active');
+            tabLink.classList.add('active');
+            if (tabUpload) tabUpload.classList.remove('active');
+            if (panelLink) panelLink.classList.add('active');
+            if (panelUpload) panelUpload.classList.remove('active');
         });
     }
     
@@ -1310,18 +1301,34 @@
         scriptGis.onload = () => initGIS();
         document.head.appendChild(scriptGis);
         
-        document.getElementById('closeLogin')?.addEventListener('click', fecharLoginModal);
-        document.querySelector('.close-modal')?.addEventListener('click', fecharModal);
-        document.getElementById('homeButton')?.addEventListener('click', () => { fecharModal(); sairDaGaleria(); renderizarVideos(); });
-        document.getElementById('homeSidebar')?.addEventListener('click', () => { fecharModal(); sairDaGaleria(); renderizarVideos(); });
-        document.getElementById('videoModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('videoModal')) fecharModal(); });
-        document.getElementById('uploadModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('uploadModal')) document.getElementById('uploadModal').style.display = 'none'; });
-        document.getElementById('opcaoUsuario')?.addEventListener('click', () => { tipoLoginSelecionado = "usuario"; atualizarFormularioLogin(); });
-        document.getElementById('opcaoCriador')?.addEventListener('click', () => { tipoLoginSelecionado = "criador"; atualizarFormularioLogin(); });
+        const closeLogin = document.getElementById('closeLogin');
+        if (closeLogin) closeLogin.addEventListener('click', fecharLoginModal);
+        
+        const closeModalBtn = document.querySelector('.close-modal');
+        if (closeModalBtn) closeModalBtn.addEventListener('click', fecharModal);
+        
+        const homeButton = document.getElementById('homeButton');
+        if (homeButton) homeButton.addEventListener('click', () => { fecharModal(); sairDaGaleria(); renderizarVideos(); });
+        
+        const homeSidebar = document.getElementById('homeSidebar');
+        if (homeSidebar) homeSidebar.addEventListener('click', () => { fecharModal(); sairDaGaleria(); renderizarVideos(); });
+        
+        const videoModal = document.getElementById('videoModal');
+        if (videoModal) videoModal.addEventListener('click', (e) => { if (e.target === videoModal) fecharModal(); });
+        
+        const uploadModal = document.getElementById('uploadModal');
+        if (uploadModal) uploadModal.addEventListener('click', (e) => { if (e.target === uploadModal) uploadModal.style.display = 'none'; });
+        
+        const opcaoUsuario = document.getElementById('opcaoUsuario');
+        const opcaoCriador = document.getElementById('opcaoCriador');
+        if (opcaoUsuario) opcaoUsuario.addEventListener('click', () => { tipoLoginSelecionado = "usuario"; atualizarFormularioLogin(); });
+        if (opcaoCriador) opcaoCriador.addEventListener('click', () => { tipoLoginSelecionado = "criador"; atualizarFormularioLogin(); });
     }
     
+    // VERIFICAÇÃO DE IDADE - CORRIGIDA
     function verificarIdade() {
-        if (localStorage.getItem('wolfTube_ageConfirmed') === 'true') {
+        const idadeConfirmada = localStorage.getItem('wolfTube_ageConfirmed');
+        if (idadeConfirmada === 'true') {
             document.getElementById('ageVerification').style.display = 'none';
             document.getElementById('mainContentWrap').style.display = 'block';
             inicializar();
@@ -1336,13 +1343,33 @@
     }
     
     function negarMaiorIdade() {
-        document.getElementById('ageVerification').innerHTML = '<div class="age-container"><div class="age-icon">🚫</div><h1>Acesso Negado</h1><p class="age-text">Você não tem idade suficiente.</p><button class="age-btn yes" id="tryAgainBtn">Voltar</button></div>';
-        document.getElementById('tryAgainBtn')?.addEventListener('click', () => location.reload());
+        const ageDiv = document.getElementById('ageVerification');
+        if (ageDiv) {
+            ageDiv.innerHTML = '<div class="age-container"><div class="age-icon">🚫</div><h1>Acesso Negado</h1><p class="age-text">Você não tem idade suficiente para acessar este conteúdo.</p><button class="age-btn yes" id="tryAgainBtn">🔙 Voltar</button></div>';
+            const tryAgainBtn = document.getElementById('tryAgainBtn');
+            if (tryAgainBtn) tryAgainBtn.addEventListener('click', () => location.reload());
+        }
     }
     
-    document.getElementById('ageYesBtn')?.addEventListener('click', confirmarMaiorIdade);
-    document.getElementById('ageNoBtn')?.addEventListener('click', negarMaiorIdade);
+    // Adicionar eventos de clique com verificação de existência
+    const ageYesBtn = document.getElementById('ageYesBtn');
+    const ageNoBtn = document.getElementById('ageNoBtn');
+    
+    if (ageYesBtn) {
+        ageYesBtn.addEventListener('click', confirmarMaiorIdade);
+    } else {
+        console.log("Botão SIM não encontrado");
+    }
+    
+    if (ageNoBtn) {
+        ageNoBtn.addEventListener('click', negarMaiorIdade);
+    } else {
+        console.log("Botão NÃO não encontrado");
+    }
+    
     verificarIdade();
 </script>
 </body>
 </html>
+
+
