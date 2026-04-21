@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Upload de Vídeos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WolfTube - Upload Simplificado</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,6 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
             border-bottom: 2px solid #e74c3c;
         }
 
@@ -35,15 +34,7 @@
             color: #e74c3c;
         }
 
-        .logo span {
-            color: white;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .logo span { color: white; }
 
         button {
             padding: 8px 16px;
@@ -51,39 +42,11 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s;
         }
 
-        .btn-primary {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #c0392b;
-            transform: scale(1.05);
-        }
-
-        .btn-secondary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #2980b9;
-        }
-
-        .btn-danger {
-            background: #2c3e50;
-            color: white;
-        }
-
-        .user-info {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
+        .btn-primary { background: #e74c3c; color: white; }
+        .btn-secondary { background: #3498db; color: white; }
+        .btn-danger { background: #2c3e50; color: white; }
 
         .container {
             max-width: 1200px;
@@ -96,12 +59,6 @@
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .upload-area h2 {
-            margin-bottom: 20px;
-            color: #e74c3c;
         }
 
         .form-group {
@@ -119,42 +76,7 @@
             padding: 12px;
             border: none;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.9);
             font-size: 16px;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .file-input {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: #2c3e50;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: #e74c3c;
-            transition: width 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
         }
 
         .videos-grid {
@@ -168,13 +90,11 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             overflow: hidden;
-            transition: transform 0.3s;
             cursor: pointer;
+            transition: transform 0.3s;
         }
 
-        .video-card:hover {
-            transform: translateY(-5px);
-        }
+        .video-card:hover { transform: translateY(-5px); }
 
         .video-thumbnail {
             width: 100%;
@@ -186,28 +106,9 @@
             font-size: 48px;
         }
 
-        .video-info {
-            padding: 15px;
-        }
-
-        .video-title {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .video-meta {
-            font-size: 12px;
-            color: #ccc;
-            margin-top: 8px;
-        }
-
-        .delete-btn {
-            background: #e74c3c;
-            padding: 5px 10px;
-            font-size: 12px;
-            margin-top: 10px;
-        }
+        .video-info { padding: 15px; }
+        .video-title { font-weight: bold; margin-bottom: 5px; }
+        .video-meta { font-size: 12px; color: #ccc; margin-top: 8px; }
 
         .modal {
             position: fixed;
@@ -222,28 +123,7 @@
             z-index: 1000;
         }
 
-        .modal-content {
-            background: #1a1a2e;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-        }
-
-        .login-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-box {
+        .modal-content, .login-box {
             background: #1a1a2e;
             padding: 30px;
             border-radius: 15px;
@@ -259,22 +139,7 @@
             border-radius: 5px;
         }
 
-        .hidden {
-            display: none;
-        }
-
-        .alert {
-            background: #e74c3c;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .success {
-            background: #27ae60;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -285,28 +150,24 @@
             <button class="btn-secondary" onclick="showRegisterModal()">Cadastrar</button>
             <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;">Sair</button>
         </div>
-        <div class="user-info" id="userInfo"></div>
     </div>
 
     <div class="container">
         <div class="upload-area" id="uploadArea" style="display:none;">
             <h2>📤 Postar Vídeo</h2>
             <div class="form-group">
-                <label>Título do Vídeo</label>
-                <input type="text" id="videoTitle" placeholder="Ex: Gameplay incrível">
+                <label>Título</label>
+                <input type="text" id="videoTitle" placeholder="Título do vídeo">
+            </div>
+            <div class="form-group">
+                <label>Link do Vídeo (YouTube ou Google Drive)</label>
+                <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=... ou https://drive.google.com/...">
             </div>
             <div class="form-group">
                 <label>Descrição</label>
-                <textarea id="videoDesc" placeholder="Descreva seu vídeo..."></textarea>
+                <textarea id="videoDesc" placeholder="Descrição..."></textarea>
             </div>
-            <div class="form-group">
-                <label>Selecionar Vídeo (Máx 200MB)</label>
-                <input type="file" id="videoFile" accept="video/*" class="file-input">
-            </div>
-            <button class="btn-primary" onclick="uploadVideo()">📤 Publicar Vídeo</button>
-            <div class="progress-bar" id="progressBar">
-                <div class="progress-fill" id="progressFill">0%</div>
-            </div>
+            <button class="btn-primary" onclick="postVideo()">📤 Publicar</button>
         </div>
 
         <h2>📺 Vídeos Recentes</h2>
@@ -317,15 +178,14 @@
     <div class="modal" id="ageModal">
         <div class="modal-content">
             <h2>🔞 Verificação de Idade</h2>
-            <p>Este site contém conteúdo para maiores de 18 anos.</p>
             <p>Você tem 18 anos ou mais?</p>
-            <button class="btn-primary" onclick="verifyAge(true)" style="margin-top:20px;">✅ SIM, tenho 18+</button>
+            <button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button>
             <button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button>
         </div>
     </div>
 
     <!-- Login Modal -->
-    <div class="login-modal" id="loginModal">
+    <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <h2>Login</h2>
             <input type="email" id="loginEmail" placeholder="Email">
@@ -336,15 +196,15 @@
     </div>
 
     <!-- Register Modal -->
-    <div class="login-modal" id="registerModal">
+    <div class="modal hidden" id="registerModal">
         <div class="login-box">
             <h2>Cadastro</h2>
             <input type="text" id="regName" placeholder="Nome">
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Senha">
             <select id="regType">
-                <option value="user">Usuário Comum</option>
-                <option value="creator">Criador de Conteúdo</option>
+                <option value="user">Usuário</option>
+                <option value="creator">Criador</option>
             </select>
             <button class="btn-primary" onclick="doRegister()">Cadastrar</button>
             <button class="btn-secondary" onclick="closeRegisterModal()">Fechar</button>
@@ -352,329 +212,46 @@
     </div>
 
     <script>
-        // ============================================
-        // CONFIGURAÇÕES DO GOOGLE DRIVE - JÁ CONFIGURADO!
-        // ============================================
-        const CLIENT_ID = '367616920639-pi7tcbr6sdqvrikechge2hd56unrmp9f.apps.googleusercontent.com';
-        const API_KEY = 'AIzaSyCTzXUHDyBMHklPb7biw8m8mRbrfj1YxFM';
-        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-        
-        // ============================================
-        // VARIÁVEIS GLOBAIS
-        // ============================================
         let currentUser = null;
-        let tokenClient = null;
-        let accessToken = null;
 
-        // ============================================
-        // INICIALIZAÇÃO
-        // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAge();
-            loadUsers();
-            loadVideos();
-            initGoogleAuth();
-            
-            // Carregar usuário salvo
-            const savedUser = localStorage.getItem('wolftube_currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUI();
-            }
-        });
-
-        // ============================================
-        // VERIFICAÇÃO DE IDADE
-        // ============================================
-        function checkAge() {
-            if (!localStorage.getItem('ageVerified')) {
-                document.getElementById('ageModal').style.display = 'flex';
-            }
-        }
-
+        // Verificar idade
         function verifyAge(hasAge) {
             if (hasAge) {
                 localStorage.setItem('ageVerified', 'true');
                 document.getElementById('ageModal').style.display = 'none';
             } else {
-                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>🔞 Acesso negado</h1><p>Você precisa ter 18 anos para acessar este site.</p></div>';
+                document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;">🔞 Acesso negado</h1>';
             }
         }
 
-        // ============================================
-        // GOOGLE DRIVE - AUTENTICAÇÃO
-        // ============================================
-        function initGoogleAuth() {
-            try {
-                tokenClient = google.accounts.oauth2.initTokenClient({
-                    client_id: CLIENT_ID,
-                    scope: SCOPES,
-                    callback: (tokenResponse) => {
-                        accessToken = tokenResponse.access_token;
-                        console.log('✅ Autenticado com Google Drive');
-                        showMessage('✅ Autenticado com sucesso!', 'success');
-                    },
-                });
-            } catch (error) {
-                console.error('Erro ao iniciar Google Auth:', error);
-            }
+        if (!localStorage.getItem('ageVerified')) {
+            document.getElementById('ageModal').style.display = 'flex';
         }
 
-        async function authenticateGoogle() {
-            return new Promise((resolve, reject) => {
-                if (accessToken) {
-                    resolve(accessToken);
-                } else {
-                    try {
-                        tokenClient.requestAccessToken();
-                        const checkToken = setInterval(() => {
-                            if (accessToken) {
-                                clearInterval(checkToken);
-                                resolve(accessToken);
-                            }
-                        }, 500);
-                        
-                        setTimeout(() => {
-                            clearInterval(checkToken);
-                            reject(new Error('Timeout na autenticação'));
-                        }, 30000);
-                    } catch (error) {
-                        reject(error);
-                    }
-                }
-            });
-        }
-
-        // ============================================
-        // UPLOAD DE VÍDEO
-        // ============================================
-        async function uploadVideo() {
-            const title = document.getElementById('videoTitle').value;
-            const description = document.getElementById('videoDesc').value;
-            const fileInput = document.getElementById('videoFile');
-
-            if (!title || !description || !fileInput.files[0]) {
-                showMessage('Preencha todos os campos e selecione um vídeo!', 'error');
-                return;
-            }
-
-            if (!currentUser || (currentUser.type !== 'creator' && currentUser.type !== 'admin')) {
-                showMessage('Apenas criadores podem postar vídeos!', 'error');
-                return;
-            }
-
-            const videoFile = fileInput.files[0];
-            
-            if (videoFile.size > 200 * 1024 * 1024) {
-                showMessage('Vídeo muito grande! Máximo 200MB', 'error');
-                return;
-            }
-
-            document.getElementById('progressBar').style.display = 'block';
-            updateProgress(0);
-
-            try {
-                // Autenticar com Google
-                showMessage('Autenticando com Google Drive...', 'success');
-                const token = await authenticateGoogle();
-                
-                // Upload para Google Drive
-                const metadata = {
-                    name: `wolftube_${Date.now()}_${videoFile.name}`,
-                    description: description,
-                    mimeType: videoFile.type
-                };
-
-                const form = new FormData();
-                form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
-                form.append('file', videoFile);
-
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart');
-                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-                xhr.upload.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        const percent = (e.loaded / e.total) * 100;
-                        updateProgress(percent);
-                    }
-                };
-
-                xhr.onload = async () => {
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        const fileId = response.id;
-                        
-                        // Tornar público
-                        await makeFilePublic(fileId, token);
-                        
-                        // Gerar link
-                        const videoUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-                        
-                        // Salvar vídeo no localStorage
-                        const videoData = {
-                            id: Date.now(),
-                            title: title,
-                            description: description,
-                            url: videoUrl,
-                            fileId: fileId,
-                            author: currentUser.name,
-                            authorEmail: currentUser.email,
-                            date: new Date().toISOString(),
-                            views: 0
-                        };
-                        
-                        saveVideo(videoData);
-                        showMessage('✅ Vídeo publicado com sucesso!', 'success');
-                        clearUploadForm();
-                        loadVideos();
-                    } else {
-                        showMessage('Erro no upload: ' + xhr.responseText, 'error');
-                    }
-                    document.getElementById('progressBar').style.display = 'none';
-                };
-
-                xhr.onerror = () => {
-                    showMessage('Erro de rede. Tente novamente.', 'error');
-                    document.getElementById('progressBar').style.display = 'none';
-                };
-
-                xhr.send(form);
-                
-            } catch (error) {
-                showMessage('Erro: ' + error.message, 'error');
-                document.getElementById('progressBar').style.display = 'none';
-            }
-        }
-
-        async function makeFilePublic(fileId, token) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', `https://www.googleapis.com/drive/v3/files/${fileId}/permissions`);
-                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.send(JSON.stringify({
-                    'type': 'anyone',
-                    'role': 'reader'
-                }));
-                xhr.onload = () => {
-                    if (xhr.status === 200) {
-                        resolve();
-                    } else {
-                        reject(new Error('Erro ao tornar público'));
-                    }
-                };
-                xhr.onerror = () => reject(new Error('Erro de rede'));
-            });
-        }
-
-        function updateProgress(percent) {
-            const fill = document.getElementById('progressFill');
-            fill.style.width = percent + '%';
-            fill.textContent = Math.round(percent) + '%';
-        }
-
-        function showMessage(msg, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `alert ${type === 'success' ? 'success' : ''}`;
-            messageDiv.textContent = msg;
-            document.querySelector('.container').insertBefore(messageDiv, document.querySelector('.container').firstChild);
-            setTimeout(() => messageDiv.remove(), 3000);
-        }
-
-        // ============================================
-        // GERENCIAMENTO DE VÍDEOS
-        // ============================================
-        function saveVideo(video) {
-            let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
-            videos.unshift(video);
-            localStorage.setItem('wolftube_videos', JSON.stringify(videos));
-        }
-
-        function loadVideos() {
-            const videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
-            const grid = document.getElementById('videosGrid');
-            
-            if (videos.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda. Seja o primeiro a postar!</p>';
-                return;
-            }
-            
-            grid.innerHTML = videos.map(video => `
-                <div class="video-card" onclick="watchVideo('${video.url}', '${video.id}')">
-                    <div class="video-thumbnail">🎬</div>
-                    <div class="video-info">
-                        <div class="video-title">${escapeHtml(video.title)}</div>
-                        <div class="video-meta">
-                            👤 ${escapeHtml(video.author)}<br>
-                            👁️ ${video.views} views<br>
-                            📅 ${new Date(video.date).toLocaleDateString('pt-BR')}
-                        </div>
-                        ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
-                            `<button class="delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.id}')">🗑️ Excluir</button>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function watchVideo(url, videoId) {
-            // Incrementar views
-            let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
-            const videoIndex = videos.findIndex(v => v.id == videoId);
-            if (videoIndex !== -1) {
-                videos[videoIndex].views++;
-                localStorage.setItem('wolftube_videos', JSON.stringify(videos));
-            }
-            window.open(url, '_blank');
-        }
-
-        function deleteVideo(videoId) {
-            if (confirm('Tem certeza que quer excluir este vídeo?')) {
-                let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
-                videos = videos.filter(v => v.id != videoId);
-                localStorage.setItem('wolftube_videos', JSON.stringify(videos));
-                loadVideos();
-                showMessage('Vídeo excluído!', 'success');
-            }
-        }
-
-        function clearUploadForm() {
-            document.getElementById('videoTitle').value = '';
-            document.getElementById('videoDesc').value = '';
-            document.getElementById('videoFile').value = '';
-        }
-
-        // ============================================
-        // SISTEMA DE USUÁRIOS
-        // ============================================
+        // Sistema de usuários
         function loadUsers() {
             if (!localStorage.getItem('wolftube_users')) {
-                const defaultUsers = [
+                localStorage.setItem('wolftube_users', JSON.stringify([
                     { email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Admin', type: 'admin' }
-                ];
-                localStorage.setItem('wolftube_users', JSON.stringify(defaultUsers));
+                ]));
             }
         }
+        loadUsers();
 
         function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('loginModal').classList.remove('hidden');
         }
 
         function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginModal').classList.add('hidden');
         }
 
         function showRegisterModal() {
-            document.getElementById('registerModal').style.display = 'flex';
+            document.getElementById('registerModal').classList.remove('hidden');
         }
 
         function closeRegisterModal() {
-            document.getElementById('registerModal').style.display = 'none';
-            document.getElementById('regName').value = '';
-            document.getElementById('regEmail').value = '';
-            document.getElementById('regPassword').value = '';
+            document.getElementById('registerModal').classList.add('hidden');
         }
 
         function doLogin() {
@@ -688,10 +265,10 @@
                 localStorage.setItem('wolftube_currentUser', JSON.stringify(user));
                 updateUI();
                 closeLoginModal();
-                showMessage(`Bem-vindo, ${user.name}!`, 'success');
+                alert(`Bem-vindo, ${user.name}!`);
                 loadVideos();
             } else {
-                showMessage('Email ou senha incorretos!', 'error');
+                alert('Email ou senha incorretos!');
             }
         }
 
@@ -702,35 +279,36 @@
             const type = document.getElementById('regType').value;
             
             if (!name || !email || !password) {
-                showMessage('Preencha todos os campos!', 'error');
+                alert('Preencha todos os campos!');
                 return;
             }
             
             const users = JSON.parse(localStorage.getItem('wolftube_users'));
             if (users.find(u => u.email === email)) {
-                showMessage('Email já cadastrado!', 'error');
+                alert('Email já cadastrado!');
                 return;
             }
             
-            const newUser = { name, email, password, type };
-            users.push(newUser);
+            users.push({ name, email, password, type });
             localStorage.setItem('wolftube_users', JSON.stringify(users));
-            showMessage('Cadastro realizado! Faça login.', 'success');
+            alert('Cadastro realizado! Faça login.');
             closeRegisterModal();
         }
 
         function logout() {
             currentUser = null;
             localStorage.removeItem('wolftube_currentUser');
-            accessToken = null;
             updateUI();
             loadVideos();
-            showMessage('Você saiu da conta.', 'success');
         }
 
         function updateUI() {
+            const saved = localStorage.getItem('wolftube_currentUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+            }
+            
             if (currentUser) {
-                document.getElementById('userInfo').innerHTML = `👤 ${currentUser.name} (${currentUser.type === 'admin' ? 'Admin' : currentUser.type === 'creator' ? 'Criador' : 'Usuário'})`;
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
@@ -738,11 +316,8 @@
                 
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
-                } else {
-                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
-                document.getElementById('userInfo').innerHTML = '';
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'inline-block';
                 });
@@ -751,15 +326,92 @@
             }
         }
 
+        // Vídeos
+        function postVideo() {
+            const title = document.getElementById('videoTitle').value;
+            const url = document.getElementById('videoUrl').value;
+            const description = document.getElementById('videoDesc').value;
+            
+            if (!title || !url) {
+                alert('Preencha título e link do vídeo!');
+                return;
+            }
+            
+            // Converter link do YouTube para embed
+            let embedUrl = url;
+            if (url.includes('youtube.com/watch?v=')) {
+                const videoId = url.split('v=')[1].split('&')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            } else if (url.includes('youtu.be/')) {
+                const videoId = url.split('youtu.be/')[1].split('?')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            }
+            
+            const video = {
+                id: Date.now(),
+                title,
+                url: embedUrl,
+                originalUrl: url,
+                description,
+                author: currentUser.name,
+                authorEmail: currentUser.email,
+                date: new Date().toISOString(),
+                views: 0
+            };
+            
+            const videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
+            videos.unshift(video);
+            localStorage.setItem('wolftube_videos', JSON.stringify(videos));
+            
+            alert('Vídeo publicado!');
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoDesc').value = '';
+            loadVideos();
+        }
+
+        function loadVideos() {
+            const videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
+            const grid = document.getElementById('videosGrid');
+            
+            if (videos.length === 0) {
+                grid.innerHTML = '<p>Nenhum vídeo ainda. Poste o primeiro!</p>';
+                return;
+            }
+            
+            grid.innerHTML = videos.map(video => `
+                <div class="video-card" onclick="watchVideo('${video.url}')">
+                    <div class="video-thumbnail">🎬</div>
+                    <div class="video-info">
+                        <div class="video-title">${escapeHtml(video.title)}</div>
+                        <div class="video-meta">
+                            👤 ${escapeHtml(video.author)}<br>
+                            👁️ ${video.views} views<br>
+                            📅 ${new Date(video.date).toLocaleDateString()}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function watchVideo(url) {
+            window.open(url, '_blank');
+        }
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
+
+        // Carregar dados salvos
+        const savedUser = localStorage.getItem('wolftube_currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateUI();
+        }
+        loadVideos();
     </script>
-    
-    <!-- Google API -->
-    <script src="https://accounts.google.com/gsi/client"></script>
 </body>
 </html>
 
