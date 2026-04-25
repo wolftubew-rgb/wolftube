@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Upload de Vídeos</title>
+    <title>WolfTube - Compartilhe Vídeos</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -48,31 +48,6 @@
             border: none;
             border-radius: 8px;
             font-size: 16px;
-        }
-        .file-input {
-            background: rgba(255,255,255,0.9);
-            padding: 12px;
-            border-radius: 8px;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: #2c3e50;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-top: 15px;
-            display: none;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: #e74c3c;
-            transition: width 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: white;
         }
         .videos-grid {
             display: grid;
@@ -140,20 +115,14 @@
         }
         .success { background: #27ae60; }
         .error { background: #e74c3c; }
-        .info { background: #3498db; }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-        .link-copied {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #27ae60;
-            padding: 10px 20px;
-            border-radius: 10px;
-            z-index: 1000;
+        .help-text {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -175,17 +144,15 @@
                 <input type="text" id="videoTitle" placeholder="Ex: Gameplay incrível">
             </div>
             <div class="form-group">
+                <label>Link do Vídeo (YouTube ou Google Drive)</label>
+                <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=... ou https://drive.google.com/...">
+                <div class="help-text">💡 Para usar Google Drive: compartilhe o vídeo como "Qualquer um com o link" e cole o link aqui</div>
+            </div>
+            <div class="form-group">
                 <label>Descrição</label>
                 <textarea id="videoDesc" placeholder="Descreva seu vídeo..."></textarea>
             </div>
-            <div class="form-group">
-                <label>Selecionar Vídeo (Máx 200MB)</label>
-                <input type="file" id="videoFile" accept="video/*" class="file-input">
-            </div>
-            <button class="btn-primary" onclick="uploadToCatbox()">📤 Publicar Vídeo</button>
-            <div class="progress-bar" id="progressBar">
-                <div class="progress-fill" id="progressFill">0%</div>
-            </div>
+            <button class="btn-primary" onclick="postVideo()">📤 Publicar Vídeo</button>
         </div>
 
         <h2>📺 Vídeos Recentes</h2>
@@ -260,6 +227,8 @@
 
         function closeLoginModal() {
             document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
         }
 
         function showRegisterModal() {
@@ -333,6 +302,8 @@
                 
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
+                } else {
+                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
@@ -343,118 +314,54 @@
             }
         }
 
-        // Upload para Catbox (funciona SEMPRE!)
-        async function uploadToCatbox() {
+        // Postar vídeo por LINK (YouTube/Google Drive)
+        function postVideo() {
             const title = document.getElementById('videoTitle').value;
+            const url = document.getElementById('videoUrl').value;
             const description = document.getElementById('videoDesc').value;
-            const fileInput = document.getElementById('videoFile');
-
-            if (!title || !description || !fileInput.files[0]) {
-                showMessage('Preencha todos os campos e selecione um vídeo!', 'error');
-                return;
-            }
-
-            if (!currentUser || (currentUser.type !== 'creator' && currentUser.type !== 'admin')) {
-                showMessage('Apenas criadores podem postar vídeos!', 'error');
-                return;
-            }
-
-            const videoFile = fileInput.files[0];
             
-            if (videoFile.size > 200 * 1024 * 1024) {
-                showMessage('Vídeo muito grande! Máximo 200MB', 'error');
+            if (!title || !url) {
+                showMessage('Preencha título e link do vídeo!', 'error');
                 return;
             }
-
-            document.getElementById('progressBar').style.display = 'block';
-            updateProgress(0);
-
-            const formData = new FormData();
-            formData.append('fileToUpload', videoFile);
-            formData.append('reqtype', 'fileupload');
-
-            try {
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'https://catbox.moe/user/api.php');
-                
-                xhr.upload.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        const percent = (e.loaded / e.total) * 100;
-                        updateProgress(percent);
-                    }
-                };
-
-                xhr.onload = () => {
-                    if (xhr.status === 200) {
-                        const videoUrl = xhr.responseText.trim();
-                        
-                        if (videoUrl.startsWith('https://')) {
-                            const videoData = {
-                                id: Date.now(),
-                                title: title,
-                                description: description,
-                                url: videoUrl,
-                                author: currentUser.name,
-                                authorEmail: currentUser.email,
-                                date: new Date().toISOString(),
-                                views: 0
-                            };
-                            
-                            saveVideo(videoData);
-                            showMessage('✅ Vídeo publicado com sucesso!', 'success');
-                            clearUploadForm();
-                            loadVideos();
-                            
-                            // Mostrar link para copiar
-                            showLinkCopied(videoUrl);
-                        } else {
-                            showMessage('Erro no upload: ' + videoUrl, 'error');
-                        }
-                    } else {
-                        showMessage('Erro no upload. Tente novamente.', 'error');
-                    }
-                    document.getElementById('progressBar').style.display = 'none';
-                };
-
-                xhr.onerror = () => {
-                    showMessage('Erro de conexão. Tente novamente.', 'error');
-                    document.getElementById('progressBar').style.display = 'none';
-                };
-
-                xhr.send(formData);
-                
-            } catch (error) {
-                showMessage('Erro: ' + error.message, 'error');
-                document.getElementById('progressBar').style.display = 'none';
+            
+            // Converter link do YouTube para embed
+            let embedUrl = url;
+            if (url.includes('youtube.com/watch?v=')) {
+                const videoId = url.split('v=')[1].split('&')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            } else if (url.includes('youtu.be/')) {
+                const videoId = url.split('youtu.be/')[1].split('?')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            } else if (url.includes('drive.google.com')) {
+                // Para Google Drive
+                if (url.includes('file/d/')) {
+                    const fileId = url.split('file/d/')[1].split('/')[0];
+                    embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                }
             }
-        }
-
-        function showLinkCopied(url) {
-            const div = document.createElement('div');
-            div.className = 'link-copied';
-            div.innerHTML = `✅ Vídeo publicado! Link: <a href="${url}" target="_blank" style="color:white;">${url.substring(0, 50)}...</a>`;
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 5000);
-        }
-
-        function updateProgress(percent) {
-            const fill = document.getElementById('progressFill');
-            fill.style.width = percent + '%';
-            fill.textContent = Math.round(percent) + '%';
-        }
-
-        function showMessage(msg, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `alert ${type}`;
-            messageDiv.textContent = msg;
-            document.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 3000);
-        }
-
-        function saveVideo(video) {
-            let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
+            
+            const video = {
+                id: Date.now(),
+                title: title,
+                url: embedUrl,
+                originalUrl: url,
+                description: description,
+                author: currentUser.name,
+                authorEmail: currentUser.email,
+                date: new Date().toISOString(),
+                views: 0
+            };
+            
+            const videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
             videos.unshift(video);
             localStorage.setItem('wolftube_videos', JSON.stringify(videos));
+            
+            showMessage('✅ Vídeo publicado com sucesso!', 'success');
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoDesc').value = '';
+            loadVideos();
         }
 
         function loadVideos() {
@@ -503,10 +410,12 @@
             }
         }
 
-        function clearUploadForm() {
-            document.getElementById('videoTitle').value = '';
-            document.getElementById('videoDesc').value = '';
-            document.getElementById('videoFile').value = '';
+        function showMessage(msg, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `alert ${type}`;
+            messageDiv.textContent = msg;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 3000);
         }
 
         function escapeHtml(text) {
@@ -524,4 +433,5 @@
     </script>
 </body>
 </html>
+
 
