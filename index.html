@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WolfTube - Upload Funcional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WolfTube - Upload de Vídeos</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -72,6 +72,7 @@
             align-items: center;
             justify-content: center;
             font-size: 12px;
+            color: white;
         }
         .videos-grid {
             display: grid;
@@ -117,6 +118,7 @@
             border-radius: 15px;
             width: 90%;
             max-width: 400px;
+            text-align: center;
         }
         .login-box input, .login-box select {
             width: 100%;
@@ -127,13 +129,21 @@
         }
         .hidden { display: none; }
         .alert {
-            padding: 10px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
             border-radius: 5px;
-            margin-top: 10px;
-            text-align: center;
+            color: white;
+            z-index: 999;
+            animation: slideIn 0.3s ease;
         }
         .success { background: #27ae60; }
         .error { background: #e74c3c; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -148,7 +158,7 @@
 
     <div class="container">
         <div class="upload-area" id="uploadArea" style="display:none;">
-            <h2>📤 Postar Vídeo (Upload Direto)</h2>
+            <h2>📤 Postar Vídeo</h2>
             <div class="form-group">
                 <label>Título do Vídeo</label>
                 <input type="text" id="videoTitle" placeholder="Ex: Gameplay incrível">
@@ -158,10 +168,10 @@
                 <textarea id="videoDesc" placeholder="Descreva seu vídeo..."></textarea>
             </div>
             <div class="form-group">
-                <label>Selecionar Vídeo ( máximo 100MB )</label>
+                <label>Selecionar Vídeo (Máx 200MB)</label>
                 <input type="file" id="videoFile" accept="video/*" class="file-input">
             </div>
-            <button class="btn-primary" onclick="uploadToFileIO()">📤 Publicar Vídeo</button>
+            <button class="btn-primary" onclick="uploadToGoFile()">📤 Publicar Vídeo</button>
             <div class="progress-bar" id="progressBar">
                 <div class="progress-fill" id="progressFill">0%</div>
             </div>
@@ -176,7 +186,7 @@
         <div class="modal-content">
             <h2>🔞 Verificação de Idade</h2>
             <p>Você tem 18 anos ou mais?</p>
-            <button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button>
+            <button class="btn-primary" onclick="verifyAge(true)" style="margin-top:20px;">✅ SIM</button>
             <button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button>
         </div>
     </div>
@@ -200,8 +210,8 @@
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Senha">
             <select id="regType">
-                <option value="user">Usuário</option>
-                <option value="creator">Criador</option>
+                <option value="user">Usuário Comum</option>
+                <option value="creator">Criador de Conteúdo</option>
             </select>
             <button class="btn-primary" onclick="doRegister()">Cadastrar</button>
             <button class="btn-secondary" onclick="closeRegisterModal()">Fechar</button>
@@ -209,14 +219,8 @@
     </div>
 
     <script>
-        // ============================================
-        // CONFIGURAÇÕES
-        // ============================================
         let currentUser = null;
 
-        // ============================================
-        // VERIFICAÇÃO DE IDADE
-        // ============================================
         function verifyAge(hasAge) {
             if (hasAge) {
                 localStorage.setItem('ageVerified', 'true');
@@ -230,9 +234,6 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // ============================================
-        // SISTEMA DE USUÁRIOS
-        // ============================================
         function loadUsers() {
             if (!localStorage.getItem('wolftube_users')) {
                 localStorage.setItem('wolftube_users', JSON.stringify([
@@ -248,6 +249,8 @@
 
         function closeLoginModal() {
             document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
         }
 
         function showRegisterModal() {
@@ -304,6 +307,7 @@
             localStorage.removeItem('wolftube_currentUser');
             updateUI();
             loadVideos();
+            showMessage('Você saiu da conta.', 'success');
         }
 
         function updateUI() {
@@ -320,6 +324,8 @@
                 
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
+                } else {
+                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
@@ -330,10 +336,7 @@
             }
         }
 
-        // ============================================
-        // UPLOAD PARA FILE.IO (GRÁTIS, SEM AUTENTICAÇÃO)
-        // ============================================
-        async function uploadToFileIO() {
+        async function uploadToGoFile() {
             const title = document.getElementById('videoTitle').value;
             const description = document.getElementById('videoDesc').value;
             const fileInput = document.getElementById('videoFile');
@@ -350,8 +353,8 @@
 
             const videoFile = fileInput.files[0];
             
-            if (videoFile.size > 100 * 1024 * 1024) {
-                showMessage('Vídeo muito grande! Máximo 100MB', 'error');
+            if (videoFile.size > 200 * 1024 * 1024) {
+                showMessage('Vídeo muito grande! Máximo 200MB', 'error');
                 return;
             }
 
@@ -363,7 +366,7 @@
 
             try {
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'https://file.io/?expires=30d');
+                xhr.open('POST', 'https://store1.gofile.io/uploadFile');
                 
                 xhr.upload.onprogress = (e) => {
                     if (e.lengthComputable) {
@@ -375,24 +378,27 @@
                 xhr.onload = () => {
                     if (xhr.status === 200) {
                         const response = JSON.parse(xhr.responseText);
-                        const videoUrl = response.link;
-                        
-                        // Salvar vídeo
-                        const videoData = {
-                            id: Date.now(),
-                            title: title,
-                            description: description,
-                            url: videoUrl,
-                            author: currentUser.name,
-                            authorEmail: currentUser.email,
-                            date: new Date().toISOString(),
-                            views: 0
-                        };
-                        
-                        saveVideo(videoData);
-                        showMessage('✅ Vídeo publicado com sucesso!', 'success');
-                        clearUploadForm();
-                        loadVideos();
+                        if (response.status === 'ok') {
+                            const videoUrl = response.data.downloadPage;
+                            
+                            const videoData = {
+                                id: Date.now(),
+                                title: title,
+                                description: description,
+                                url: videoUrl,
+                                author: currentUser.name,
+                                authorEmail: currentUser.email,
+                                date: new Date().toISOString(),
+                                views: 0
+                            };
+                            
+                            saveVideo(videoData);
+                            showMessage('✅ Vídeo publicado com sucesso!', 'success');
+                            clearUploadForm();
+                            loadVideos();
+                        } else {
+                            showMessage('Erro no upload', 'error');
+                        }
                     } else {
                         showMessage('Erro no upload. Tente novamente.', 'error');
                     }
@@ -422,13 +428,10 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `alert ${type}`;
             messageDiv.textContent = msg;
-            document.querySelector('.container').insertBefore(messageDiv, document.querySelector('.container').firstChild);
+            document.body.appendChild(messageDiv);
             setTimeout(() => messageDiv.remove(), 3000);
         }
 
-        // ============================================
-        // GERENCIAMENTO DE VÍDEOS
-        // ============================================
         function saveVideo(video) {
             let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
             videos.unshift(video);
@@ -462,7 +465,6 @@
         }
 
         function watchVideo(url, videoId) {
-            // Incrementar views
             let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
             const videoIndex = videos.findIndex(v => v.id == videoId);
             if (videoIndex !== -1) {
@@ -494,9 +496,6 @@
             return div.innerHTML;
         }
 
-        // ============================================
-        // INICIALIZAÇÃO
-        // ============================================
         const savedUser = localStorage.getItem('wolftube_currentUser');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
@@ -506,6 +505,5 @@
     </script>
 </body>
 </html>
-
 
 
