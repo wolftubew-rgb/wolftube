@@ -3,23 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WolfTube - Upload Simplificado</title>
+    <title>WolfTube - Upload Funcional</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white;
             min-height: 100vh;
         }
-
         .header {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0,0,0,0.8);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
@@ -27,15 +21,8 @@
             flex-wrap: wrap;
             border-bottom: 2px solid #e74c3c;
         }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #e74c3c;
-        }
-
+        .logo { font-size: 24px; font-weight: bold; color: #e74c3c; }
         .logo span { color: white; }
-
         button {
             padding: 8px 16px;
             border: none;
@@ -43,34 +30,18 @@
             cursor: pointer;
             font-weight: bold;
         }
-
         .btn-primary { background: #e74c3c; color: white; }
         .btn-secondary { background: #3498db; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .upload-area {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 30px;
         }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; }
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
@@ -78,24 +49,44 @@
             border-radius: 8px;
             font-size: 16px;
         }
-
+        .file-input {
+            background: rgba(255,255,255,0.9);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #2c3e50;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+            display: none;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #e74c3c;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
         .videos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-
         .video-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.3s;
         }
-
         .video-card:hover { transform: translateY(-5px); }
-
         .video-thumbnail {
             width: 100%;
             height: 180px;
@@ -105,24 +96,21 @@
             justify-content: center;
             font-size: 48px;
         }
-
         .video-info { padding: 15px; }
         .video-title { font-weight: bold; margin-bottom: 5px; }
         .video-meta { font-size: 12px; color: #ccc; margin-top: 8px; }
-
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0,0,0,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
-
         .modal-content, .login-box {
             background: #1a1a2e;
             padding: 30px;
@@ -130,7 +118,6 @@
             width: 90%;
             max-width: 400px;
         }
-
         .login-box input, .login-box select {
             width: 100%;
             padding: 12px;
@@ -138,8 +125,15 @@
             border: none;
             border-radius: 5px;
         }
-
         .hidden { display: none; }
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .success { background: #27ae60; }
+        .error { background: #e74c3c; }
     </style>
 </head>
 <body>
@@ -154,20 +148,23 @@
 
     <div class="container">
         <div class="upload-area" id="uploadArea" style="display:none;">
-            <h2>📤 Postar Vídeo</h2>
+            <h2>📤 Postar Vídeo (Upload Direto)</h2>
             <div class="form-group">
-                <label>Título</label>
-                <input type="text" id="videoTitle" placeholder="Título do vídeo">
-            </div>
-            <div class="form-group">
-                <label>Link do Vídeo (YouTube ou Google Drive)</label>
-                <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=... ou https://drive.google.com/...">
+                <label>Título do Vídeo</label>
+                <input type="text" id="videoTitle" placeholder="Ex: Gameplay incrível">
             </div>
             <div class="form-group">
                 <label>Descrição</label>
-                <textarea id="videoDesc" placeholder="Descrição..."></textarea>
+                <textarea id="videoDesc" placeholder="Descreva seu vídeo..."></textarea>
             </div>
-            <button class="btn-primary" onclick="postVideo()">📤 Publicar</button>
+            <div class="form-group">
+                <label>Selecionar Vídeo ( máximo 100MB )</label>
+                <input type="file" id="videoFile" accept="video/*" class="file-input">
+            </div>
+            <button class="btn-primary" onclick="uploadToFileIO()">📤 Publicar Vídeo</button>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
         </div>
 
         <h2>📺 Vídeos Recentes</h2>
@@ -212,15 +209,20 @@
     </div>
 
     <script>
+        // ============================================
+        // CONFIGURAÇÕES
+        // ============================================
         let currentUser = null;
 
-        // Verificar idade
+        // ============================================
+        // VERIFICAÇÃO DE IDADE
+        // ============================================
         function verifyAge(hasAge) {
             if (hasAge) {
                 localStorage.setItem('ageVerified', 'true');
                 document.getElementById('ageModal').style.display = 'none';
             } else {
-                document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;">🔞 Acesso negado</h1>';
+                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>🔞 Acesso negado</h1></div>';
             }
         }
 
@@ -228,7 +230,9 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // Sistema de usuários
+        // ============================================
+        // SISTEMA DE USUÁRIOS
+        // ============================================
         function loadUsers() {
             if (!localStorage.getItem('wolftube_users')) {
                 localStorage.setItem('wolftube_users', JSON.stringify([
@@ -265,10 +269,10 @@
                 localStorage.setItem('wolftube_currentUser', JSON.stringify(user));
                 updateUI();
                 closeLoginModal();
-                alert(`Bem-vindo, ${user.name}!`);
+                showMessage(`Bem-vindo, ${user.name}!`, 'success');
                 loadVideos();
             } else {
-                alert('Email ou senha incorretos!');
+                showMessage('Email ou senha incorretos!', 'error');
             }
         }
 
@@ -279,19 +283,19 @@
             const type = document.getElementById('regType').value;
             
             if (!name || !email || !password) {
-                alert('Preencha todos os campos!');
+                showMessage('Preencha todos os campos!', 'error');
                 return;
             }
             
             const users = JSON.parse(localStorage.getItem('wolftube_users'));
             if (users.find(u => u.email === email)) {
-                alert('Email já cadastrado!');
+                showMessage('Email já cadastrado!', 'error');
                 return;
             }
             
             users.push({ name, email, password, type });
             localStorage.setItem('wolftube_users', JSON.stringify(users));
-            alert('Cadastro realizado! Faça login.');
+            showMessage('Cadastro realizado! Faça login.', 'success');
             closeRegisterModal();
         }
 
@@ -326,48 +330,109 @@
             }
         }
 
-        // Vídeos
-        function postVideo() {
+        // ============================================
+        // UPLOAD PARA FILE.IO (GRÁTIS, SEM AUTENTICAÇÃO)
+        // ============================================
+        async function uploadToFileIO() {
             const title = document.getElementById('videoTitle').value;
-            const url = document.getElementById('videoUrl').value;
             const description = document.getElementById('videoDesc').value;
-            
-            if (!title || !url) {
-                alert('Preencha título e link do vídeo!');
+            const fileInput = document.getElementById('videoFile');
+
+            if (!title || !description || !fileInput.files[0]) {
+                showMessage('Preencha todos os campos e selecione um vídeo!', 'error');
                 return;
             }
-            
-            // Converter link do YouTube para embed
-            let embedUrl = url;
-            if (url.includes('youtube.com/watch?v=')) {
-                const videoId = url.split('v=')[1].split('&')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            } else if (url.includes('youtu.be/')) {
-                const videoId = url.split('youtu.be/')[1].split('?')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+
+            if (!currentUser || (currentUser.type !== 'creator' && currentUser.type !== 'admin')) {
+                showMessage('Apenas criadores podem postar vídeos!', 'error');
+                return;
             }
+
+            const videoFile = fileInput.files[0];
             
-            const video = {
-                id: Date.now(),
-                title,
-                url: embedUrl,
-                originalUrl: url,
-                description,
-                author: currentUser.name,
-                authorEmail: currentUser.email,
-                date: new Date().toISOString(),
-                views: 0
-            };
-            
-            const videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
+            if (videoFile.size > 100 * 1024 * 1024) {
+                showMessage('Vídeo muito grande! Máximo 100MB', 'error');
+                return;
+            }
+
+            document.getElementById('progressBar').style.display = 'block';
+            updateProgress(0);
+
+            const formData = new FormData();
+            formData.append('file', videoFile);
+
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://file.io/?expires=30d');
+                
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = (e.loaded / e.total) * 100;
+                        updateProgress(percent);
+                    }
+                };
+
+                xhr.onload = () => {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        const videoUrl = response.link;
+                        
+                        // Salvar vídeo
+                        const videoData = {
+                            id: Date.now(),
+                            title: title,
+                            description: description,
+                            url: videoUrl,
+                            author: currentUser.name,
+                            authorEmail: currentUser.email,
+                            date: new Date().toISOString(),
+                            views: 0
+                        };
+                        
+                        saveVideo(videoData);
+                        showMessage('✅ Vídeo publicado com sucesso!', 'success');
+                        clearUploadForm();
+                        loadVideos();
+                    } else {
+                        showMessage('Erro no upload. Tente novamente.', 'error');
+                    }
+                    document.getElementById('progressBar').style.display = 'none';
+                };
+
+                xhr.onerror = () => {
+                    showMessage('Erro de rede. Tente novamente.', 'error');
+                    document.getElementById('progressBar').style.display = 'none';
+                };
+
+                xhr.send(formData);
+                
+            } catch (error) {
+                showMessage('Erro: ' + error.message, 'error');
+                document.getElementById('progressBar').style.display = 'none';
+            }
+        }
+
+        function updateProgress(percent) {
+            const fill = document.getElementById('progressFill');
+            fill.style.width = percent + '%';
+            fill.textContent = Math.round(percent) + '%';
+        }
+
+        function showMessage(msg, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `alert ${type}`;
+            messageDiv.textContent = msg;
+            document.querySelector('.container').insertBefore(messageDiv, document.querySelector('.container').firstChild);
+            setTimeout(() => messageDiv.remove(), 3000);
+        }
+
+        // ============================================
+        // GERENCIAMENTO DE VÍDEOS
+        // ============================================
+        function saveVideo(video) {
+            let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
             videos.unshift(video);
             localStorage.setItem('wolftube_videos', JSON.stringify(videos));
-            
-            alert('Vídeo publicado!');
-            document.getElementById('videoTitle').value = '';
-            document.getElementById('videoUrl').value = '';
-            document.getElementById('videoDesc').value = '';
-            loadVideos();
         }
 
         function loadVideos() {
@@ -375,27 +440,52 @@
             const grid = document.getElementById('videosGrid');
             
             if (videos.length === 0) {
-                grid.innerHTML = '<p>Nenhum vídeo ainda. Poste o primeiro!</p>';
+                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda. Seja o primeiro a postar!</p>';
                 return;
             }
             
             grid.innerHTML = videos.map(video => `
-                <div class="video-card" onclick="watchVideo('${video.url}')">
+                <div class="video-card" onclick="watchVideo('${video.url}', '${video.id}')">
                     <div class="video-thumbnail">🎬</div>
                     <div class="video-info">
                         <div class="video-title">${escapeHtml(video.title)}</div>
                         <div class="video-meta">
                             👤 ${escapeHtml(video.author)}<br>
                             👁️ ${video.views} views<br>
-                            📅 ${new Date(video.date).toLocaleDateString()}
+                            📅 ${new Date(video.date).toLocaleDateString('pt-BR')}
                         </div>
+                        ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
+                            `<button class="btn-danger" onclick="event.stopPropagation(); deleteVideo('${video.id}')" style="margin-top:10px;">🗑️ Excluir</button>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
-        function watchVideo(url) {
+        function watchVideo(url, videoId) {
+            // Incrementar views
+            let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
+            const videoIndex = videos.findIndex(v => v.id == videoId);
+            if (videoIndex !== -1) {
+                videos[videoIndex].views++;
+                localStorage.setItem('wolftube_videos', JSON.stringify(videos));
+            }
             window.open(url, '_blank');
+        }
+
+        function deleteVideo(videoId) {
+            if (confirm('Tem certeza que quer excluir este vídeo?')) {
+                let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
+                videos = videos.filter(v => v.id != videoId);
+                localStorage.setItem('wolftube_videos', JSON.stringify(videos));
+                loadVideos();
+                showMessage('Vídeo excluído!', 'success');
+            }
+        }
+
+        function clearUploadForm() {
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoDesc').value = '';
+            document.getElementById('videoFile').value = '';
         }
 
         function escapeHtml(text) {
@@ -404,7 +494,9 @@
             return div.innerHTML;
         }
 
-        // Carregar dados salvos
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         const savedUser = localStorage.getItem('wolftube_currentUser');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
