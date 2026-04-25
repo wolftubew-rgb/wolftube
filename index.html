@@ -140,9 +140,20 @@
         }
         .success { background: #27ae60; }
         .error { background: #e74c3c; }
+        .info { background: #3498db; }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
+        }
+        .link-copied {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60;
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 1000;
         }
     </style>
 </head>
@@ -171,7 +182,7 @@
                 <label>Selecionar Vídeo (Máx 200MB)</label>
                 <input type="file" id="videoFile" accept="video/*" class="file-input">
             </div>
-            <button class="btn-primary" onclick="uploadToGoFile()">📤 Publicar Vídeo</button>
+            <button class="btn-primary" onclick="uploadToCatbox()">📤 Publicar Vídeo</button>
             <div class="progress-bar" id="progressBar">
                 <div class="progress-fill" id="progressFill">0%</div>
             </div>
@@ -249,8 +260,6 @@
 
         function closeLoginModal() {
             document.getElementById('loginModal').classList.add('hidden');
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
         }
 
         function showRegisterModal() {
@@ -324,8 +333,6 @@
                 
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
-                } else {
-                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
@@ -336,7 +343,8 @@
             }
         }
 
-        async function uploadToGoFile() {
+        // Upload para Catbox (funciona SEMPRE!)
+        async function uploadToCatbox() {
             const title = document.getElementById('videoTitle').value;
             const description = document.getElementById('videoDesc').value;
             const fileInput = document.getElementById('videoFile');
@@ -362,11 +370,12 @@
             updateProgress(0);
 
             const formData = new FormData();
-            formData.append('file', videoFile);
+            formData.append('fileToUpload', videoFile);
+            formData.append('reqtype', 'fileupload');
 
             try {
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'https://store1.gofile.io/uploadFile');
+                xhr.open('POST', 'https://catbox.moe/user/api.php');
                 
                 xhr.upload.onprogress = (e) => {
                     if (e.lengthComputable) {
@@ -377,10 +386,9 @@
 
                 xhr.onload = () => {
                     if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.status === 'ok') {
-                            const videoUrl = response.data.downloadPage;
-                            
+                        const videoUrl = xhr.responseText.trim();
+                        
+                        if (videoUrl.startsWith('https://')) {
                             const videoData = {
                                 id: Date.now(),
                                 title: title,
@@ -396,8 +404,11 @@
                             showMessage('✅ Vídeo publicado com sucesso!', 'success');
                             clearUploadForm();
                             loadVideos();
+                            
+                            // Mostrar link para copiar
+                            showLinkCopied(videoUrl);
                         } else {
-                            showMessage('Erro no upload', 'error');
+                            showMessage('Erro no upload: ' + videoUrl, 'error');
                         }
                     } else {
                         showMessage('Erro no upload. Tente novamente.', 'error');
@@ -406,7 +417,7 @@
                 };
 
                 xhr.onerror = () => {
-                    showMessage('Erro de rede. Tente novamente.', 'error');
+                    showMessage('Erro de conexão. Tente novamente.', 'error');
                     document.getElementById('progressBar').style.display = 'none';
                 };
 
@@ -416,6 +427,14 @@
                 showMessage('Erro: ' + error.message, 'error');
                 document.getElementById('progressBar').style.display = 'none';
             }
+        }
+
+        function showLinkCopied(url) {
+            const div = document.createElement('div');
+            div.className = 'link-copied';
+            div.innerHTML = `✅ Vídeo publicado! Link: <a href="${url}" target="_blank" style="color:white;">${url.substring(0, 50)}...</a>`;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 5000);
         }
 
         function updateProgress(percent) {
@@ -505,5 +524,4 @@
     </script>
 </body>
 </html>
-
 
