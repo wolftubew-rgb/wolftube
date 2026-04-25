@@ -129,13 +129,12 @@
         }
         .hidden { display: none; }
         .alert {
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            text-align: center;
             position: fixed;
             top: 20px;
             right: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
             z-index: 999;
             animation: slideIn 0.3s ease;
         }
@@ -222,7 +221,6 @@
     <script>
         let currentUser = null;
 
-        // Verificação de idade
         function verifyAge(hasAge) {
             if (hasAge) {
                 localStorage.setItem('ageVerified', 'true');
@@ -236,7 +234,6 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // Sistema de usuários
         function loadUsers() {
             if (!localStorage.getItem('wolftube_users')) {
                 localStorage.setItem('wolftube_users', JSON.stringify([
@@ -339,7 +336,6 @@
             }
         }
 
-        // Upload para GoFile (funciona 100%)
         async function uploadToGoFile() {
             const title = document.getElementById('videoTitle').value;
             const description = document.getElementById('videoDesc').value;
@@ -369,7 +365,6 @@
             formData.append('file', videoFile);
 
             try {
-                // Primeiro, faz o upload
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'https://store1.gofile.io/uploadFile');
                 
@@ -386,7 +381,6 @@
                         if (response.status === 'ok') {
                             const videoUrl = response.data.downloadPage;
                             
-                            // Salvar vídeo
                             const videoData = {
                                 id: Date.now(),
                                 title: title,
@@ -403,7 +397,7 @@
                             clearUploadForm();
                             loadVideos();
                         } else {
-                            showMessage('Erro no upload: ' + response.status, 'error');
+                            showMessage('Erro no upload', 'error');
                         }
                     } else {
                         showMessage('Erro no upload. Tente novamente.', 'error');
@@ -438,7 +432,6 @@
             setTimeout(() => messageDiv.remove(), 3000);
         }
 
-        // Gerenciamento de vídeos
         function saveVideo(video) {
             let videos = JSON.parse(localStorage.getItem('wolftube_videos') || '[]');
             videos.unshift(video);
@@ -503,7 +496,6 @@
             return div.innerHTML;
         }
 
-        // Inicialização
         const savedUser = localStorage.getItem('wolftube_currentUser');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
@@ -513,3 +505,6 @@
     </script>
 </body>
 </html>
+
+
+
