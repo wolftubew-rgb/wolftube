@@ -400,7 +400,7 @@
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
 
-        // 🔥 SUAS CONFIGURAÇÕES DO FIREBASE (já estão certas)
+        // 🔥 SUAS CONFIGURAÇÕES DO FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -410,7 +410,6 @@
             appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         let currentUser = null;
@@ -586,7 +585,7 @@
                 const videos = [];
                 snapshot.forEach(doc => {
                     videos.push({ 
-                        docId: doc.id,  // GUARDA O ID DO DOCUMENTO
+                        docId: doc.id,
                         ...doc.data() 
                     });
                 });
@@ -642,11 +641,9 @@
                 const videoData = video.data();
                 console.log('Dados do vídeo:', videoData);
                 
-                // Atualizar views
                 const views = (videoData.views || 0) + 1;
                 await videoRef.update({ views: views });
                 
-                // Preencher modal
                 document.getElementById('modalVideoTitle').textContent = videoData.title || 'Sem título';
                 document.getElementById('modalAuthor').textContent = videoData.author || 'Desconhecido';
                 document.getElementById('modalViews').textContent = views;
@@ -730,7 +727,6 @@
             return div.innerHTML;
         }
 
-        // Inicialização
         const savedUser = localStorage.getItem('wolftube_currentUser');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
@@ -740,7 +736,6 @@
     </script>
 </body>
 </html>
-
 
 
 
