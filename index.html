@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Vídeos com Capa da Galeria</title>
-    <!-- Firebase SDK -->
+    <title>WolfTube - Vídeos com Capa</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -401,7 +399,21 @@
     <script>
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
-        let currentVideoId = null;
+
+        // 🔥 SUAS CONFIGURAÇÕES DO FIREBASE (já estão certas)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
+            authDomain: "wolftube-56e62.firebaseapp.com",
+            projectId: "wolftube-56e62",
+            storageBucket: "wolftube-56e62.firebasestorage.app",
+            messagingSenderId: "251733558803",
+            appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let currentUser = null;
 
         function previewThumbnail(input) {
             if (input.files && input.files[0]) {
@@ -421,19 +433,6 @@
             document.getElementById('thumbnailPreview').src = '';
             document.getElementById('thumbnailInput').value = '';
         }
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
-            authDomain: "wolftube-56e62.firebaseapp.com",
-            projectId: "wolftube-56e62",
-            storageBucket: "wolftube-56e62.firebasestorage.app",
-            messagingSenderId: "251733558803",
-            appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        let currentUser = null;
 
         function verifyAge(hasAge) {
             if (hasAge) {
@@ -557,7 +556,6 @@
             }
             
             const novoVideo = {
-                id: Date.now(),
                 title: title,
                 url: embedUrl,
                 thumbnail: currentThumbnailBase64 || '',
@@ -586,7 +584,12 @@
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
-                snapshot.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
+                snapshot.forEach(doc => {
+                    videos.push({ 
+                        docId: doc.id,  // GUARDA O ID DO DOCUMENTO
+                        ...doc.data() 
+                    });
+                });
                 exibirVideos(videos);
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
                 setTimeout(() => {
@@ -606,7 +609,7 @@
             }
             
             grid.innerHTML = videos.map(video => `
-                <div class="video-card" onclick="openVideoModal('${video.id}')">
+                <div class="video-card" onclick="openVideoModal('${video.docId}')">
                     <div class="video-thumbnail" style="background-image: url('${video.thumbnail || 'https://via.placeholder.com/320x200/ff4757/ffffff?text=WolfTube'}');">
                         ${!video.thumbnail ? '<i class="fas fa-play-circle"></i>' : ''}
                     </div>
@@ -617,7 +620,7 @@
                             <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
                         </div>
                         ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
-                            `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.id}')">
+                            `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.docId}')">
                                 <i class="fas fa-trash"></i> Excluir
                             </button>` : ''}
                     </div>
@@ -625,9 +628,10 @@
             `).join('');
         }
 
-        async function openVideoModal(videoId) {
+        async function openVideoModal(docId) {
             try {
-                const videoRef = db.collection('videos').doc(videoId);
+                console.log('Abrindo vídeo com ID:', docId);
+                const videoRef = db.collection('videos').doc(docId);
                 const video = await videoRef.get();
                 
                 if (!video.exists) {
@@ -636,7 +640,7 @@
                 }
                 
                 const videoData = video.data();
-                currentVideoId = videoId;
+                console.log('Dados do vídeo:', videoData);
                 
                 // Atualizar views
                 const views = (videoData.views || 0) + 1;
@@ -697,13 +701,12 @@
             iframe.style.display = 'none';
             playOverlay.style.display = 'flex';
             currentVideoUrl = null;
-            currentVideoId = null;
         }
 
-        async function deleteVideo(videoId) {
+        async function deleteVideo(docId) {
             if (confirm('Excluir este vídeo?')) {
                 try {
-                    await db.collection('videos').doc(videoId).delete();
+                    await db.collection('videos').doc(docId).delete();
                     showMessage('Vídeo excluído!', 'success');
                     carregarVideos();
                 } catch (error) {
