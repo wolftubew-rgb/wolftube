@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* Header Estilizado */
         .header {
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
@@ -98,18 +97,12 @@
             color: white;
         }
 
-        .btn-warning {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-        }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 30px;
         }
 
-        /* Área de Upload Melhorada */
         .upload-area {
             background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(0,184,148,0.1));
             border-radius: 20px;
@@ -154,6 +147,63 @@
             background: white;
         }
 
+        /* Upload de Imagem da Galeria */
+        .thumbnail-upload {
+            border: 2px dashed rgba(255,71,87,0.5);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .thumbnail-upload:hover {
+            border-color: #ff4757;
+            background: rgba(255,71,87,0.1);
+        }
+
+        .thumbnail-upload i {
+            font-size: 48px;
+            color: #ff4757;
+            margin-bottom: 10px;
+        }
+
+        .thumbnail-upload p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .thumbnail-preview {
+            margin-top: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .thumbnail-preview img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 10px;
+            border: 2px solid #ff4757;
+        }
+
+        .remove-thumbnail {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ff4757;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            color: white;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .help-text {
             font-size: 12px;
             color: rgba(255,255,255,0.7);
@@ -164,7 +214,6 @@
             margin-right: 5px;
         }
 
-        /* Grid de Vídeos */
         .videos-header {
             display: flex;
             justify-content: space-between;
@@ -197,7 +246,6 @@
             margin-top: 20px;
         }
 
-        /* Card de Vídeo Melhorado */
         .video-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -263,7 +311,6 @@
             width: 20px;
         }
 
-        /* Modal do Vídeo (Player) */
         .video-modal {
             position: fixed;
             top: 0;
@@ -321,7 +368,7 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             background: #000;
         }
 
@@ -345,7 +392,6 @@
             color: rgba(255,255,255,0.8);
         }
 
-        /* Modais Melhorados */
         .modal {
             position: fixed;
             top: 0;
@@ -396,7 +442,6 @@
             display: none;
         }
 
-        /* Alertas */
         .alert {
             position: fixed;
             top: 80px;
@@ -422,7 +467,6 @@
             color: white;
         }
 
-        /* Botão de excluir no card */
         .delete-btn {
             margin-top: 10px;
             width: 100%;
@@ -430,21 +474,6 @@
             font-size: 12px;
         }
 
-        /* Preview da imagem */
-        .image-preview {
-            margin-top: 10px;
-            max-width: 100%;
-            border-radius: 10px;
-            display: none;
-        }
-
-        .image-preview img {
-            max-width: 100%;
-            border-radius: 10px;
-            max-height: 150px;
-        }
-
-        /* Animações */
         @keyframes slideInRight {
             from {
                 transform: translateX(100%);
@@ -465,7 +494,6 @@
             }
         }
 
-        /* Scrollbar Personalizada */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -479,11 +507,6 @@
             border-radius: 5px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff6b81;
-        }
-
-        /* Responsividade */
         @media (max-width: 768px) {
             .header {
                 padding: 15px;
@@ -535,13 +558,16 @@
                 <input type="text" id="videoTitle" placeholder="Ex: Gameplay Incrível #shorts">
             </div>
             <div class="form-group">
-                <label><i class="fas fa-image"></i> URL da Thumbnail (Foto de capa)</label>
-                <input type="text" id="videoThumbnail" placeholder="https://exemplo.com/minha-foto.jpg">
-                <div class="help-text">
-                    <i class="fas fa-info-circle"></i> Cole o link de uma imagem para ser a capa do vídeo!
+                <label><i class="fas fa-images"></i> Thumbnail (Capa do Vídeo)</label>
+                <div class="thumbnail-upload" onclick="document.getElementById('thumbnailInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Clique para escolher uma imagem da galeria</p>
+                    <p style="font-size: 12px; opacity: 0.7;">JPG, PNG, GIF até 5MB</p>
                 </div>
-                <div class="image-preview" id="imagePreview">
-                    <img id="previewImg" src="" alt="Preview">
+                <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="previewThumbnail(this)">
+                <div id="thumbnailPreviewContainer" style="display: none;" class="thumbnail-preview">
+                    <img id="thumbnailPreview" src="" alt="Preview">
+                    <button class="remove-thumbnail" onclick="removeThumbnail()">✕</button>
                 </div>
             </div>
             <div class="form-group">
@@ -573,129 +599,107 @@
         <div class="videos-grid" id="videosGrid"></div>
     </div>
 
-    <!-- Modal de Verificação de Idade -->
+    <!-- Modais -->
     <div class="modal" id="ageModal">
         <div class="modal-content">
             <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757; margin-bottom: 20px;"></i>
             <h2>🔞 Verificação de Idade</h2>
-            <p>Este site contém conteúdo para maiores de 18 anos.</p>
-            <p style="margin: 20px 0;">Você tem 18 anos ou mais?</p>
-            <button class="btn-primary" onclick="verifyAge(true)">
-                <i class="fas fa-check"></i> SIM, tenho 18+
-            </button>
-            <button class="btn-danger" onclick="verifyAge(false)" style="margin-left: 10px;">
-                <i class="fas fa-times"></i> NÃO
-            </button>
+            <p>Você tem 18 anos ou mais?</p>
+            <button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button>
+            <button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button>
         </div>
     </div>
 
-    <!-- Modal de Login -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
-            <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757; margin-bottom: 20px;"></i>
+            <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
             <h2>Login</h2>
-            <input type="email" id="loginEmail" placeholder="seu@email.com">
-            <input type="password" id="loginPassword" placeholder="••••••••">
-            <div>
-                <button class="btn-primary" onclick="doLogin()">
-                    <i class="fas fa-sign-in-alt"></i> Entrar
-                </button>
-                <button class="btn-secondary" onclick="closeLoginModal()">
-                    <i class="fas fa-times"></i> Fechar
-                </button>
-            </div>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Senha">
+            <button class="btn-primary" onclick="doLogin()">Entrar</button>
+            <button class="btn-secondary" onclick="closeLoginModal()">Fechar</button>
         </div>
     </div>
 
-    <!-- Modal de Cadastro -->
     <div class="modal hidden" id="registerModal">
         <div class="login-box">
-            <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894; margin-bottom: 20px;"></i>
-            <h2>Criar Conta</h2>
-            <input type="text" id="regName" placeholder="Seu nome">
-            <input type="email" id="regEmail" placeholder="seu@email.com">
-            <input type="password" id="regPassword" placeholder="••••••••">
+            <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
+            <h2>Cadastro</h2>
+            <input type="text" id="regName" placeholder="Nome">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Senha">
             <select id="regType">
-                <option value="user">📱 Usuário Comum</option>
-                <option value="creator">🎬 Criador de Conteúdo</option>
+                <option value="user">Usuário Comum</option>
+                <option value="creator">Criador</option>
             </select>
-            <div>
-                <button class="btn-primary" onclick="doRegister()">
-                    <i class="fas fa-check"></i> Cadastrar
-                </button>
-                <button class="btn-secondary" onclick="closeRegisterModal()">
-                    <i class="fas fa-times"></i> Fechar
-                </button>
-            </div>
+            <button class="btn-primary" onclick="doRegister()">Cadastrar</button>
+            <button class="btn-secondary" onclick="closeRegisterModal()">Fechar</button>
         </div>
     </div>
 
-    <!-- Modal do Vídeo (Player) -->
     <div id="videoPlayerModal" class="video-modal hidden">
         <div class="video-container">
             <div class="video-header">
-                <h3 id="modalVideoTitle">Título do Vídeo</h3>
+                <h3 id="modalVideoTitle">Título</h3>
                 <button class="close-video" onclick="closeVideoModal()">✕</button>
             </div>
             <div class="video-wrapper">
-                <iframe id="videoIframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
                 <img id="videoThumbnailImg" src="" alt="Thumbnail" style="display: none;">
             </div>
             <div class="video-info-modal">
                 <p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p>
                 <p><i class="fas fa-calendar"></i> <span id="modalDate"></span></p>
-                <p><i class="fas fa-eye"></i> <span id="modalViews"></span> visualizações</p>
+                <p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p>
                 <p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p>
             </div>
         </div>
     </div>
 
     <script>
-        // Preview da imagem
-        document.getElementById('videoThumbnail').addEventListener('input', function() {
-            const url = this.value;
-            const preview = document.getElementById('imagePreview');
-            const img = document.getElementById('previewImg');
-            
-            if (url && (url.startsWith('http') || url.startsWith('https'))) {
-                img.src = url;
-                preview.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
-            }
-        });
+        let currentThumbnailBase64 = null;
 
-        // Configuração do Firebase
+        function previewThumbnail(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    currentThumbnailBase64 = e.target.result;
+                    document.getElementById('thumbnailPreview').src = currentThumbnailBase64;
+                    document.getElementById('thumbnailPreviewContainer').style.display = 'inline-block';
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeThumbnail() {
+            currentThumbnailBase64 = null;
+            document.getElementById('thumbnailPreviewContainer').style.display = 'none';
+            document.getElementById('thumbnailPreview').src = '';
+            document.getElementById('thumbnailInput').value = '';
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
             projectId: "wolftube-56e62",
             storageBucket: "wolftube-56e62.firebasestorage.app",
             messagingSenderId: "251733558803",
-            appId: "1:251733558803:web:e0be0827bafa6d8b6421e6",
-            measurementId: "G-ZQE3RL47RH"
+            appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
         let currentUser = null;
-        let currentVideoData = null;
 
         function verifyAge(hasAge) {
             if (hasAge) {
                 localStorage.setItem('ageVerified', 'true');
                 document.getElementById('ageModal').style.display = 'none';
-                showMessage('Bem-vindo ao WolfTube!', 'success');
             } else {
-                document.body.innerHTML = `
-                    <div style="text-align:center;padding:50px;">
-                        <i class="fas fa-ban" style="font-size: 64px; color: #ff4757;"></i>
-                        <h1 style="margin-top: 20px;">🔞 Acesso negado</h1>
-                        <p>Você não tem idade suficiente para acessar este conteúdo.</p>
-                    </div>
-                `;
+                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>🔞 Acesso negado</h1></div>';
             }
         }
 
@@ -706,7 +710,7 @@
         function loadUsers() {
             if (!localStorage.getItem('wolftube_users')) {
                 localStorage.setItem('wolftube_users', JSON.stringify([
-                    { email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Administrador', type: 'admin' }
+                    { email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Admin', type: 'admin' }
                 ]));
             }
         }
@@ -739,7 +743,7 @@
                 localStorage.setItem('wolftube_currentUser', JSON.stringify(user));
                 updateUI();
                 closeLoginModal();
-                showMessage(`Bem-vindo de volta, ${user.name}! 🎉`, 'success');
+                showMessage(`Bem-vindo, ${user.name}!`, 'success');
             } else {
                 showMessage('Email ou senha incorretos!', 'error');
             }
@@ -764,7 +768,7 @@
             
             users.push({ name, email, password, type });
             localStorage.setItem('wolftube_users', JSON.stringify(users));
-            showMessage('Cadastro realizado com sucesso! Faça login.', 'success');
+            showMessage('Cadastro realizado! Faça login.', 'success');
             closeRegisterModal();
         }
 
@@ -782,20 +786,16 @@
             }
             
             if (currentUser) {
-                const buttons = document.querySelectorAll('.nav-buttons button');
-                buttons.forEach(btn => {
+                document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
                 
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
-                } else {
-                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
-                const buttons = document.querySelectorAll('.nav-buttons button');
-                buttons.forEach(btn => {
+                document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
                 });
                 document.getElementById('logoutBtn').style.display = 'none';
@@ -807,7 +807,6 @@
             const title = document.getElementById('videoTitle').value;
             let url = document.getElementById('videoUrl').value;
             const description = document.getElementById('videoDesc').value;
-            const thumbnail = document.getElementById('videoThumbnail').value;
             
             if (!title || !url) {
                 showMessage('Preencha título e link do vídeo!', 'error');
@@ -836,7 +835,7 @@
                 id: Date.now(),
                 title: title,
                 url: embedUrl,
-                thumbnail: thumbnail || '',
+                thumbnail: currentThumbnailBase64 || '',
                 description: description || 'Sem descrição',
                 author: currentUser.name,
                 authorEmail: currentUser.email,
@@ -850,8 +849,7 @@
                 document.getElementById('videoTitle').value = '';
                 document.getElementById('videoUrl').value = '';
                 document.getElementById('videoDesc').value = '';
-                document.getElementById('videoThumbnail').value = '';
-                document.getElementById('imagePreview').style.display = 'none';
+                removeThumbnail();
                 carregarVideos();
             } catch (error) {
                 showMessage('Erro ao publicar: ' + error.message, 'error');
@@ -881,12 +879,7 @@
             const grid = document.getElementById('videosGrid');
             
             if (!videos || videos.length === 0) {
-                grid.innerHTML = `
-                    <div style="text-align:center; padding: 50px;">
-                        <i class="fas fa-film" style="font-size: 64px; opacity: 0.5;"></i>
-                        <p style="margin-top: 20px;">🎬 Nenhum vídeo ainda. Seja o primeiro a postar!</p>
-                    </div>
-                `;
+                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda. Seja o primeiro a postar!</p>';
                 return;
             }
             
@@ -917,11 +910,9 @@
                 const video = await videoRef.get();
                 const videoData = video.data();
                 
-                // Atualizar views
                 const views = (videoData.views || 0) + 1;
                 await videoRef.update({ views: views });
                 
-                // Preencher modal
                 document.getElementById('modalVideoTitle').textContent = videoData.title;
                 document.getElementById('modalAuthor').textContent = videoData.author;
                 document.getElementById('modalDate').textContent = new Date(videoData.date).toLocaleDateString('pt-BR');
@@ -932,19 +923,15 @@
                 const thumbnailImg = document.getElementById('videoThumbnailImg');
                 
                 if (videoData.thumbnail) {
-                    // Se tem thumbnail, mostra a imagem primeiro
                     thumbnailImg.style.display = 'block';
                     iframe.style.display = 'none';
                     thumbnailImg.src = videoData.thumbnail;
-                    
-                    // Clica na imagem para tocar o vídeo
                     thumbnailImg.onclick = () => {
                         thumbnailImg.style.display = 'none';
                         iframe.style.display = 'block';
                         iframe.src = videoData.url;
                     };
                 } else {
-                    // Sem thumbnail, mostra o iframe direto
                     thumbnailImg.style.display = 'none';
                     iframe.style.display = 'block';
                     iframe.src = videoData.url;
@@ -972,7 +959,7 @@
             if (confirm('Tem certeza que quer excluir este vídeo?')) {
                 try {
                     await db.collection('videos').doc(videoId).delete();
-                    showMessage('Vídeo excluído com sucesso!', 'success');
+                    showMessage('Vídeo excluído!', 'success');
                     carregarVideos();
                 } catch (error) {
                     showMessage('Erro ao excluir: ' + error.message, 'error');
@@ -983,8 +970,7 @@
         function showMessage(msg, type) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `alert ${type}`;
-            const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
-            messageDiv.innerHTML = `${icon} ${msg}`;
+            messageDiv.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
             document.body.appendChild(messageDiv);
             setTimeout(() => messageDiv.remove(), 3000);
         }
@@ -996,7 +982,6 @@
             return div.innerHTML;
         }
 
-        // Inicialização
         const savedUser = localStorage.getItem('wolftube_currentUser');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
