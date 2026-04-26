@@ -205,6 +205,7 @@
             width: 100%;
             padding-bottom: 56.25%;
             background: #000;
+            cursor: pointer;
         }
         .video-wrapper iframe,
         .video-wrapper img {
@@ -215,6 +216,23 @@
             height: 100%;
             border: none;
             object-fit: contain;
+        }
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        .play-overlay i {
+            font-size: 64px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .video-info-modal { padding: 20px; }
         .video-info-modal p { margin: 5px 0; color: rgba(255,255,255,0.8); }
@@ -365,9 +383,12 @@
                 <h3 id="modalVideoTitle">Título</h3>
                 <button class="close-video" onclick="closeVideoModal()">✕</button>
             </div>
-            <div class="video-wrapper">
-                <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
-                <img id="videoThumbnailImg" src="" style="display: none;" onclick="playVideo()">
+            <div class="video-wrapper" id="videoWrapper">
+                <img id="videoThumbnailImg" src="" style="display: block;">
+                <div class="play-overlay" id="playOverlay" onclick="playVideo()">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <iframe id="videoIframe" src="" frameborder="0" allowfullscreen style="display: none;"></iframe>
             </div>
             <div class="video-info-modal">
                 <p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p>
@@ -380,6 +401,7 @@
     <script>
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
+        let currentVideoId = null;
 
         function previewThumbnail(input) {
             if (input.files && input.files[0]) {
@@ -614,6 +636,7 @@
                 }
                 
                 const videoData = video.data();
+                currentVideoId = videoId;
                 
                 // Atualizar views
                 const views = (videoData.views || 0) + 1;
@@ -625,20 +648,22 @@
                 document.getElementById('modalViews').textContent = views;
                 document.getElementById('modalDescription').textContent = videoData.description || 'Sem descrição';
                 
-                const iframe = document.getElementById('videoIframe');
                 const thumbnailImg = document.getElementById('videoThumbnailImg');
+                const iframe = document.getElementById('videoIframe');
+                const playOverlay = document.getElementById('playOverlay');
+                
                 currentVideoUrl = videoData.url;
                 
                 if (videoData.thumbnail && videoData.thumbnail !== '') {
-                    // Mostra a thumbnail primeiro
                     thumbnailImg.style.display = 'block';
-                    iframe.style.display = 'none';
                     thumbnailImg.src = videoData.thumbnail;
+                    iframe.style.display = 'none';
+                    playOverlay.style.display = 'flex';
                 } else {
-                    // Sem thumbnail, mostra o vídeo direto
                     thumbnailImg.style.display = 'none';
                     iframe.style.display = 'block';
                     iframe.src = videoData.url;
+                    playOverlay.style.display = 'none';
                 }
                 
                 document.getElementById('videoPlayerModal').classList.remove('hidden');
@@ -650,11 +675,13 @@
         }
 
         function playVideo() {
-            const iframe = document.getElementById('videoIframe');
             const thumbnailImg = document.getElementById('videoThumbnailImg');
+            const iframe = document.getElementById('videoIframe');
+            const playOverlay = document.getElementById('playOverlay');
             
             thumbnailImg.style.display = 'none';
             iframe.style.display = 'block';
+            playOverlay.style.display = 'none';
             iframe.src = currentVideoUrl;
         }
 
@@ -662,12 +689,15 @@
             document.getElementById('videoPlayerModal').classList.add('hidden');
             const iframe = document.getElementById('videoIframe');
             const thumbnailImg = document.getElementById('videoThumbnailImg');
+            const playOverlay = document.getElementById('playOverlay');
             
             iframe.src = '';
             thumbnailImg.src = '';
             thumbnailImg.style.display = 'block';
             iframe.style.display = 'none';
+            playOverlay.style.display = 'flex';
             currentVideoUrl = null;
+            currentVideoId = null;
         }
 
         async function deleteVideo(videoId) {
