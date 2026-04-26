@@ -400,7 +400,6 @@
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
 
-        // 🔥 SUAS CONFIGURAÇÕES DO FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -554,6 +553,7 @@
                 if (fileId) embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
             }
             
+            // 🔥 CORREÇÃO: Removi o campo 'id' - deixa o Firebase gerar automaticamente!
             const novoVideo = {
                 title: title,
                 url: embedUrl,
