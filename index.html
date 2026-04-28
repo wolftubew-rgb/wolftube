@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Vídeos da Galeria</title>
-    <!-- Firebase SDK -->
+    <title>WolfTube - Vídeos Seguro</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <!-- Font Awesome -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,7 +57,6 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
-        .btn-success { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         .upload-area {
             background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(0,184,148,0.1));
@@ -79,7 +77,6 @@
             font-size: 16px;
             background: rgba(255,255,255,0.9);
         }
-        /* Upload de Vídeo */
         .video-upload {
             border: 2px dashed rgba(255,71,87,0.5);
             border-radius: 15px;
@@ -91,17 +88,8 @@
         }
         .video-upload:hover { border-color: #ff4757; background: rgba(255,71,87,0.1); }
         .video-upload i { font-size: 48px; color: #ff4757; margin-bottom: 10px; }
-        .video-preview {
-            margin-top: 15px;
-            position: relative;
-            display: inline-block;
-        }
-        .video-preview video {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 10px;
-            border: 2px solid #ff4757;
-        }
+        .video-preview { margin-top: 15px; position: relative; display: inline-block; }
+        .video-preview video { max-width: 100%; max-height: 200px; border-radius: 10px; border: 2px solid #ff4757; }
         .remove-video {
             position: absolute;
             top: -10px;
@@ -115,7 +103,6 @@
             color: white;
             font-size: 12px;
         }
-        /* Upload de Thumbnail */
         .thumbnail-upload {
             border: 2px dashed rgba(255,71,87,0.5);
             border-radius: 15px;
@@ -128,13 +115,7 @@
         .thumbnail-upload:hover { border-color: #ff4757; background: rgba(255,71,87,0.1); }
         .thumbnail-upload i { font-size: 48px; color: #ff4757; margin-bottom: 10px; }
         .thumbnail-preview { margin-top: 15px; position: relative; display: inline-block; }
-        .thumbnail-preview img {
-            max-width: 200px;
-            max-height: 120px;
-            border-radius: 10px;
-            border: 2px solid #ff4757;
-            object-fit: cover;
-        }
+        .thumbnail-preview img { max-width: 200px; max-height: 120px; border-radius: 10px; border: 2px solid #ff4757; object-fit: cover; }
         .remove-thumbnail {
             position: absolute;
             top: -10px;
@@ -148,41 +129,11 @@
             color: white;
             font-size: 12px;
         }
-        .help-text { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px; }
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(135deg, #ff4757, #ff6b81);
-            border-radius: 5px;
-            transition: width 0.3s;
-        }
-        .videos-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .sync-status {
-            background: rgba(0,0,0,0.5);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-        }
+        .progress-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; margin-top: 10px; overflow: hidden; display: none; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(135deg, #ff4757, #ff6b81); border-radius: 5px; transition: width 0.3s; }
+        .videos-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+        .sync-status { background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 20px; font-size: 12px; }
+        .videos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
         .video-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -247,13 +198,7 @@
             align-items: center;
         }
         .video-header h3 { color: #ff4757; }
-        .close-video {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: white;
-        }
+        .close-video { background: none; border: none; font-size: 28px; cursor: pointer; color: white; }
         .video-wrapper {
             position: relative;
             width: 100%;
@@ -261,7 +206,6 @@
             background: #000;
             cursor: pointer;
         }
-        .video-wrapper iframe,
         .video-wrapper video,
         .video-wrapper img {
             position: absolute;
@@ -284,11 +228,7 @@
             background: rgba(0,0,0,0.3);
             z-index: 10;
         }
-        .play-overlay i {
-            font-size: 64px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
+        .play-overlay i { font-size: 64px; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         .video-info-modal { padding: 20px; }
         .video-info-modal p { margin: 5px 0; color: rgba(255,255,255,0.8); }
         .modal {
@@ -312,13 +252,7 @@
             max-width: 450px;
             text-align: center;
         }
-        .login-box input, .login-box select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 10px;
-        }
+        .login-box input, .login-box select { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 10px; }
         .hidden { display: none; }
         .alert {
             position: fixed;
@@ -331,24 +265,14 @@
         }
         .success { background: #00b894; color: white; }
         .error { background: #ff4757; color: white; }
-        .loading { background: #f39c12; color: white; }
         .delete-btn { margin-top: 10px; width: 100%; padding: 8px; font-size: 12px; }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .videos-grid { grid-template-columns: 1fr; }
-        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @media (max-width: 768px) { .container { padding: 15px; } .videos-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">
-            <i class="fas fa-wolf-pack-battalion"></i>
-            <span>Wolf</span><span>Tube</span>
-        </div>
+        <div class="logo"><i class="fas fa-wolf-pack-battalion"></i><span>Wolf</span><span>Tube</span></div>
         <div class="nav-buttons">
             <button class="btn-primary" onclick="showLoginModal()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
             <button class="btn-secondary" onclick="showRegisterModal()"><i class="fas fa-user-plus"></i> Cadastrar</button>
@@ -367,23 +291,20 @@
                 <label><i class="fas fa-video"></i> Vídeo (da galeria)</label>
                 <div class="video-upload" onclick="document.getElementById('videoInput').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <p>📱 Clique aqui para escolher um vídeo da galeria</p>
-                    <p style="font-size: 12px;">MP4, MOV, AVI até 100MB</p>
+                    <p>📱 Clique para escolher um vídeo da galeria</p>
                 </div>
                 <input type="file" id="videoInput" accept="video/*" style="display: none;" onchange="previewVideo(this)">
                 <div id="videoPreviewContainer" style="display: none;" class="video-preview">
                     <video id="videoPreview" controls></video>
                     <button class="remove-video" onclick="removeVideo()">✕</button>
                 </div>
-                <div class="progress-bar" id="progressBar" style="display: none;">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+                <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
             </div>
             <div class="form-group">
-                <label><i class="fas fa-images"></i> Capa do Vídeo (opcional)</label>
+                <label><i class="fas fa-images"></i> Capa (opcional)</label>
                 <div class="thumbnail-upload" onclick="document.getElementById('thumbnailInput').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <p>📸 Clique para escolher uma foto da galeria (capa)</p>
+                    <p>📸 Clique para escolher uma foto (capa)</p>
                 </div>
                 <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="previewThumbnail(this)">
                 <div id="thumbnailPreviewContainer" style="display: none;" class="thumbnail-preview">
@@ -449,11 +370,9 @@
                 <h3 id="modalVideoTitle">Título</h3>
                 <button class="close-video" onclick="closeVideoModal()">✕</button>
             </div>
-            <div class="video-wrapper" id="videoWrapper">
+            <div class="video-wrapper">
                 <img id="videoThumbnailImg" src="" style="display: block;">
-                <div class="play-overlay" id="playOverlay" onclick="playVideo()">
-                    <i class="fas fa-play-circle"></i>
-                </div>
+                <div class="play-overlay" id="playOverlay" onclick="playVideo()"><i class="fas fa-play-circle"></i></div>
                 <video id="videoPlayer" src="" controls style="display: none;"></video>
             </div>
             <div class="video-info-modal">
@@ -468,6 +387,7 @@
         let currentThumbnailBase64 = null;
         let currentVideoFile = null;
         let currentVideoUrl = null;
+        let currentUser = null;
 
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
@@ -481,14 +401,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const storage = firebase.storage();
-        let currentUser = null;
+        const auth = firebase.auth();
 
         function previewVideo(input) {
             if (input.files && input.files[0]) {
                 currentVideoFile = input.files[0];
                 const videoURL = URL.createObjectURL(currentVideoFile);
-                const videoPreview = document.getElementById('videoPreview');
-                videoPreview.src = videoURL;
+                document.getElementById('videoPreview').src = videoURL;
                 document.getElementById('videoPreviewContainer').style.display = 'inline-block';
             }
         }
@@ -532,79 +451,60 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        function loadUsers() {
-            if (!localStorage.getItem('wolftube_users')) {
-                localStorage.setItem('wolftube_users', JSON.stringify([
-                    { email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Admin', type: 'admin' }
-                ]));
-            }
-        }
-        loadUsers();
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            updateUI();
+        });
 
         function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
         function showRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
         function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
 
-        function doLogin() {
+        async function doLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            const users = JSON.parse(localStorage.getItem('wolftube_users'));
-            const user = users.find(u => u.email === email && u.password === password);
-            
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('wolftube_currentUser', JSON.stringify(user));
-                updateUI();
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showMessage('Login realizado!', 'success');
                 closeLoginModal();
-                showMessage(`Bem-vindo, ${user.name}!`, 'success');
-            } else {
-                showMessage('Email ou senha incorretos!', 'error');
+            } catch (error) {
+                showMessage('Erro: ' + error.message, 'error');
             }
         }
 
-        function doRegister() {
+        async function doRegister() {
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
             const type = document.getElementById('regType').value;
             
-            if (!name || !email || !password) {
-                showMessage('Preencha todos os campos!', 'error');
-                return;
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    name: name,
+                    email: email,
+                    type: type
+                });
+                showMessage('Cadastro realizado!', 'success');
+                closeRegisterModal();
+            } catch (error) {
+                showMessage('Erro: ' + error.message, 'error');
             }
-            
-            const users = JSON.parse(localStorage.getItem('wolftube_users'));
-            if (users.find(u => u.email === email)) {
-                showMessage('Email já cadastrado!', 'error');
-                return;
-            }
-            
-            users.push({ name, email, password, type });
-            localStorage.setItem('wolftube_users', JSON.stringify(users));
-            showMessage('Cadastro realizado! Faça login.', 'success');
-            closeRegisterModal();
         }
 
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('wolftube_currentUser');
-            updateUI();
+        async function logout() {
+            await auth.signOut();
             showMessage('Você saiu da conta.', 'success');
         }
 
         function updateUI() {
-            const saved = localStorage.getItem('wolftube_currentUser');
-            if (saved) currentUser = JSON.parse(saved);
-            
             if (currentUser) {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
-                if (currentUser.type === 'creator' || currentUser.type === 'admin') {
-                    document.getElementById('uploadArea').style.display = 'block';
-                }
+                document.getElementById('uploadArea').style.display = 'block';
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
@@ -623,8 +523,8 @@
                 return;
             }
             
-            if (!currentUser || (currentUser.type !== 'creator' && currentUser.type !== 'admin')) {
-                showMessage('Apenas criadores podem postar vídeos!', 'error');
+            if (!currentUser) {
+                showMessage('Faça login primeiro!', 'error');
                 return;
             }
             
@@ -633,9 +533,8 @@
             publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             
             try {
-                // Upload do vídeo para Firebase Storage
                 const videoId = Date.now();
-                const videoRef = storage.ref(`videos/${videoId}_${currentVideoFile.name}`);
+                const videoRef = storage.ref(`videos/${currentUser.uid}/${videoId}_${currentVideoFile.name}`);
                 const uploadTask = videoRef.put(currentVideoFile);
                 
                 document.getElementById('progressBar').style.display = 'block';
@@ -653,20 +552,21 @@
                 
                 const videoURL = await snapshot.ref.getDownloadURL();
                 
-                // Salvar no Firestore
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                const userName = userDoc.exists ? userDoc.data().name : currentUser.email;
+                
                 const novoVideo = {
                     title: title,
                     url: videoURL,
                     thumbnail: currentThumbnailBase64 || '',
                     description: description || 'Sem descrição',
-                    author: currentUser.name,
-                    authorEmail: currentUser.email,
+                    author: userName,
+                    authorId: currentUser.uid,
                     date: new Date().toISOString(),
                     views: 0
                 };
                 
                 await db.collection('videos').add(novoVideo);
-                
                 showMessage('✅ Vídeo publicado!', 'success');
                 document.getElementById('videoTitle').value = '';
                 document.getElementById('videoDesc').value = '';
@@ -675,9 +575,9 @@
                 document.getElementById('progressFill').style.width = '0%';
                 document.getElementById('progressBar').style.display = 'none';
                 carregarVideos();
-                
             } catch (error) {
-                showMessage('Erro ao publicar: ' + error.message, 'error');
+                showMessage('Erro: ' + error.message, 'error');
+                document.getElementById('progressBar').style.display = 'none';
             } finally {
                 publishBtn.disabled = false;
                 publishBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
@@ -689,12 +589,7 @@
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
-                snapshot.forEach(doc => {
-                    videos.push({ 
-                        docId: doc.id,
-                        ...doc.data() 
-                    });
-                });
+                snapshot.forEach(doc => { videos.push({ docId: doc.id, ...doc.data() }); });
                 exibirVideos(videos);
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
                 setTimeout(() => {
@@ -702,7 +597,6 @@
                 }, 2000);
             } catch (error) {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
-                console.error('Erro ao carregar:', error);
             }
         }
 
@@ -724,7 +618,7 @@
                             <div><i class="fas fa-user"></i> ${escapeHtml(video.author)}</div>
                             <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
                         </div>
-                        ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
+                        ${currentUser && (currentUser.uid === video.authorId) ? 
                             `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.docId}')">
                                 <i class="fas fa-trash"></i> Excluir
                             </button>` : ''}
@@ -744,7 +638,6 @@
                 }
                 
                 const videoData = video.data();
-                
                 const views = (videoData.views || 0) + 1;
                 await videoRef.update({ views: views });
                 
@@ -772,10 +665,8 @@
                 }
                 
                 document.getElementById('videoPlayerModal').classList.remove('hidden');
-                
             } catch (error) {
-                console.error('Erro detalhado:', error);
-                showMessage('Erro ao carregar vídeo: ' + error.message, 'error');
+                showMessage('Erro ao carregar vídeo', 'error');
             }
         }
 
@@ -821,7 +712,7 @@
         function showMessage(msg, type) {
             const div = document.createElement('div');
             div.className = `alert ${type}`;
-            div.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'loading' ? 'fa-spinner fa-spin' : 'fa-exclamation-circle'}"></i> ${msg}`;
+            div.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
             document.body.appendChild(div);
             setTimeout(() => div.remove(), 3000);
         }
@@ -833,11 +724,6 @@
             return div.innerHTML;
         }
 
-        const savedUser = localStorage.getItem('wolftube_currentUser');
-        if (savedUser) {
-            currentUser = JSON.parse(savedUser);
-            updateUI();
-        }
         carregarVideos();
     </script>
 </body>
