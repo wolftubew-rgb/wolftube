@@ -3,93 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Upload Vídeo</title>
+    <title>WolfTube - Vídeos</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white;
             min-height: 100vh;
-            padding: 20px;
         }
-        .container { max-width: 800px; margin: 0 auto; }
         .header {
-            background: #1a1a2e;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
             border-bottom: 3px solid #ff4757;
         }
-        .logo { font-size: 32px; color: #ff4757; }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { color: #ff4757; }
+        .logo span:first-child { color: #ff4757; }
+        .nav-buttons { display: flex; gap: 12px; }
         button {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 10px;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            margin: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         .btn-primary { background: #ff4757; color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         .upload-area {
             background: rgba(255,255,255,0.1);
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
-        input, textarea {
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #ff4757; }
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
             border: none;
             border-radius: 10px;
+            font-size: 16px;
         }
-        .video-preview { margin-top: 15px; text-align: center; }
-        .video-preview video { max-width: 100%; max-height: 200px; border-radius: 10px; }
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #333;
-            border-radius: 5px;
-            margin-top: 10px;
-            display: none;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: #ff4757;
-            border-radius: 5px;
-        }
+        .help-text { font-size: 12px; color: #ccc; margin-top: 5px; }
         .videos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
             margin-top: 20px;
         }
         .video-card {
             background: rgba(255,255,255,0.1);
             border-radius: 15px;
-            padding: 15px;
+            overflow: hidden;
             cursor: pointer;
+            transition: transform 0.3s;
         }
-        .video-card:hover { background: rgba(255,255,255,0.2); }
+        .video-card:hover { transform: translateY(-5px); }
         .video-thumbnail {
             width: 100%;
-            height: 180px;
-            background: #333;
-            border-radius: 10px;
+            height: 200px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+            font-size: 64px;
         }
+        .video-info { padding: 20px; }
+        .video-title { font-weight: bold; margin-bottom: 10px; font-size: 18px; color: #ff4757; }
+        .video-meta { font-size: 13px; color: #ccc; margin-top: 10px; }
+        .video-meta i { width: 20px; }
         .modal {
             position: fixed;
             top: 0;
@@ -103,97 +104,159 @@
             z-index: 1000;
         }
         .modal-content, .login-box {
-            background: #1a1a2e;
-            padding: 30px;
-            border-radius: 15px;
+            background: #1e1e2e;
+            padding: 40px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
+            text-align: center;
+        }
+        .login-box input, .login-box select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+        }
+        .video-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .video-container {
+            background: #1e1e2e;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 900px;
+            padding: 20px;
+        }
+        .video-container iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 10px;
         }
         .hidden { display: none; }
         .alert {
             position: fixed;
-            top: 20px;
+            top: 80px;
             right: 20px;
             padding: 15px 25px;
             border-radius: 10px;
             z-index: 1000;
+            animation: slideIn 0.3s ease;
         }
         .success { background: #00b894; }
         .error { background: #ff4757; }
+        .delete-btn { margin-top: 10px; width: 100%; padding: 8px; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .videos-grid { grid-template-columns: 1fr; }
+            .video-container iframe { height: 250px; }
+        }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="logo"><i class="fas fa-wolf-pack-battalion"></i><span>Wolf</span><span>Tube</span></div>
+        <div class="nav-buttons">
+            <button class="btn-primary" onclick="showLoginModal()">Entrar</button>
+            <button class="btn-secondary" onclick="showRegisterModal()">Cadastrar</button>
+            <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;">Sair</button>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <div class="logo"><i class="fas fa-wolf-pack-battalion"></i> WolfTube</div>
-            <div>
-                <button class="btn-primary" onclick="showLogin()">Entrar</button>
-                <button class="btn-secondary" onclick="showRegister()">Cadastrar</button>
-                <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;">Sair</button>
+        <div class="upload-area" id="uploadArea" style="display:none;">
+            <h2>Publicar Vídeo</h2>
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="videoTitle" placeholder="Título do vídeo">
             </div>
+            <div class="form-group">
+                <label>Link do Google Drive</label>
+                <input type="text" id="videoUrl" placeholder="https://drive.google.com/file/d/SEU_ID/view">
+                <div class="help-text">
+                    📌 Como conseguir o link:<br>
+                    1. No Google Drive, clique com botão direito no vídeo<br>
+                    2. Clique em "Compartilhar"<br>
+                    3. Mude para "Qualquer um com o link"<br>
+                    4. Copie o link e cole aqui
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..."></textarea>
+            </div>
+            <button class="btn-primary" onclick="postVideo()">Publicar</button>
         </div>
 
-        <div id="uploadArea" class="upload-area" style="display:none;">
-            <h3>Publicar Vídeo</h3>
-            <input type="text" id="titulo" placeholder="Título do vídeo">
-            <div class="video-upload" onclick="document.getElementById('videoFile').click()" style="border: 2px dashed #ff4757; padding: 40px; text-align: center; cursor: pointer; border-radius: 10px;">
-                <i class="fas fa-cloud-upload-alt" style="font-size: 48px;"></i>
-                <p>Clique para escolher um vídeo da galeria</p>
-            </div>
-            <input type="file" id="videoFile" accept="video/*" style="display:none" onchange="previewVideo(this)">
-            <div id="previewContainer" class="video-preview" style="display:none">
-                <video id="videoPreview" controls></video>
-                <button onclick="removerVideo()" style="background:#ff4757; margin-top:5px;">Remover</button>
-            </div>
-            <textarea id="descricao" rows="3" placeholder="Descrição..."></textarea>
-            <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
-            <button class="btn-primary" id="publicarBtn" onclick="publicarVideo()" style="width:100%; margin-top:10px;">Publicar</button>
-        </div>
-
-        <h3>Vídeos Recentes</h3>
+        <h2>Vídeos</h2>
         <div class="videos-grid" id="videosGrid"></div>
     </div>
 
     <!-- Modais -->
-    <div id="loginModal" class="modal hidden">
-        <div class="login-box">
-            <h3>Login</h3>
-            <input type="email" id="loginEmail" placeholder="Email">
-            <input type="password" id="loginPassword" placeholder="Senha">
-            <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
-            <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
+    <div class="modal" id="ageModal">
+        <div class="modal-content">
+            <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757;"></i>
+            <h2>Verificação</h2>
+            <p>Você tem 18 anos ou mais?</p>
+            <button class="btn-primary" onclick="verifyAge(true)">SIM</button>
+            <button class="btn-danger" onclick="verifyAge(false)">NÃO</button>
         </div>
     </div>
 
-    <div id="registerModal" class="modal hidden">
+    <div class="modal hidden" id="loginModal">
         <div class="login-box">
-            <h3>Cadastro</h3>
-            <input type="text" id="regNome" placeholder="Nome">
+            <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
+            <h2>Login</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Senha">
+            <button class="btn-primary" onclick="doLogin()">Entrar</button>
+            <button class="btn-secondary" onclick="closeLoginModal()">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="registerModal">
+        <div class="login-box">
+            <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
+            <h2>Cadastro</h2>
+            <input type="text" id="regName" placeholder="Nome">
             <input type="email" id="regEmail" placeholder="Email">
-            <input type="password" id="regSenha" placeholder="Senha">
-            <select id="regTipo">
+            <input type="password" id="regPassword" placeholder="Senha">
+            <select id="regType">
                 <option value="user">Usuário</option>
                 <option value="creator">Criador</option>
             </select>
-            <button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
-            <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
+            <button class="btn-primary" onclick="doRegister()">Cadastrar</button>
+            <button class="btn-secondary" onclick="closeRegisterModal()">Fechar</button>
         </div>
     </div>
 
-    <div id="videoModal" class="modal hidden">
-        <div class="login-box" style="max-width: 600px;">
-            <h3 id="modalTitulo"></h3>
-            <video id="modalVideo" controls style="width:100%; max-height: 400px;"></video>
-            <p><i class="fas fa-user"></i> <span id="modalAutor"></span></p>
+    <div id="videoPlayerModal" class="video-modal hidden">
+        <div class="video-container">
+            <h3 id="modalVideoTitle">Título</h3>
+            <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
+            <p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p>
             <p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p>
-            <p id="modalDescricao"></p>
-            <button class="btn-secondary" onclick="fecharVideo()">Fechar</button>
+            <p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p>
+            <button class="btn-secondary" onclick="closeVideoModal()">Fechar</button>
         </div>
     </div>
 
     <script>
-        let videoArquivo = null;
-        let usuarioAtual = null;
+        let currentUser = null;
 
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
@@ -206,201 +269,179 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const storage = firebase.storage();
 
-        // Carregar usuários
-        function carregarUsuarios() {
-            if (!localStorage.getItem('usuarios')) {
-                localStorage.setItem('usuarios', JSON.stringify([
-                    { email: 'admin@wolftube.com', senha: 'wolfadmin2010', nome: 'Admin', tipo: 'admin' }
+        function verifyAge(hasAge) {
+            if (hasAge) {
+                localStorage.setItem('ageVerified', 'true');
+                document.getElementById('ageModal').style.display = 'none';
+            } else {
+                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>Acesso negado</h1></div>';
+            }
+        }
+
+        if (!localStorage.getItem('ageVerified')) {
+            document.getElementById('ageModal').style.display = 'flex';
+        }
+
+        function loadUsers() {
+            if (!localStorage.getItem('wolftube_users')) {
+                localStorage.setItem('wolftube_users', JSON.stringify([
+                    { email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Admin', type: 'admin' }
                 ]));
             }
         }
-        carregarUsuarios();
+        loadUsers();
 
-        // Verificar idade
-        if (!localStorage.getItem('idadeVerificada')) {
-            if (confirm('Você tem 18 anos ou mais?')) {
-                localStorage.setItem('idadeVerificada', 'true');
-            } else {
-                document.body.innerHTML = '<h1 style="text-align:center; padding:50px;">Acesso Negado</h1>';
-            }
-        }
+        function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        function showRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
+        function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
 
-        function mostrarMensagem(msg, tipo) {
-            const div = document.createElement('div');
-            div.className = `alert ${tipo}`;
-            div.innerHTML = msg;
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 3000);
-        }
-
-        function showLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
-        function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
-        function showRegister() { document.getElementById('registerModal').classList.remove('hidden'); }
-        function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
-
-        function fazerLogin() {
+        function doLogin() {
             const email = document.getElementById('loginEmail').value;
-            const senha = document.getElementById('loginPassword').value;
-            const usuarios = JSON.parse(localStorage.getItem('usuarios'));
-            const user = usuarios.find(u => u.email === email && u.senha === senha);
+            const password = document.getElementById('loginPassword').value;
+            const users = JSON.parse(localStorage.getItem('wolftube_users'));
+            const user = users.find(u => u.email === email && u.password === password);
             
             if (user) {
-                usuarioAtual = user;
-                localStorage.setItem('usuarioAtual', JSON.stringify(user));
-                document.getElementById('uploadArea').style.display = 'block';
-                document.querySelectorAll('.header button').forEach(btn => {
-                    if (btn.id !== 'logoutBtn') btn.style.display = 'none';
-                });
-                document.getElementById('logoutBtn').style.display = 'inline-block';
-                fecharLogin();
-                mostrarMensagem(`Bem-vindo, ${user.nome}!`, 'success');
+                currentUser = user;
+                localStorage.setItem('wolftube_currentUser', JSON.stringify(user));
+                updateUI();
+                closeLoginModal();
+                showMessage(`Bem-vindo, ${user.name}!`, 'success');
                 carregarVideos();
             } else {
-                mostrarMensagem('Email ou senha incorretos!', 'error');
+                showMessage('Email ou senha incorretos!', 'error');
             }
         }
 
-        function fazerCadastro() {
-            const nome = document.getElementById('regNome').value;
+        function doRegister() {
+            const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
-            const senha = document.getElementById('regSenha').value;
-            const tipo = document.getElementById('regTipo').value;
+            const password = document.getElementById('regPassword').value;
+            const type = document.getElementById('regType').value;
             
-            if (!nome || !email || !senha) {
-                mostrarMensagem('Preencha todos os campos!', 'error');
+            if (!name || !email || !password) {
+                showMessage('Preencha todos os campos!', 'error');
                 return;
             }
             
-            const usuarios = JSON.parse(localStorage.getItem('usuarios'));
-            if (usuarios.find(u => u.email === email)) {
-                mostrarMensagem('Email já cadastrado!', 'error');
+            const users = JSON.parse(localStorage.getItem('wolftube_users'));
+            if (users.find(u => u.email === email)) {
+                showMessage('Email já cadastrado!', 'error');
                 return;
             }
             
-            usuarios.push({ nome, email, senha, tipo });
-            localStorage.setItem('usuarios', JSON.stringify(usuarios));
-            mostrarMensagem('Cadastro realizado! Faça login.', 'success');
-            fecharCadastro();
+            users.push({ name, email, password, type });
+            localStorage.setItem('wolftube_users', JSON.stringify(users));
+            showMessage('Cadastro realizado! Faça login.', 'success');
+            closeRegisterModal();
         }
 
         function logout() {
-            usuarioAtual = null;
-            localStorage.removeItem('usuarioAtual');
-            document.getElementById('uploadArea').style.display = 'none';
-            document.querySelectorAll('.header button').forEach(btn => {
-                if (btn.id !== 'logoutBtn') btn.style.display = 'inline-block';
-            });
-            document.getElementById('logoutBtn').style.display = 'none';
-            mostrarMensagem('Você saiu da conta.', 'success');
+            currentUser = null;
+            localStorage.removeItem('wolftube_currentUser');
+            updateUI();
+            showMessage('Você saiu da conta.', 'success');
             carregarVideos();
         }
 
-        function previewVideo(input) {
-            if (input.files && input.files[0]) {
-                videoArquivo = input.files[0];
-                const url = URL.createObjectURL(videoArquivo);
-                const videoPreview = document.getElementById('videoPreview');
-                videoPreview.src = url;
-                document.getElementById('previewContainer').style.display = 'block';
+        function updateUI() {
+            const saved = localStorage.getItem('wolftube_currentUser');
+            if (saved) currentUser = JSON.parse(saved);
+            
+            if (currentUser) {
+                document.querySelectorAll('.nav-buttons button').forEach(btn => {
+                    if (btn.id !== 'logoutBtn') btn.style.display = 'none';
+                });
+                document.getElementById('logoutBtn').style.display = 'inline-flex';
+                if (currentUser.type === 'creator' || currentUser.type === 'admin') {
+                    document.getElementById('uploadArea').style.display = 'block';
+                }
+            } else {
+                document.querySelectorAll('.nav-buttons button').forEach(btn => {
+                    if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
+                });
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('uploadArea').style.display = 'none';
             }
         }
 
-        function removerVideo() {
-            videoArquivo = null;
-            document.getElementById('previewContainer').style.display = 'none';
-            document.getElementById('videoPreview').src = '';
-            document.getElementById('videoFile').value = '';
-        }
-
-        async function publicarVideo() {
-            const titulo = document.getElementById('titulo').value;
-            const descricao = document.getElementById('descricao').value;
+        async function postVideo() {
+            const title = document.getElementById('videoTitle').value;
+            let url = document.getElementById('videoUrl').value;
+            const description = document.getElementById('videoDesc').value;
             
-            if (!titulo || !videoArquivo) {
-                mostrarMensagem('Preencha título e escolha um vídeo!', 'error');
+            if (!title || !url) {
+                showMessage('Preencha título e link do vídeo!', 'error');
                 return;
             }
             
-            if (!usuarioAtual || (usuarioAtual.tipo !== 'creator' && usuarioAtual.tipo !== 'admin')) {
-                mostrarMensagem('Apenas criadores podem postar vídeos!', 'error');
+            if (!currentUser || (currentUser.type !== 'creator' && currentUser.type !== 'admin')) {
+                showMessage('Apenas criadores podem postar vídeos!', 'error');
                 return;
             }
             
-            const botao = document.getElementById('publicarBtn');
-            botao.disabled = true;
-            botao.innerHTML = 'Enviando...';
+            let embedUrl = url;
+            if (url.includes('drive.google.com')) {
+                let fileId = '';
+                if (url.includes('/file/d/')) {
+                    fileId = url.split('/file/d/')[1].split('/')[0];
+                } else if (url.includes('id=')) {
+                    fileId = url.split('id=')[1].split('&')[0];
+                }
+                if (fileId) {
+                    embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                }
+            }
             
             try {
-                const id = Date.now();
-                const videoRef = storage.ref(`videos/${id}`);
-                const uploadTask = videoRef.put(videoArquivo);
-                
-                document.getElementById('progressBar').style.display = 'block';
-                
-                const snapshot = await new Promise((resolve, reject) => {
-                    uploadTask.on('state_changed',
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            document.getElementById('progressFill').style.width = progress + '%';
-                        },
-                        reject,
-                        () => resolve(uploadTask.snapshot)
-                    );
-                });
-                
-                const urlVideo = await snapshot.ref.getDownloadURL();
-                
                 await db.collection('videos').add({
-                    titulo: titulo,
-                    url: urlVideo,
-                    descricao: descricao || 'Sem descrição',
-                    autor: usuarioAtual.nome,
-                    autorEmail: usuarioAtual.email,
-                    data: new Date().toISOString(),
+                    title: title,
+                    url: embedUrl,
+                    description: description || 'Sem descrição',
+                    author: currentUser.name,
+                    authorEmail: currentUser.email,
+                    date: new Date().toISOString(),
                     views: 0
                 });
-                
-                mostrarMensagem('✅ Vídeo publicado!', 'success');
-                document.getElementById('titulo').value = '';
-                document.getElementById('descricao').value = '';
-                removerVideo();
-                document.getElementById('progressFill').style.width = '0%';
-                document.getElementById('progressBar').style.display = 'none';
+                showMessage('Vídeo publicado!', 'success');
+                document.getElementById('videoTitle').value = '';
+                document.getElementById('videoUrl').value = '';
+                document.getElementById('videoDesc').value = '';
                 carregarVideos();
             } catch (error) {
-                mostrarMensagem('Erro: ' + error.message, 'error');
-                document.getElementById('progressBar').style.display = 'none';
-            } finally {
-                botao.disabled = false;
-                botao.innerHTML = 'Publicar';
+                showMessage('Erro: ' + error.message, 'error');
             }
         }
 
         async function carregarVideos() {
             try {
-                const snapshot = await db.collection('videos').orderBy('data', 'desc').get();
+                const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
                 snapshot.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
                 
                 const grid = document.getElementById('videosGrid');
                 if (videos.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center;">Nenhum vídeo ainda</p>';
+                    grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda</p>';
                     return;
                 }
                 
                 grid.innerHTML = videos.map(video => `
-                    <div class="video-card" onclick="abrirVideo('${video.id}')">
+                    <div class="video-card" onclick="openVideoModal('${video.id}')">
                         <div class="video-thumbnail">
                             <i class="fas fa-play-circle"></i>
                         </div>
                         <div class="video-info">
-                            <div class="video-title">${escapeHtml(video.titulo)}</div>
-                            <div><i class="fas fa-user"></i> ${escapeHtml(video.autor)}</div>
-                            <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
-                            ${usuarioAtual && (usuarioAtual.email === video.autorEmail || usuarioAtual.tipo === 'admin') ? 
-                                `<button class="btn-danger" style="margin-top:10px; width:100%" onclick="event.stopPropagation(); excluirVideo('${video.id}')">Excluir</button>` : ''}
+                            <div class="video-title">${escapeHtml(video.title)}</div>
+                            <div class="video-meta">
+                                <div><i class="fas fa-user"></i> ${escapeHtml(video.author)}</div>
+                                <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
+                            </div>
+                            ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
+                                `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.id}')">
+                                    Excluir
+                                </button>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -409,52 +450,50 @@
             }
         }
 
-        async function abrirVideo(videoId) {
+        async function openVideoModal(videoId) {
             try {
                 const videoRef = db.collection('videos').doc(videoId);
                 const video = await videoRef.get();
+                const videoData = video.data();
                 
-                if (!video.exists) {
-                    mostrarMensagem('Vídeo não encontrado!', 'error');
-                    return;
-                }
+                const views = (videoData.views || 0) + 1;
+                await videoRef.update({ views: views });
                 
-                const data = video.data();
-                const viewsAtual = data.views || 0;
-                await videoRef.update({ views: viewsAtual + 1 });
+                document.getElementById('modalVideoTitle').textContent = videoData.title;
+                document.getElementById('modalAuthor').textContent = videoData.author;
+                document.getElementById('modalViews').textContent = views;
+                document.getElementById('modalDescription').textContent = videoData.description;
+                document.getElementById('videoIframe').src = videoData.url;
                 
-                document.getElementById('modalTitulo').innerHTML = data.titulo;
-                document.getElementById('modalAutor').innerHTML = data.autor;
-                document.getElementById('modalViews').innerHTML = viewsAtual + 1;
-                document.getElementById('modalDescricao').innerHTML = data.descricao;
-                
-                const modalVideo = document.getElementById('modalVideo');
-                modalVideo.src = data.url;
-                modalVideo.load();
-                
-                document.getElementById('videoModal').classList.remove('hidden');
+                document.getElementById('videoPlayerModal').classList.remove('hidden');
             } catch (error) {
-                mostrarMensagem('Erro ao abrir vídeo', 'error');
+                showMessage('Erro ao carregar vídeo', 'error');
             }
         }
 
-        function fecharVideo() {
-            document.getElementById('videoModal').classList.add('hidden');
-            const video = document.getElementById('modalVideo');
-            video.pause();
-            video.src = '';
+        function closeVideoModal() {
+            document.getElementById('videoPlayerModal').classList.add('hidden');
+            document.getElementById('videoIframe').src = '';
         }
 
-        async function excluirVideo(videoId) {
+        async function deleteVideo(videoId) {
             if (confirm('Excluir este vídeo?')) {
                 try {
                     await db.collection('videos').doc(videoId).delete();
-                    mostrarMensagem('Vídeo excluído!', 'success');
+                    showMessage('Vídeo excluído!', 'success');
                     carregarVideos();
                 } catch (error) {
-                    mostrarMensagem('Erro ao excluir', 'error');
+                    showMessage('Erro ao excluir', 'error');
                 }
             }
+        }
+
+        function showMessage(msg, type) {
+            const div = document.createElement('div');
+            div.className = `alert ${type}`;
+            div.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
         }
 
         function escapeHtml(text) {
@@ -464,21 +503,15 @@
             return div.innerHTML;
         }
 
-        // Inicialização
-        const usuarioSalvo = localStorage.getItem('usuarioAtual');
-        if (usuarioSalvo) {
-            usuarioAtual = JSON.parse(usuarioSalvo);
-            document.getElementById('uploadArea').style.display = 'block';
-            document.querySelectorAll('.header button').forEach(btn => {
-                if (btn.id !== 'logoutBtn') btn.style.display = 'none';
-            });
-            document.getElementById('logoutBtn').style.display = 'inline-block';
+        const savedUser = localStorage.getItem('wolftube_currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateUI();
         }
         carregarVideos();
     </script>
 </body>
 </html>
-
 
 
 
