@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Vídeos Seguro</title>
+    <title>WolfTube - Vídeos Rápidos</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
@@ -384,7 +384,7 @@
     </div>
 
     <script>
-        let currentThumbnailBase64 = null;
+        let currentThumbnailFile = null;
         let currentVideoFile = null;
         let currentVideoUrl = null;
         let currentUser = null;
@@ -421,18 +421,18 @@
 
         function previewThumbnail(input) {
             if (input.files && input.files[0]) {
+                currentThumbnailFile = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    currentThumbnailBase64 = e.target.result;
-                    document.getElementById('thumbnailPreview').src = currentThumbnailBase64;
+                    document.getElementById('thumbnailPreview').src = e.target.result;
                     document.getElementById('thumbnailPreviewContainer').style.display = 'inline-block';
                 };
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(currentThumbnailFile);
             }
         }
 
         function removeThumbnail() {
-            currentThumbnailBase64 = null;
+            currentThumbnailFile = null;
             document.getElementById('thumbnailPreviewContainer').style.display = 'none';
             document.getElementById('thumbnailPreview').src = '';
             document.getElementById('thumbnailInput').value = '';
@@ -534,7 +534,7 @@
             
             try {
                 const videoId = Date.now();
-                const videoRef = storage.ref(`videos/${currentUser.uid}/${videoId}_${currentVideoFile.name}`);
+                const videoRef = storage.ref(`videos/${currentUser.uid}/${videoId}`);
                 const uploadTask = videoRef.put(currentVideoFile);
                 
                 document.getElementById('progressBar').style.display = 'block';
@@ -552,13 +552,20 @@
                 
                 const videoURL = await snapshot.ref.getDownloadURL();
                 
+                let thumbnailURL = '';
+                if (currentThumbnailFile) {
+                    const thumbnailRef = storage.ref(`thumbnails/${currentUser.uid}/${videoId}`);
+                    await thumbnailRef.put(currentThumbnailFile);
+                    thumbnailURL = await thumbnailRef.getDownloadURL();
+                }
+                
                 const userDoc = await db.collection('users').doc(currentUser.uid).get();
                 const userName = userDoc.exists ? userDoc.data().name : currentUser.email;
                 
                 const novoVideo = {
                     title: title,
                     url: videoURL,
-                    thumbnail: currentThumbnailBase64 || '',
+                    thumbnail: thumbnailURL,
                     description: description || 'Sem descrição',
                     author: userName,
                     authorId: currentUser.uid,
@@ -586,15 +593,10 @@
 
         async function carregarVideos() {
             try {
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
                 snapshot.forEach(doc => { videos.push({ docId: doc.id, ...doc.data() }); });
                 exibirVideos(videos);
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
-                setTimeout(() => {
-                    document.getElementById('syncStatus').innerHTML = '<i class="fas fa-cloud"></i> Nuvem';
-                }, 2000);
             } catch (error) {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
             }
@@ -652,7 +654,7 @@
                 
                 currentVideoUrl = videoData.url;
                 
-                if (videoData.thumbnail && videoData.thumbnail !== '') {
+                if (videoData.thumbnail) {
                     thumbnailImg.style.display = 'block';
                     thumbnailImg.src = videoData.thumbnail;
                     videoPlayer.style.display = 'none';
