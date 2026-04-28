@@ -55,7 +55,46 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
+        .btn-tutorial { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+        
+        /* Tutorial */
+        .tutorial-area {
+            background: linear-gradient(135deg, rgba(243,156,18,0.1), rgba(230,126,34,0.1));
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(243,156,18,0.3);
+        }
+        .tutorial-area h2 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #f39c12; }
+        .tutorial-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .step {
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .step .step-number {
+            width: 40px;
+            height: 40px;
+            background: #f39c12;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .step h3 { margin-bottom: 10px; color: #f39c12; }
+        .step p { font-size: 14px; line-height: 1.5; opacity: 0.9; }
+        .step i { font-size: 32px; margin-bottom: 15px; color: #f39c12; }
+        
         .upload-area {
             background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(0,184,148,0.1));
             border-radius: 20px;
@@ -227,11 +266,7 @@
             background: rgba(0,0,0,0.3);
             z-index: 10;
         }
-        .play-overlay i {
-            font-size: 64px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
+        .play-overlay i { font-size: 64px; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         .video-info-modal { padding: 20px; }
         .video-info-modal p { margin: 5px 0; color: rgba(255,255,255,0.8); }
         .modal {
@@ -282,6 +317,7 @@
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .videos-grid { grid-template-columns: 1fr; }
+            .tutorial-steps { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -299,11 +335,42 @@
     </div>
 
     <div class="container">
+        <!-- TUTORIAL PARA POSTAR VÍDEOS -->
+        <div class="tutorial-area">
+            <h2><i class="fas fa-graduation-cap"></i> Como postar vídeos no WolfTube?</h2>
+            <div class="tutorial-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <i class="fab fa-google-drive"></i>
+                    <h3>Google Drive</h3>
+                    <p>Envie seu vídeo para o Google Drive e ative "Qualquer um com o link"</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-link"></i>
+                    <h3>Copie o link</h3>
+                    <p>Clique com botão direito no vídeo → Compartilhar → Copiar link</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-images"></i>
+                    <h3>Escolha uma capa</h3>
+                    <p>Selecione uma foto da sua galeria para ser a capa do vídeo</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <i class="fas fa-paper-plane"></i>
+                    <h3>Publique!</h3>
+                    <p>Preencha o título, cole o link e clique em Publicar</p>
+                </div>
+            </div>
+        </div>
+
         <div class="upload-area" id="uploadArea" style="display:none;">
             <h2><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</h2>
             <div class="form-group">
                 <label><i class="fas fa-heading"></i> Título</label>
-                <input type="text" id="videoTitle" placeholder="Título do vídeo">
+                <input type="text" id="videoTitle" placeholder="Ex: Gameplay Incrível">
             </div>
             <div class="form-group">
                 <label><i class="fas fa-images"></i> Capa do Vídeo (da galeria)</label>
@@ -321,17 +388,23 @@
             <div class="form-group">
                 <label><i class="fab fa-google-drive"></i> Link do Vídeo (Google Drive)</label>
                 <input type="text" id="videoUrl" placeholder="https://drive.google.com/file/d/SEU_ID/view">
-                <div class="help-text">📌 Cole o link do Google Drive do seu vídeo</div>
+                <div class="help-text">
+                    <i class="fas fa-info-circle"></i> 📌 Como pegar o link:<br>
+                    1️⃣ No Google Drive, clique com botão direito no vídeo<br>
+                    2️⃣ Clique em "Compartilhar"<br>
+                    3️⃣ Mude para "Qualquer um com o link"<br>
+                    4️⃣ Copie o link e cole aqui
+                </div>
             </div>
             <div class="form-group">
                 <label><i class="fas fa-align-left"></i> Descrição</label>
-                <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..."></textarea>
+                <textarea id="videoDesc" rows="3" placeholder="Descreva seu vídeo..."></textarea>
             </div>
             <button class="btn-primary" onclick="postVideo()"><i class="fas fa-paper-plane"></i> Publicar</button>
         </div>
 
         <div class="videos-header">
-            <h2><i class="fas fa-video"></i> Vídeos</h2>
+            <h2><i class="fas fa-video"></i> Vídeos Recentes</h2>
             <div class="sync-status" id="syncStatus"><i class="fas fa-sync-alt"></i> Carregando...</div>
         </div>
         <div class="videos-grid" id="videosGrid"></div>
@@ -341,7 +414,7 @@
     <div class="modal" id="ageModal">
         <div class="modal-content">
             <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>🔞 Verificação</h2>
+            <h2>🔞 Verificação de Idade</h2>
             <p>Você tem 18 anos ou mais?</p>
             <button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button>
             <button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button>
@@ -553,7 +626,6 @@
                 if (fileId) embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
             }
             
-            // 🔥 CORREÇÃO: Removi o campo 'id' - deixa o Firebase gerar automaticamente!
             const novoVideo = {
                 title: title,
                 url: embedUrl,
@@ -603,7 +675,7 @@
         function exibirVideos(videos) {
             const grid = document.getElementById('videosGrid');
             if (videos.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda</p>';
+                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda. Seja o primeiro a postar!</p>';
                 return;
             }
             
@@ -629,7 +701,6 @@
 
         async function openVideoModal(docId) {
             try {
-                console.log('Abrindo vídeo com ID:', docId);
                 const videoRef = db.collection('videos').doc(docId);
                 const video = await videoRef.get();
                 
@@ -639,7 +710,6 @@
                 }
                 
                 const videoData = video.data();
-                console.log('Dados do vídeo:', videoData);
                 
                 const views = (videoData.views || 0) + 1;
                 await videoRef.update({ views: views });
