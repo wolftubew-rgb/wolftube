@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Vídeos Rápidos</title>
+    <title>WolfTube - Rápido</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
@@ -326,7 +326,6 @@
         <div class="videos-grid" id="videosGrid"></div>
     </div>
 
-    <!-- Modais -->
     <div class="modal" id="ageModal">
         <div class="modal-content">
             <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757;"></i>
@@ -454,6 +453,7 @@
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             updateUI();
+            if(currentUser) carregarVideos();
         });
 
         function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
@@ -593,10 +593,21 @@
 
         async function carregarVideos() {
             try {
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
-                snapshot.forEach(doc => { videos.push({ docId: doc.id, ...doc.data() }); });
+                snapshot.forEach(doc => { 
+                    const data = doc.data();
+                    // Só carrega vídeos que NÃO têm thumbnail Base64 (os antigos são ignorados)
+                    if(!data.thumbnail || !data.thumbnail.startsWith('data:image')) {
+                        videos.push({ docId: doc.id, ...data });
+                    }
+                });
                 exibirVideos(videos);
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
+                setTimeout(() => {
+                    document.getElementById('syncStatus').innerHTML = '<i class="fas fa-cloud"></i> Nuvem';
+                }, 2000);
             } catch (error) {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
             }
@@ -654,7 +665,7 @@
                 
                 currentVideoUrl = videoData.url;
                 
-                if (videoData.thumbnail) {
+                if (videoData.thumbnail && videoData.thumbnail !== '') {
                     thumbnailImg.style.display = 'block';
                     thumbnailImg.src = videoData.thumbnail;
                     videoPlayer.style.display = 'none';
@@ -730,7 +741,6 @@
     </script>
 </body>
 </html>
-
 
 
 
