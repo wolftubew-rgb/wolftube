@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Rápido</title>
+    <title>WolfTube - Vídeos Rápidos</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -400,7 +399,102 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const storage = firebase.storage();
-        const auth = firebase.auth();
+
+        // Login simples com localStorage (sem Firebase Auth)
+        function loadUsers() {
+            if (!localStorage.getItem('wolftube_users')) {
+                localStorage.setItem('wolftube_users', JSON.stringify([
+                    { email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Admin', type: 'admin' }
+                ]));
+            }
+        }
+        loadUsers();
+
+        function doLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const users = JSON.parse(localStorage.getItem('wolftube_users'));
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('wolftube_currentUser', JSON.stringify(user));
+                updateUI();
+                closeLoginModal();
+                showMessage(`Bem-vindo, ${user.name}!`, 'success');
+            } else {
+                showMessage('Email ou senha incorretos!', 'error');
+            }
+        }
+
+        function doRegister() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const type = document.getElementById('regType').value;
+            
+            if (!name || !email || !password) {
+                showMessage('Preencha todos os campos!', 'error');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('wolftube_users'));
+            if (users.find(u => u.email === email)) {
+                showMessage('Email já cadastrado!', 'error');
+                return;
+            }
+            
+            users.push({ name, email, password, type });
+            localStorage.setItem('wolftube_users', JSON.stringify(users));
+            showMessage('Cadastro realizado! Faça login.', 'success');
+            closeRegisterModal();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('wolftube_currentUser');
+            updateUI();
+            showMessage('Você saiu da conta.', 'success');
+        }
+
+        function updateUI() {
+            const saved = localStorage.getItem('wolftube_currentUser');
+            if (saved) currentUser = JSON.parse(saved);
+            
+            if (currentUser) {
+                document.querySelectorAll('.nav-buttons button').forEach(btn => {
+                    if (btn.id !== 'logoutBtn') btn.style.display = 'none';
+                });
+                document.getElementById('logoutBtn').style.display = 'inline-flex';
+                if (currentUser.type === 'creator' || currentUser.type === 'admin') {
+                    document.getElementById('uploadArea').style.display = 'block';
+                }
+            } else {
+                document.querySelectorAll('.nav-buttons button').forEach(btn => {
+                    if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
+                });
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('uploadArea').style.display = 'none';
+            }
+        }
+
+        function verifyAge(hasAge) {
+            if (hasAge) {
+                localStorage.setItem('ageVerified', 'true');
+                document.getElementById('ageModal').style.display = 'none';
+            } else {
+                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>🔞 Acesso negado</h1></div>';
+            }
+        }
+
+        if (!localStorage.getItem('ageVerified')) {
+            document.getElementById('ageModal').style.display = 'flex';
+        }
+
+        function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        function showRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
+        function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
 
         function previewVideo(input) {
             if (input.files && input.files[0]) {
@@ -437,83 +531,6 @@
             document.getElementById('thumbnailInput').value = '';
         }
 
-        function verifyAge(hasAge) {
-            if (hasAge) {
-                localStorage.setItem('ageVerified', 'true');
-                document.getElementById('ageModal').style.display = 'none';
-            } else {
-                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>🔞 Acesso negado</h1></div>';
-            }
-        }
-
-        if (!localStorage.getItem('ageVerified')) {
-            document.getElementById('ageModal').style.display = 'flex';
-        }
-
-        auth.onAuthStateChanged((user) => {
-            currentUser = user;
-            updateUI();
-            if(currentUser) carregarVideos();
-        });
-
-        function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
-        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
-        function showRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
-        function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
-
-        async function doLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                showMessage('Login realizado!', 'success');
-                closeLoginModal();
-            } catch (error) {
-                showMessage('Erro: ' + error.message, 'error');
-            }
-        }
-
-        async function doRegister() {
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const type = document.getElementById('regType').value;
-            
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await db.collection('users').doc(userCredential.user.uid).set({
-                    name: name,
-                    email: email,
-                    type: type
-                });
-                showMessage('Cadastro realizado!', 'success');
-                closeRegisterModal();
-            } catch (error) {
-                showMessage('Erro: ' + error.message, 'error');
-            }
-        }
-
-        async function logout() {
-            await auth.signOut();
-            showMessage('Você saiu da conta.', 'success');
-        }
-
-        function updateUI() {
-            if (currentUser) {
-                document.querySelectorAll('.nav-buttons button').forEach(btn => {
-                    if (btn.id !== 'logoutBtn') btn.style.display = 'none';
-                });
-                document.getElementById('logoutBtn').style.display = 'inline-flex';
-                document.getElementById('uploadArea').style.display = 'block';
-            } else {
-                document.querySelectorAll('.nav-buttons button').forEach(btn => {
-                    if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
-                });
-                document.getElementById('logoutBtn').style.display = 'none';
-                document.getElementById('uploadArea').style.display = 'none';
-            }
-        }
-
         async function postVideo() {
             const title = document.getElementById('videoTitle').value;
             const description = document.getElementById('videoDesc').value;
@@ -523,8 +540,8 @@
                 return;
             }
             
-            if (!currentUser) {
-                showMessage('Faça login primeiro!', 'error');
+            if (!currentUser || (currentUser.type !== 'creator' && currentUser.type !== 'admin')) {
+                showMessage('Apenas criadores podem postar vídeos!', 'error');
                 return;
             }
             
@@ -534,7 +551,7 @@
             
             try {
                 const videoId = Date.now();
-                const videoRef = storage.ref(`videos/${currentUser.uid}/${videoId}`);
+                const videoRef = storage.ref(`videos/${videoId}`);
                 const uploadTask = videoRef.put(currentVideoFile);
                 
                 document.getElementById('progressBar').style.display = 'block';
@@ -554,21 +571,18 @@
                 
                 let thumbnailURL = '';
                 if (currentThumbnailFile) {
-                    const thumbnailRef = storage.ref(`thumbnails/${currentUser.uid}/${videoId}`);
+                    const thumbnailRef = storage.ref(`thumbnails/${videoId}`);
                     await thumbnailRef.put(currentThumbnailFile);
                     thumbnailURL = await thumbnailRef.getDownloadURL();
                 }
-                
-                const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                const userName = userDoc.exists ? userDoc.data().name : currentUser.email;
                 
                 const novoVideo = {
                     title: title,
                     url: videoURL,
                     thumbnail: thumbnailURL,
                     description: description || 'Sem descrição',
-                    author: userName,
-                    authorId: currentUser.uid,
+                    author: currentUser.name,
+                    authorEmail: currentUser.email,
                     date: new Date().toISOString(),
                     views: 0
                 };
@@ -597,11 +611,7 @@
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
                 snapshot.forEach(doc => { 
-                    const data = doc.data();
-                    // Só carrega vídeos que NÃO têm thumbnail Base64 (os antigos são ignorados)
-                    if(!data.thumbnail || !data.thumbnail.startsWith('data:image')) {
-                        videos.push({ docId: doc.id, ...data });
-                    }
+                    videos.push({ docId: doc.id, ...doc.data() }); 
                 });
                 exibirVideos(videos);
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
@@ -631,7 +641,7 @@
                             <div><i class="fas fa-user"></i> ${escapeHtml(video.author)}</div>
                             <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
                         </div>
-                        ${currentUser && (currentUser.uid === video.authorId) ? 
+                        ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
                             `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.docId}')">
                                 <i class="fas fa-trash"></i> Excluir
                             </button>` : ''}
@@ -737,10 +747,14 @@
             return div.innerHTML;
         }
 
+        const savedUser = localStorage.getItem('wolftube_currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateUI();
+        }
         carregarVideos();
     </script>
 </body>
 </html>
-
 
 
