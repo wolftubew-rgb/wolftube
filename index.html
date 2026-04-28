@@ -3,97 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WolfTube - Funcional</title>
+    <title>WolfTube</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial;
-            background: #1a1a2e;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: white;
+            min-height: 100vh;
             padding: 20px;
         }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            background: rgba(0,0,0,0.8);
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .logo { font-size: 28px; font-weight: bold; color: #ff4757; }
         button {
-            background: #ff4757;
-            color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .btn-primary { background: #ff4757; color: white; }
+        .btn-secondary { background: #00b894; color: white; }
+        .btn-danger { background: #2c3e50; color: white; }
+        .upload-area {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
         }
         input, textarea {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border-radius: 5px;
             border: none;
+            border-radius: 5px;
+        }
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
         .video-card {
-            background: #16213e;
+            background: rgba(255,255,255,0.1);
             padding: 15px;
-            margin: 10px 0;
             border-radius: 10px;
             cursor: pointer;
         }
-        .hidden { display: none; }
+        .video-card:hover { background: rgba(255,255,255,0.2); }
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 1000;
         }
-        .modal-content {
-            background: #1a1a2e;
-            padding: 20px;
+        .modal-content, .login-box {
+            background: #1e1e2e;
+            padding: 30px;
             border-radius: 10px;
-            max-width: 90%;
-            width: 600px;
+            width: 90%;
+            max-width: 400px;
         }
-        iframe {
-            width: 100%;
-            height: 300px;
-        }
+        .hidden { display: none; }
+        .help-text { font-size: 12px; color: #aaa; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <h1>🐺 WolfTube</h1>
-    
-    <div>
-        <button onclick="showLogin()">Entrar</button>
-        <button onclick="showCadastro()">Cadastrar</button>
-        <button id="sairBtn" onclick="logout()" style="display:none">Sair</button>
-    </div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🐺 WolfTube</div>
+            <div>
+                <button class="btn-primary" onclick="mostrarLogin()">Entrar</button>
+                <button class="btn-secondary" onclick="mostrarCadastro()">Cadastrar</button>
+                <button class="btn-danger" id="sairBtn" onclick="logout()" style="display:none">Sair</button>
+            </div>
+        </div>
 
-    <div id="uploadArea" style="display:none; margin-top:20px; padding:20px; background:#16213e; border-radius:10px;">
-        <h3>Publicar Vídeo</h3>
-        <input type="text" id="titulo" placeholder="Título">
-        <input type="text" id="link" placeholder="Link do Google Drive">
-        <textarea id="desc" placeholder="Descrição"></textarea>
-        <button onclick="publicar()">Publicar</button>
-    </div>
+        <div id="uploadArea" class="upload-area" style="display:none">
+            <h3>📤 Publicar Vídeo</h3>
+            <input type="text" id="titulo" placeholder="Título do vídeo">
+            <input type="text" id="linkVideo" placeholder="Link do Google Drive">
+            <div class="help-text">
+                🔑 Como pegar o link:<br>
+                1 - No Google Drive, clique com botão direito no vídeo<br>
+                2 - Clique em "Compartilhar"<br>
+                3 - Mude para "Qualquer um com o link"<br>
+                4 - Copie o link e cole aqui
+            </div>
+            <textarea id="descricao" rows="3" placeholder="Descrição"></textarea>
+            <button class="btn-primary" onclick="publicarVideo()">Publicar</button>
+        </div>
 
-    <h2>Vídeos</h2>
-    <div id="videos"></div>
+        <h2>📺 Vídeos Recentes</h2>
+        <div id="videosGrid" class="videos-grid"></div>
+    </div>
 
     <!-- Modal Login -->
     <div id="loginModal" class="modal hidden">
-        <div class="modal-content">
+        <div class="login-box">
             <h3>Login</h3>
             <input type="email" id="loginEmail" placeholder="Email">
             <input type="password" id="loginSenha" placeholder="Senha">
-            <button onclick="fazerLogin()">Entrar</button>
-            <button onclick="fecharModal('loginModal')">Fechar</button>
+            <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
+            <button class="btn-secondary" onclick="fecharModal('loginModal')">Fechar</button>
         </div>
     </div>
 
     <!-- Modal Cadastro -->
     <div id="cadastroModal" class="modal hidden">
-        <div class="modal-content">
+        <div class="login-box">
             <h3>Cadastro</h3>
             <input type="text" id="cadNome" placeholder="Nome">
             <input type="email" id="cadEmail" placeholder="Email">
@@ -102,25 +139,25 @@
                 <option value="user">Usuário</option>
                 <option value="creator">Criador</option>
             </select>
-            <button onclick="fazerCadastro()">Cadastrar</button>
-            <button onclick="fecharModal('cadastroModal')">Fechar</button>
+            <button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
+            <button class="btn-secondary" onclick="fecharModal('cadastroModal')">Fechar</button>
         </div>
     </div>
 
     <!-- Modal Vídeo -->
     <div id="videoModal" class="modal hidden">
-        <div class="modal-content">
+        <div class="login-box" style="max-width: 700px;">
             <h3 id="videoTitulo"></h3>
-            <iframe id="videoFrame" src=""></iframe>
-            <p id="videoAutor"></p>
-            <p id="videoViews"></p>
-            <p id="videoDesc"></p>
-            <button onclick="fecharModal('videoModal')">Fechar</button>
+            <iframe id="videoFrame" width="100%" height="300" frameborder="0" allowfullscreen></iframe>
+            <p><strong>👤 Autor:</strong> <span id="videoAutor"></span></p>
+            <p><strong>👁️ Views:</strong> <span id="videoViews"></span></p>
+            <p><strong>📝 Descrição:</strong> <span id="videoDesc"></span></p>
+            <button class="btn-secondary" onclick="fecharModal('videoModal')">Fechar</button>
         </div>
     </div>
 
     <script>
-        // Firebase
+        // Config Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -129,29 +166,29 @@
             messagingSenderId: "251733558803",
             appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
         let usuarioAtual = null;
 
-        // Idade
+        // Verificar idade
         if (!localStorage.getItem('idade')) {
             if (confirm('Você tem 18 anos ou mais?')) {
                 localStorage.setItem('idade', 'sim');
             } else {
-                document.body.innerHTML = '<h1>Acesso Negado</h1>';
+                document.body.innerHTML = '<h1 style="text-align:center; margin-top:50px;">🔞 Acesso Negado</h1>';
             }
         }
 
-        // Usuários padrão
+        // Carregar usuários padrão
         if (!localStorage.getItem('usuarios')) {
             localStorage.setItem('usuarios', JSON.stringify([
-                { email: 'admin@wolftube.com', senha: 'wolfadmin2010', nome: 'Admin', tipo: 'admin' }
+                { email: 'admin@wolftube.com', senha: 'wolfadmin2010', nome: 'Administrador', tipo: 'admin' }
             ]));
         }
 
-        function showLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
-        function showCadastro() { document.getElementById('cadastroModal').classList.remove('hidden'); }
+        function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function mostrarCadastro() { document.getElementById('cadastroModal').classList.remove('hidden'); }
         function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         function fazerLogin() {
@@ -164,14 +201,14 @@
                 usuarioAtual = user;
                 localStorage.setItem('usuarioAtual', JSON.stringify(user));
                 document.getElementById('uploadArea').style.display = 'block';
-                document.querySelector('button[onclick="showLogin()"]').style.display = 'none';
-                document.querySelector('button[onclick="showCadastro()"]').style.display = 'none';
+                document.querySelector('button[onclick="mostrarLogin()"]').style.display = 'none';
+                document.querySelector('button[onclick="mostrarCadastro()"]').style.display = 'none';
                 document.getElementById('sairBtn').style.display = 'inline-block';
                 fecharModal('loginModal');
                 alert(`Bem-vindo, ${user.nome}!`);
                 carregarVideos();
             } else {
-                alert('Erro!');
+                alert('Email ou senha incorretos!');
             }
         }
 
@@ -181,7 +218,17 @@
             const senha = document.getElementById('cadSenha').value;
             const tipo = document.getElementById('cadTipo').value;
             
+            if (!nome || !email || !senha) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+            
             const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+            if (usuarios.find(u => u.email === email)) {
+                alert('Email já cadastrado!');
+                return;
+            }
+            
             usuarios.push({ nome, email, senha, tipo });
             localStorage.setItem('usuarios', JSON.stringify(usuarios));
             alert('Cadastro realizado! Faça login.');
@@ -192,103 +239,142 @@
             usuarioAtual = null;
             localStorage.removeItem('usuarioAtual');
             document.getElementById('uploadArea').style.display = 'none';
-            document.querySelector('button[onclick="showLogin()"]').style.display = 'inline-block';
-            document.querySelector('button[onclick="showCadastro()"]').style.display = 'inline-block';
+            document.querySelector('button[onclick="mostrarLogin()"]').style.display = 'inline-block';
+            document.querySelector('button[onclick="mostrarCadastro()"]').style.display = 'inline-block';
             document.getElementById('sairBtn').style.display = 'none';
-            alert('Saiu!');
+            alert('Você saiu da conta.');
             carregarVideos();
         }
 
-        async function publicar() {
+        async function publicarVideo() {
             const titulo = document.getElementById('titulo').value;
-            let link = document.getElementById('link').value;
-            const desc = document.getElementById('desc').value;
+            let link = document.getElementById('linkVideo').value;
+            const descricao = document.getElementById('descricao').value;
             
             if (!titulo || !link) {
-                alert('Preencha título e link!');
+                alert('Preencha título e link do vídeo!');
                 return;
             }
             
-            // Converter link
-            let embedUrl = link;
-            if (link.includes('/file/d/')) {
-                const id = link.split('/file/d/')[1].split('/')[0];
-                embedUrl = `https://drive.google.com/file/d/${id}/preview`;
+            if (!usuarioAtual || (usuarioAtual.tipo !== 'creator' && usuarioAtual.tipo !== 'admin')) {
+                alert('Apenas criadores podem postar vídeos!');
+                return;
             }
             
-            await db.collection('videos').add({
-                titulo: titulo,
-                url: embedUrl,
-                desc: desc || '',
-                autor: usuarioAtual.nome,
-                autorEmail: usuarioAtual.email,
-                data: new Date().toISOString(),
-                views: 0
-            });
+            // Converter link do Google Drive
+            let embedUrl = link;
+            if (link.includes('drive.google.com')) {
+                let fileId = '';
+                if (link.includes('/file/d/')) {
+                    fileId = link.split('/file/d/')[1].split('/')[0];
+                } else if (link.includes('id=')) {
+                    fileId = link.split('id=')[1].split('&')[0];
+                }
+                if (fileId) {
+                    embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                }
+            }
             
-            alert('Publicado!');
-            document.getElementById('titulo').value = '';
-            document.getElementById('link').value = '';
-            document.getElementById('desc').value = '';
-            carregarVideos();
+            try {
+                await db.collection('videos').add({
+                    titulo: titulo,
+                    url: embedUrl,
+                    descricao: descricao || 'Sem descrição',
+                    autor: usuarioAtual.nome,
+                    autorEmail: usuarioAtual.email,
+                    data: new Date().toISOString(),
+                    views: 0
+                });
+                alert('✅ Vídeo publicado!');
+                document.getElementById('titulo').value = '';
+                document.getElementById('linkVideo').value = '';
+                document.getElementById('descricao').value = '';
+                carregarVideos();
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
         }
 
         async function carregarVideos() {
-            const snapshot = await db.collection('videos').orderBy('data', 'desc').get();
-            const videos = [];
-            snapshot.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
-            
-            const div = document.getElementById('videos');
-            if (videos.length === 0) {
-                div.innerHTML = '<p>Nenhum vídeo</p>';
-                return;
-            }
-            
-            div.innerHTML = videos.map(v => `
-                <div class="video-card" onclick="abrirVideo('${v.id}')">
-                    <h3>${v.titulo}</h3>
-                    <p>👤 ${v.autor} | 👁️ ${v.views || 0} views</p>
-                    ${usuarioAtual && (usuarioAtual.email === v.autorEmail || usuarioAtual.tipo === 'admin') ? 
-                        `<button onclick="event.stopPropagation(); deletar('${v.id}')" style="background:#ff4757; margin-top:10px;">Excluir</button>` : ''}
-                </div>
-            `).join('');
-        }
-
-        async function abrirVideo(id) {
-            const doc = await db.collection('videos').doc(id).get();
-            const v = doc.data();
-            
-            await db.collection('videos').doc(id).update({ views: (v.views || 0) + 1 });
-            
-            document.getElementById('videoTitulo').innerHTML = v.titulo;
-            document.getElementById('videoFrame').src = v.url;
-            document.getElementById('videoAutor').innerHTML = `👤 ${v.autor}`;
-            document.getElementById('videoViews').innerHTML = `👁️ ${(v.views || 0) + 1} views`;
-            document.getElementById('videoDesc').innerHTML = v.desc;
-            document.getElementById('videoModal').classList.remove('hidden');
-        }
-
-        async function deletar(id) {
-            if (confirm('Excluir?')) {
-                await db.collection('videos').doc(id).delete();
-                carregarVideos();
+            try {
+                const snapshot = await db.collection('videos').orderBy('data', 'desc').get();
+                const videos = [];
+                snapshot.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
+                
+                const grid = document.getElementById('videosGrid');
+                if (videos.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda. Seja o primeiro a postar!</p>';
+                    return;
+                }
+                
+                grid.innerHTML = videos.map(video => `
+                    <div class="video-card" onclick="abrirVideo('${video.id}')">
+                        <h3>${escapeHtml(video.titulo)}</h3>
+                        <p>👤 ${escapeHtml(video.autor)} | 👁️ ${video.views || 0} views</p>
+                        <p>📅 ${new Date(video.data).toLocaleDateString('pt-BR')}</p>
+                        ${usuarioAtual && (usuarioAtual.email === video.autorEmail || usuarioAtual.tipo === 'admin') ? 
+                            `<button class="btn-danger" style="margin-top:10px;" onclick="event.stopPropagation(); excluirVideo('${video.id}')">🗑️ Excluir</button>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('videosGrid').innerHTML = '<p>Erro ao carregar vídeos</p>';
             }
         }
 
-        // Iniciar
-        const userSalvo = localStorage.getItem('usuarioAtual');
-        if (userSalvo) {
-            usuarioAtual = JSON.parse(userSalvo);
+        async function abrirVideo(videoId) {
+            try {
+                const videoRef = db.collection('videos').doc(videoId);
+                const video = await videoRef.get();
+                const data = video.data();
+                
+                const viewsAtual = data.views || 0;
+                await videoRef.update({ views: viewsAtual + 1 });
+                
+                document.getElementById('videoTitulo').innerHTML = data.titulo;
+                document.getElementById('videoFrame').src = data.url;
+                document.getElementById('videoAutor').innerHTML = data.autor;
+                document.getElementById('videoViews').innerHTML = viewsAtual + 1;
+                document.getElementById('videoDesc').innerHTML = data.descricao;
+                
+                document.getElementById('videoModal').classList.remove('hidden');
+            } catch (error) {
+                alert('Erro ao abrir vídeo');
+            }
+        }
+
+        async function excluirVideo(videoId) {
+            if (confirm('Tem certeza que quer excluir este vídeo?')) {
+                try {
+                    await db.collection('videos').doc(videoId).delete();
+                    alert('Vídeo excluído!');
+                    carregarVideos();
+                } catch (error) {
+                    alert('Erro ao excluir');
+                }
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Inicializar
+        const usuarioSalvo = localStorage.getItem('usuarioAtual');
+        if (usuarioSalvo) {
+            usuarioAtual = JSON.parse(usuarioSalvo);
             document.getElementById('uploadArea').style.display = 'block';
-            document.querySelector('button[onclick="showLogin()"]').style.display = 'none';
-            document.querySelector('button[onclick="showCadastro()"]').style.display = 'none';
+            document.querySelector('button[onclick="mostrarLogin()"]').style.display = 'none';
+            document.querySelector('button[onclick="mostrarCadastro()"]').style.display = 'none';
             document.getElementById('sairBtn').style.display = 'inline-block';
         }
         carregarVideos();
     </script>
 </body>
 </html>
-
 
 
 
