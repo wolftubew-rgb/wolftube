@@ -400,7 +400,7 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        // Login simples com localStorage (sem Firebase Auth)
+        // Sistema de login simples (localStorage)
         function loadUsers() {
             if (!localStorage.getItem('wolftube_users')) {
                 localStorage.setItem('wolftube_users', JSON.stringify([
@@ -422,6 +422,7 @@
                 updateUI();
                 closeLoginModal();
                 showMessage(`Bem-vindo, ${user.name}!`, 'success');
+                carregarVideos();
             } else {
                 showMessage('Email ou senha incorretos!', 'error');
             }
@@ -455,6 +456,7 @@
             localStorage.removeItem('wolftube_currentUser');
             updateUI();
             showMessage('Você saiu da conta.', 'success');
+            carregarVideos();
         }
 
         function updateUI() {
@@ -468,6 +470,8 @@
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
+                } else {
+                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
@@ -620,6 +624,7 @@
                 }, 2000);
             } catch (error) {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
+                console.error('Erro:', error);
             }
         }
 
@@ -756,5 +761,11 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
