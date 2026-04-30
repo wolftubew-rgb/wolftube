@@ -6,7 +6,6 @@
     <title>WolfTube - Vídeos com Capa</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -348,6 +347,7 @@
         </div>
     </div>
 
+    <!-- Modal de Login Normal (só email) -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
@@ -355,6 +355,20 @@
             <input type="email" id="loginEmail" placeholder="Digite seu email">
             <button class="btn-primary" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
             <button class="btn-secondary" onclick="closeLoginModal()">Fechar</button>
+            <hr style="margin: 15px 0;">
+            <p style="font-size: 12px;">🔐 Administrador? <a href="#" onclick="showAdminLogin()" style="color: #ff4757;">Clique aqui</a></p>
+        </div>
+    </div>
+
+    <!-- Modal de Login Admin (email + senha) -->
+    <div class="modal hidden" id="adminLoginModal">
+        <div class="login-box">
+            <i class="fas fa-user-shield" style="font-size: 48px; color: #ff4757;"></i>
+            <h2>Login Administrador</h2>
+            <input type="email" id="adminEmail" placeholder="Email" value="admin@wolftube.com">
+            <input type="password" id="adminPassword" placeholder="Senha">
+            <button class="btn-primary" onclick="doAdminLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+            <button class="btn-secondary" onclick="closeAdminLoginModal()">Voltar</button>
         </div>
     </div>
 
@@ -394,8 +408,11 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
         let currentUser = null;
+
+        // Dados do admin (fixo)
+        const ADMIN_EMAIL = "admin@wolftube.com";
+        const ADMIN_PASSWORD = "wolfadmin2010";
 
         function previewThumbnail(input) {
             if (input.files && input.files[0]) {
@@ -429,7 +446,7 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // Login APENAS com email (qualquer email entra)
+        // Login normal (só email)
         async function doLogin() {
             const email = document.getElementById('loginEmail').value;
             
@@ -438,32 +455,55 @@
                 return;
             }
             
-            // Verifica se é um email válido
             if (!email.includes('@') || !email.includes('.')) {
                 showMessage('Email inválido!', 'error');
                 return;
             }
             
-            try {
-                // Tenta fazer login com email anônimo/simples
-                // Como não temos senha, vamos criar um "login" local
-                const userName = email.split('@')[0];
-                const userType = email === 'admin@wolftube.com' ? 'admin' : 'creator';
-                
+            const userName = email.split('@')[0];
+            
+            currentUser = {
+                email: email,
+                name: userName,
+                type: 'user'
+            };
+            
+            localStorage.setItem('wolftube_currentUser', JSON.stringify(currentUser));
+            updateUI();
+            closeLoginModal();
+            showMessage(`Bem-vindo, ${userName}!`, 'success');
+        }
+
+        // Login admin (email + senha)
+        function doAdminLogin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
                 currentUser = {
                     email: email,
-                    name: userName,
-                    type: userType
+                    name: 'Admin',
+                    type: 'admin'
                 };
-                
                 localStorage.setItem('wolftube_currentUser', JSON.stringify(currentUser));
                 updateUI();
-                closeLoginModal();
-                showMessage(`Bem-vindo, ${userName}!`, 'success');
-                
-            } catch (error) {
-                showMessage('Erro ao fazer login: ' + error.message, 'error');
+                closeAdminLoginModal();
+                showMessage('Bem-vindo, Administrador!', 'success');
+            } else {
+                showMessage('Email ou senha incorretos!', 'error');
             }
+        }
+
+        function showAdminLogin() {
+            closeLoginModal();
+            document.getElementById('adminLoginModal').classList.remove('hidden');
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+            document.getElementById('adminEmail').value = 'admin@wolftube.com';
+            document.getElementById('adminPassword').value = '';
+            showLoginModal();
         }
 
         function logout() {
@@ -498,7 +538,10 @@
             document.getElementById('loginEmail').value = '';
             document.getElementById('loginModal').classList.remove('hidden'); 
         }
-        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        
+        function closeLoginModal() { 
+            document.getElementById('loginModal').classList.add('hidden'); 
+        }
 
         async function postVideo() {
             const title = document.getElementById('videoTitle').value;
@@ -547,6 +590,7 @@
                 carregarVideos();
             } catch (error) {
                 showMessage('Erro ao publicar: ' + error.message, 'error');
+                console.error('Erro detalhado:', error);
             }
         }
 
@@ -590,7 +634,7 @@
                             <div><i class="fas fa-user"></i> ${escapeHtml(video.author)}</div>
                             <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
                         </div>
-                        ${currentUser && (currentUser.email === video.authorEmail || currentUser.email === 'admin@wolftube.com') ? 
+                        ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
                             `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.docId}')">
                                 <i class="fas fa-trash"></i> Excluir
                             </button>` : ''}
