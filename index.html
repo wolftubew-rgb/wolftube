@@ -347,13 +347,13 @@
         </div>
     </div>
 
-    <!-- Modal de Login - TODO MUNDO usa email + senha, mas senha só é verificada para admin -->
+    <!-- Modal de Login -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
             <h2>Login</h2>
             <input type="email" id="loginEmail" placeholder="Email">
-            <input type="password" id="loginPassword" placeholder="Senha (qualquer senha para usuário)">
+            <input type="password" id="loginPassword" placeholder="Senha">
             <button class="btn-primary" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
             <button class="btn-secondary" onclick="closeLoginModal()">Fechar</button>
         </div>
@@ -432,8 +432,8 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // Login: admin verifica senha, usuário normal aceita qualquer senha
-        async function doLogin() {
+        // Login: admin verifica email + senha, usuário normal verifica só email
+        function doLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
@@ -456,13 +456,13 @@
                 }
                 currentUser = {
                     email: email,
-                    name: 'Admin',
+                    name: 'Administrador',
                     type: 'admin'
                 };
             } else {
-                // Usuário normal: qualquer senha funciona
+                // Usuário normal: só precisa do email, senha não importa
                 if (!password) {
-                    showMessage('Digite uma senha! (qualquer senha serve)', 'error');
+                    showMessage('Digite sua senha!', 'error');
                     return;
                 }
                 const userName = email.split('@')[0];
