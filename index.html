@@ -3,18 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Vídeos com Capa</title>
+    <title>WolfTube - Sua Plataforma de Vídeos</title>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white;
             min-height: 100vh;
         }
+
         .header {
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
@@ -28,6 +36,7 @@
             top: 0;
             z-index: 100;
         }
+
         .logo {
             font-size: 28px;
             font-weight: bold;
@@ -35,10 +44,25 @@
             align-items: center;
             gap: 10px;
         }
-        .logo i { color: #ff4757; font-size: 32px; }
-        .logo span:first-child { color: #ff4757; }
-        .logo span:last-child { color: white; }
-        .nav-buttons { display: flex; gap: 12px; }
+
+        .logo i {
+            color: #ff4757;
+            font-size: 32px;
+        }
+
+        .logo span:first-child {
+            color: #ff4757;
+        }
+
+        .logo span:last-child {
+            color: white;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
         button {
             padding: 10px 20px;
             border: none;
@@ -51,11 +75,33 @@
             align-items: center;
             gap: 8px;
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
-        .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
-        .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
         .upload-area {
             background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(0,184,148,0.1));
             border-radius: 20px;
@@ -64,10 +110,27 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .upload-area h2 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #ff4757; }
-        .form-group input, .form-group textarea {
+
+        .upload-area h2 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #ff4757;
+        }
+
+        .form-group input,
+        .form-group textarea {
             width: 100%;
             padding: 12px 15px;
             border: none;
@@ -75,6 +138,7 @@
             font-size: 16px;
             background: rgba(255,255,255,0.9);
         }
+
         .thumbnail-upload {
             border: 2px dashed rgba(255,71,87,0.5);
             border-radius: 15px;
@@ -84,9 +148,24 @@
             transition: all 0.3s ease;
             background: rgba(0,0,0,0.3);
         }
-        .thumbnail-upload:hover { border-color: #ff4757; background: rgba(255,71,87,0.1); }
-        .thumbnail-upload i { font-size: 48px; color: #ff4757; margin-bottom: 10px; }
-        .thumbnail-preview { margin-top: 15px; position: relative; display: inline-block; }
+
+        .thumbnail-upload:hover {
+            border-color: #ff4757;
+            background: rgba(255,71,87,0.1);
+        }
+
+        .thumbnail-upload i {
+            font-size: 48px;
+            color: #ff4757;
+            margin-bottom: 10px;
+        }
+
+        .thumbnail-preview {
+            margin-top: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
         .thumbnail-preview img {
             max-width: 200px;
             max-height: 120px;
@@ -94,6 +173,7 @@
             border: 2px solid #ff4757;
             object-fit: cover;
         }
+
         .remove-thumbnail {
             position: absolute;
             top: -10px;
@@ -107,7 +187,13 @@
             color: white;
             font-size: 12px;
         }
-        .help-text { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px; }
+
+        .help-text {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 5px;
+        }
+
         .videos-header {
             display: flex;
             justify-content: space-between;
@@ -116,17 +202,20 @@
             flex-wrap: wrap;
             gap: 15px;
         }
+
         .sync-status {
             background: rgba(0,0,0,0.5);
             padding: 8px 15px;
             border-radius: 20px;
             font-size: 12px;
         }
+
         .videos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px;
         }
+
         .video-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -136,7 +225,12 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .video-card:hover { transform: translateY(-10px); border-color: rgba(255,71,87,0.5); }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255,71,87,0.5);
+        }
+
         .video-thumbnail {
             width: 100%;
             height: 200px;
@@ -147,6 +241,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .video-thumbnail::after {
             content: '▶';
             position: absolute;
@@ -156,11 +251,33 @@
             transition: opacity 0.3s ease;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        .video-card:hover .video-thumbnail::after { opacity: 0.9; }
-        .video-info { padding: 20px; }
-        .video-title { font-weight: bold; margin-bottom: 10px; font-size: 18px; color: #ff4757; }
-        .video-meta { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 10px; }
-        .video-meta i { margin-right: 5px; width: 20px; }
+
+        .video-card:hover .video-thumbnail::after {
+            opacity: 0.9;
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #ff4757;
+        }
+
+        .video-meta {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 10px;
+        }
+
+        .video-meta i {
+            margin-right: 5px;
+            width: 20px;
+        }
+
         .video-modal {
             position: fixed;
             top: 0;
@@ -174,6 +291,7 @@
             justify-content: center;
             z-index: 1000;
         }
+
         .video-container {
             background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
             border-radius: 20px;
@@ -183,6 +301,7 @@
             overflow: hidden;
             border: 2px solid rgba(255,71,87,0.3);
         }
+
         .video-header {
             padding: 15px 20px;
             background: rgba(0,0,0,0.5);
@@ -190,7 +309,11 @@
             justify-content: space-between;
             align-items: center;
         }
-        .video-header h3 { color: #ff4757; }
+
+        .video-header h3 {
+            color: #ff4757;
+        }
+
         .close-video {
             background: none;
             border: none;
@@ -198,6 +321,7 @@
             cursor: pointer;
             color: white;
         }
+
         .video-wrapper {
             position: relative;
             width: 100%;
@@ -205,6 +329,7 @@
             background: #000;
             cursor: pointer;
         }
+
         .video-wrapper iframe,
         .video-wrapper img {
             position: absolute;
@@ -215,6 +340,7 @@
             border: none;
             object-fit: contain;
         }
+
         .play-overlay {
             position: absolute;
             top: 0;
@@ -227,13 +353,22 @@
             background: rgba(0,0,0,0.3);
             z-index: 10;
         }
+
         .play-overlay i {
             font-size: 64px;
             color: white;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        .video-info-modal { padding: 20px; }
-        .video-info-modal p { margin: 5px 0; color: rgba(255,255,255,0.8); }
+
+        .video-info-modal {
+            padding: 20px;
+        }
+
+        .video-info-modal p {
+            margin: 5px 0;
+            color: rgba(255,255,255,0.8);
+        }
+
         .modal {
             position: fixed;
             top: 0;
@@ -247,7 +382,9 @@
             justify-content: center;
             z-index: 1000;
         }
-        .modal-content, .login-box {
+
+        .modal-content,
+        .login-box {
             background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
             padding: 40px;
             border-radius: 20px;
@@ -255,14 +392,20 @@
             max-width: 450px;
             text-align: center;
         }
-        .login-box input, .login-box select {
+
+        .login-box input,
+        .login-box select {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
             border: none;
             border-radius: 10px;
         }
-        .hidden { display: none; }
+
+        .hidden {
+            display: none;
+        }
+
         .alert {
             position: fixed;
             top: 80px;
@@ -272,16 +415,43 @@
             z-index: 1000;
             animation: slideIn 0.3s ease;
         }
-        .success { background: #00b894; color: white; }
-        .error { background: #ff4757; color: white; }
-        .delete-btn { margin-top: 10px; width: 100%; padding: 8px; font-size: 12px; }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+
+        .success {
+            background: #00b894;
+            color: white;
         }
+
+        .error {
+            background: #ff4757;
+            color: white;
+        }
+
+        .delete-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .videos-grid { grid-template-columns: 1fr; }
+            .container {
+                padding: 15px;
+            }
+
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -347,7 +517,6 @@
         </div>
     </div>
 
-    <!-- Modal de Login Normal (só email) -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
@@ -360,7 +529,6 @@
         </div>
     </div>
 
-    <!-- Modal de Login Admin (email + senha) -->
     <div class="modal hidden" id="adminLoginModal">
         <div class="login-box">
             <i class="fas fa-user-shield" style="font-size: 48px; color: #ff4757;"></i>
@@ -410,7 +578,6 @@
         const db = firebase.firestore();
         let currentUser = null;
 
-        // Dados do admin (fixo)
         const ADMIN_EMAIL = "admin@wolftube.com";
         const ADMIN_PASSWORD = "wolfadmin2010";
 
@@ -446,7 +613,6 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // Login normal (só email)
         async function doLogin() {
             const email = document.getElementById('loginEmail').value;
             
@@ -474,7 +640,6 @@
             showMessage(`Bem-vindo, ${userName}!`, 'success');
         }
 
-        // Login admin (email + senha)
         function doAdminLogin() {
             const email = document.getElementById('adminEmail').value;
             const password = document.getElementById('adminPassword').value;
@@ -619,7 +784,7 @@
         function exibirVideos(videos) {
             const grid = document.getElementById('videosGrid');
             if (videos.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda</p>';
+                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda. Seja o primeiro a postar!</p>';
                 return;
             }
             
@@ -750,7 +915,6 @@
     </script>
 </body>
 </html>
-
 
 
 
