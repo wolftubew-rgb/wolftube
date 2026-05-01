@@ -2,29 +2,23 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>WolfTube - Vídeos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WolfTube - Vídeos com Capa</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white;
             min-height: 100vh;
-            padding-bottom: 20px;
         }
         .header {
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
-            padding: 12px 20px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -35,137 +29,117 @@
             z-index: 100;
         }
         .logo {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
-        .logo i { color: #ff4757; font-size: 24px; }
+        .logo i { color: #ff4757; font-size: 32px; }
         .logo span:first-child { color: #ff4757; }
         .logo span:last-child { color: white; }
-        .nav-buttons { display: flex; gap: 10px; }
+        .nav-buttons { display: flex; gap: 12px; }
         button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             border: none;
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         .upload-area {
             background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(0,184,148,0.1));
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 30px;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .upload-area h2 {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 18px;
-        }
-        .form-group { margin-bottom: 15px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-            color: #ff4757;
-            font-size: 14px;
-        }
+        .upload-area h2 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #ff4757; }
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             border: none;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 16px;
             background: rgba(255,255,255,0.9);
         }
         .thumbnail-upload {
             border: 2px dashed rgba(255,71,87,0.5);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             background: rgba(0,0,0,0.3);
         }
         .thumbnail-upload:hover { border-color: #ff4757; background: rgba(255,71,87,0.1); }
-        .thumbnail-upload i { font-size: 32px; color: #ff4757; margin-bottom: 8px; }
-        .thumbnail-preview {
-            margin-top: 12px;
-            position: relative;
-            display: inline-block;
-        }
+        .thumbnail-upload i { font-size: 48px; color: #ff4757; margin-bottom: 10px; }
+        .thumbnail-preview { margin-top: 15px; position: relative; display: inline-block; }
         .thumbnail-preview img {
-            max-width: 150px;
-            max-height: 100px;
+            max-width: 200px;
+            max-height: 120px;
             border-radius: 10px;
             border: 2px solid #ff4757;
             object-fit: cover;
         }
         .remove-thumbnail {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -10px;
+            right: -10px;
             background: #ff4757;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
             color: white;
-            font-size: 10px;
+            font-size: 12px;
         }
-        .help-text { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; }
+        .help-text { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px; }
         .videos-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
-        .videos-header h2 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
         .sync-status {
             background: rgba(0,0,0,0.5);
-            padding: 5px 12px;
+            padding: 8px 15px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 12px;
         }
         .videos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
         }
         .video-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
-            border-radius: 12px;
+            border-radius: 15px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .video-card:hover { transform: translateY(-5px); border-color: rgba(255,71,87,0.5); }
+        .video-card:hover { transform: translateY(-10px); border-color: rgba(255,71,87,0.5); }
         .video-thumbnail {
             width: 100%;
-            height: 160px;
+            height: 200px;
             background-size: cover;
             background-position: center;
             position: relative;
@@ -176,25 +150,17 @@
         .video-thumbnail::after {
             content: '▶';
             position: absolute;
-            font-size: 40px;
+            font-size: 48px;
             color: white;
             opacity: 0;
             transition: opacity 0.3s ease;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .video-card:hover .video-thumbnail::after { opacity: 0.9; }
-        .video-info { padding: 15px; }
-        .video-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 16px;
-            color: #ff4757;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .video-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 8px; }
-        .video-meta i { margin-right: 5px; width: 18px; }
+        .video-info { padding: 20px; }
+        .video-title { font-weight: bold; margin-bottom: 10px; font-size: 18px; color: #ff4757; }
+        .video-meta { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 10px; }
+        .video-meta i { margin-right: 5px; width: 20px; }
         .video-modal {
             position: fixed;
             top: 0;
@@ -210,35 +176,27 @@
         }
         .video-container {
             background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-            border-radius: 16px;
-            width: 95%;
-            max-width: 500px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 900px;
             max-height: 90vh;
             overflow: hidden;
             border: 2px solid rgba(255,71,87,0.3);
         }
         .video-header {
-            padding: 12px 15px;
+            padding: 15px 20px;
             background: rgba(0,0,0,0.5);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .video-header h3 {
-            color: #ff4757;
-            font-size: 16px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex: 1;
-        }
+        .video-header h3 { color: #ff4757; }
         .close-video {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: white;
-            padding: 0 5px;
         }
         .video-wrapper {
             position: relative;
@@ -270,16 +228,12 @@
             z-index: 10;
         }
         .play-overlay i {
-            font-size: 50px;
+            font-size: 64px;
             color: white;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        .video-info-modal { padding: 15px; }
-        .video-info-modal p {
-            margin: 5px 0;
-            color: rgba(255,255,255,0.8);
-            font-size: 13px;
-        }
+        .video-info-modal { padding: 20px; }
+        .video-info-modal p { margin: 5px 0; color: rgba(255,255,255,0.8); }
         .modal {
             position: fixed;
             top: 0;
@@ -295,10 +249,10 @@
         }
         .modal-content, .login-box {
             background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-            padding: 30px;
+            padding: 40px;
             border-radius: 20px;
             width: 90%;
-            max-width: 350px;
+            max-width: 450px;
             text-align: center;
         }
         .login-box input, .login-box select {
@@ -307,40 +261,27 @@
             margin: 10px 0;
             border: none;
             border-radius: 10px;
-            font-size: 14px;
         }
         .hidden { display: none; }
         .alert {
             position: fixed;
-            top: 70px;
-            right: 15px;
-            left: 15px;
-            padding: 12px 20px;
+            top: 80px;
+            right: 20px;
+            padding: 15px 25px;
             border-radius: 10px;
             z-index: 1000;
             animation: slideIn 0.3s ease;
-            text-align: center;
-            font-size: 14px;
         }
         .success { background: #00b894; color: white; }
         .error { background: #ff4757; color: white; }
-        .delete-btn {
-            margin-top: 10px;
-            width: 100%;
-            padding: 8px;
-            font-size: 12px;
-        }
+        .delete-btn { margin-top: 10px; width: 100%; padding: 8px; font-size: 12px; }
         @keyframes slideIn {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             .container { padding: 15px; }
             .videos-grid { grid-template-columns: 1fr; }
-            .header { padding: 10px 15px; }
-            .logo { font-size: 18px; }
-            button { padding: 6px 12px; font-size: 12px; }
-            .upload-area { padding: 15px; }
         }
     </style>
 </head>
@@ -352,6 +293,7 @@
         </div>
         <div class="nav-buttons">
             <button class="btn-primary" onclick="showLoginModal()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+            <button class="btn-secondary" onclick="showRegisterModal()"><i class="fas fa-user-plus"></i> Cadastrar</button>
             <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> Sair</button>
         </div>
     </div>
@@ -364,10 +306,11 @@
                 <input type="text" id="videoTitle" placeholder="Título do vídeo">
             </div>
             <div class="form-group">
-                <label><i class="fas fa-images"></i> Capa do Vídeo</label>
+                <label><i class="fas fa-images"></i> Capa do Vídeo (da galeria)</label>
                 <div class="thumbnail-upload" onclick="document.getElementById('thumbnailInput').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <p>📸 Clique para escolher uma foto</p>
+                    <p>📸 Clique aqui para escolher uma foto da galeria</p>
+                    <p style="font-size: 12px;">A foto escolhida vai ser a CAPA do vídeo</p>
                 </div>
                 <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="previewThumbnail(this)">
                 <div id="thumbnailPreviewContainer" style="display: none;" class="thumbnail-preview">
@@ -376,13 +319,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <label><i class="fab fa-google-drive"></i> Link do Vídeo</label>
+                <label><i class="fab fa-google-drive"></i> Link do Vídeo (Google Drive)</label>
                 <input type="text" id="videoUrl" placeholder="https://drive.google.com/file/d/SEU_ID/view">
-                <div class="help-text">📌 Cole o link do Google Drive</div>
+                <div class="help-text">📌 Cole o link do Google Drive do seu vídeo</div>
             </div>
             <div class="form-group">
                 <label><i class="fas fa-align-left"></i> Descrição</label>
-                <textarea id="videoDesc" rows="2" placeholder="Descrição..."></textarea>
+                <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..."></textarea>
             </div>
             <button class="btn-primary" onclick="postVideo()"><i class="fas fa-paper-plane"></i> Publicar</button>
         </div>
@@ -397,24 +340,38 @@
     <!-- Modais -->
     <div class="modal" id="ageModal">
         <div class="modal-content">
-            <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #ff4757;"></i>
+            <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757;"></i>
             <h2>🔞 Verificação</h2>
             <p>Você tem 18 anos ou mais?</p>
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                <button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button>
-                <button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button>
-            </div>
+            <button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button>
+            <button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button>
         </div>
     </div>
 
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
-            <i class="fas fa-user-circle" style="font-size: 40px; color: #ff4757;"></i>
+            <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
             <h2>Login</h2>
             <input type="email" id="loginEmail" placeholder="Email">
             <input type="password" id="loginPassword" placeholder="Senha">
             <button class="btn-primary" onclick="doLogin()">Entrar</button>
             <button class="btn-secondary" onclick="closeLoginModal()">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="registerModal">
+        <div class="login-box">
+            <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
+            <h2>Cadastro</h2>
+            <input type="text" id="regName" placeholder="Nome">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Senha">
+            <select id="regType">
+                <option value="user">Usuário</option>
+                <option value="creator">Criador</option>
+            </select>
+            <button class="btn-primary" onclick="doRegister()">Cadastrar</button>
+            <button class="btn-secondary" onclick="closeRegisterModal()">Fechar</button>
         </div>
     </div>
 
@@ -424,7 +381,7 @@
                 <h3 id="modalVideoTitle">Título</h3>
                 <button class="close-video" onclick="closeVideoModal()">✕</button>
             </div>
-            <div class="video-wrapper">
+            <div class="video-wrapper" id="videoWrapper">
                 <img id="videoThumbnailImg" src="" style="display: block;">
                 <div class="play-overlay" id="playOverlay" onclick="playVideo()">
                     <i class="fas fa-play-circle"></i>
@@ -455,9 +412,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         let currentUser = null;
-
-        const ADMIN_EMAIL = "admin@wolftube.com";
-        const ADMIN_PASSWORD = "wolfadmin2010";
 
         function previewThumbnail(input) {
             if (input.files && input.files[0]) {
@@ -491,37 +445,72 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        function doLogin() {
+        // 🔥 CARREGAR USUÁRIOS DO FIREBASE
+        async function carregarUsuarios() {
+            const snapshot = await db.collection('usuarios').get();
+            if (snapshot.empty) {
+                // Criar admin padrão se não existir
+                await db.collection('usuarios').doc('admin@wolftube.com').set({
+                    email: 'admin@wolftube.com',
+                    password: 'wolfadmin2010',
+                    name: 'Admin',
+                    type: 'admin'
+                });
+            }
+        }
+
+        async function doLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            if (!email) {
-                showMessage('Digite seu email!', 'error');
+            try {
+                const userDoc = await db.collection('usuarios').doc(email).get();
+                
+                if (userDoc.exists && userDoc.data().password === password) {
+                    currentUser = userDoc.data();
+                    localStorage.setItem('wolftube_currentUser', JSON.stringify(currentUser));
+                    updateUI();
+                    closeLoginModal();
+                    showMessage(`Bem-vindo, ${currentUser.name}!`, 'success');
+                } else {
+                    showMessage('Email ou senha incorretos!', 'error');
+                }
+            } catch (error) {
+                showMessage('Erro ao fazer login: ' + error.message, 'error');
+            }
+        }
+
+        async function doRegister() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const type = document.getElementById('regType').value;
+            
+            if (!name || !email || !password) {
+                showMessage('Preencha todos os campos!', 'error');
                 return;
             }
             
-            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-                currentUser = {
+            try {
+                const userDoc = await db.collection('usuarios').doc(email).get();
+                
+                if (userDoc.exists) {
+                    showMessage('Email já cadastrado!', 'error');
+                    return;
+                }
+                
+                await db.collection('usuarios').doc(email).set({
                     email: email,
-                    name: 'Administrador',
-                    type: 'admin'
-                };
-            } else if (email && password) {
-                const userName = email.split('@')[0];
-                currentUser = {
-                    email: email,
-                    name: userName,
-                    type: 'user'
-                };
-            } else {
-                showMessage('Preencha email e senha!', 'error');
-                return;
+                    password: password,
+                    name: name,
+                    type: type
+                });
+                
+                showMessage('Cadastro realizado! Faça login.', 'success');
+                closeRegisterModal();
+            } catch (error) {
+                showMessage('Erro ao cadastrar: ' + error.message, 'error');
             }
-            
-            localStorage.setItem('wolftube_currentUser', JSON.stringify(currentUser));
-            updateUI();
-            closeLoginModal();
-            showMessage(`Bem-vindo, ${currentUser.name}!`, 'success');
         }
 
         function logout() {
@@ -533,16 +522,16 @@
 
         function updateUI() {
             const saved = localStorage.getItem('wolftube_currentUser');
-            if (saved) {
-                currentUser = JSON.parse(saved);
-            }
+            if (saved) currentUser = JSON.parse(saved);
             
             if (currentUser) {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
-                document.getElementById('uploadArea').style.display = 'block';
+                if (currentUser.type === 'creator' || currentUser.type === 'admin') {
+                    document.getElementById('uploadArea').style.display = 'block';
+                }
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
@@ -550,16 +539,6 @@
                 document.getElementById('logoutBtn').style.display = 'none';
                 document.getElementById('uploadArea').style.display = 'none';
             }
-        }
-
-        function showLoginModal() { 
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('loginModal').classList.remove('hidden'); 
-        }
-        
-        function closeLoginModal() { 
-            document.getElementById('loginModal').classList.add('hidden'); 
         }
 
         async function postVideo() {
@@ -572,8 +551,8 @@
                 return;
             }
             
-            if (!currentUser) {
-                showMessage('Faça login primeiro!', 'error');
+            if (!currentUser || (currentUser.type !== 'creator' && currentUser.type !== 'admin')) {
+                showMessage('Apenas criadores podem postar vídeos!', 'error');
                 return;
             }
             
@@ -608,14 +587,13 @@
                 removeThumbnail();
                 carregarVideos();
             } catch (error) {
-                showMessage('Erro: ' + error.message, 'error');
-                console.error(error);
+                showMessage('Erro ao publicar: ' + error.message, 'error');
             }
         }
 
         async function carregarVideos() {
             try {
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
                 snapshot.forEach(doc => {
@@ -624,35 +602,34 @@
                         ...doc.data() 
                     });
                 });
-                
-                if (videos.length === 0) {
-                    document.getElementById('videosGrid').innerHTML = '<p style="text-align:center; padding:40px;">🎬 Nenhum vídeo ainda</p>';
-                } else {
-                    exibirVideos(videos);
-                }
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i>';
+                exibirVideos(videos);
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
                 setTimeout(() => {
-                    document.getElementById('syncStatus').innerHTML = '<i class="fas fa-cloud"></i>';
+                    document.getElementById('syncStatus').innerHTML = '<i class="fas fa-cloud"></i> Nuvem';
                 }, 2000);
             } catch (error) {
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-                console.error(error);
-                document.getElementById('videosGrid').innerHTML = '<p style="text-align:center; padding:40px;">⚠️ Erro ao carregar vídeos. Recarregue a página.</p>';
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
+                console.error('Erro ao carregar:', error);
             }
         }
 
         function exibirVideos(videos) {
             const grid = document.getElementById('videosGrid');
+            if (videos.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda</p>';
+                return;
+            }
+            
             grid.innerHTML = videos.map(video => `
                 <div class="video-card" onclick="openVideoModal('${video.docId}')">
-                    <div class="video-thumbnail" style="background-image: url('${video.thumbnail || 'https://via.placeholder.com/320x180/ff4757/ffffff?text=WolfTube'}');">
+                    <div class="video-thumbnail" style="background-image: url('${video.thumbnail || 'https://via.placeholder.com/320x200/ff4757/ffffff?text=WolfTube'}');">
                         ${!video.thumbnail ? '<i class="fas fa-play-circle"></i>' : ''}
                     </div>
                     <div class="video-info">
                         <div class="video-title">${escapeHtml(video.title)}</div>
                         <div class="video-meta">
                             <div><i class="fas fa-user"></i> ${escapeHtml(video.author)}</div>
-                            <div><i class="fas fa-eye"></i> ${video.views || 0}</div>
+                            <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
                         </div>
                         ${currentUser && (currentUser.email === video.authorEmail || currentUser.type === 'admin') ? 
                             `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); deleteVideo('${video.docId}')">
@@ -704,7 +681,8 @@
                 document.getElementById('videoPlayerModal').classList.remove('hidden');
                 
             } catch (error) {
-                showMessage('Erro ao carregar vídeo!', 'error');
+                console.error('Erro detalhado:', error);
+                showMessage('Erro ao carregar vídeo: ' + error.message, 'error');
             }
         }
 
@@ -740,7 +718,7 @@
                     showMessage('Vídeo excluído!', 'success');
                     carregarVideos();
                 } catch (error) {
-                    showMessage('Erro ao excluir!', 'error');
+                    showMessage('Erro ao excluir: ' + error.message, 'error');
                 }
             }
         }
@@ -760,6 +738,13 @@
             return div.innerHTML;
         }
 
+        function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        function showRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
+        function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
+
+        // Inicialização
+        carregarUsuarios();
         const savedUser = localStorage.getItem('wolftube_currentUser');
         if (savedUser) {
             currentUser = JSON.parse(savedUser);
@@ -769,6 +754,5 @@
     </script>
 </body>
 </html>
-
 
 
