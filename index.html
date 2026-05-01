@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Ganhe Dinheiro com Vídeos</title>
-    <meta name="description" content="WolfTube - Plataforma de vídeos. Assista, publique e ganhe dinheiro!">
-    <meta name="keywords" content="vídeos, plataforma, wolf, tube, ganhar dinheiro, monetizar">
-    <meta name="author" content="WolfTube">
-    <meta name="robots" content="index, follow">
-    
+    <title>WolfTube - Apoie o Canal</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -69,7 +64,40 @@
         .btn-donate { background: linear-gradient(135deg, #11c76f, #7fba00); color: white; }
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         
-        /* Seção Premium */
+        /* Banner de Doação */
+        .donate-banner {
+            background: linear-gradient(135deg, #11c76f, #7fba00);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(17,199,111,0.3);
+        }
+        .donate-banner .text { flex: 1; }
+        .donate-banner h3 { font-size: 24px; margin-bottom: 5px; }
+        .donate-banner p { font-size: 14px; opacity: 0.9; }
+        .pix-area {
+            background: rgba(0,0,0,0.3);
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .pix-area code {
+            font-size: 14px;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+        
+        /* Banner Premium */
         .premium-banner {
             background: linear-gradient(135deg, #f39c12, #e67e22);
             border-radius: 20px;
@@ -78,8 +106,9 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(243,156,18,0.3);
         }
-        .premium-banner:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(243,156,18,0.3); }
+        .premium-banner:hover { transform: scale(1.02); }
         .premium-banner h3 { font-size: 24px; margin-bottom: 10px; }
         .premium-banner p { margin-bottom: 15px; }
         .premium-badge {
@@ -88,36 +117,7 @@
             padding: 5px 15px;
             border-radius: 20px;
             font-size: 12px;
-        }
-        
-        /* Banner de Doação */
-        .donate-banner {
-            background: linear-gradient(135deg, #11c76f, #7fba00);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .donate-banner .text { flex: 1; }
-        .donate-banner h3 { margin-bottom: 5px; }
-        .donate-banner p { font-size: 14px; opacity: 0.9; }
-        .pix-area {
-            background: rgba(0,0,0,0.3);
-            padding: 10px 20px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .pix-area code {
-            font-size: 14px;
-            background: rgba(0,0,0,0.5);
-            padding: 5px 10px;
-            border-radius: 8px;
+            margin-bottom: 10px;
         }
         
         .upload-area {
@@ -188,29 +188,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        
-        /* Anúncio Banner */
-        .ad-container {
-            margin: 20px 0;
-            text-align: center;
-            background: rgba(0,0,0,0.2);
-            border-radius: 15px;
-            padding: 10px;
-        }
-        .ad-label {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-        .ad-between {
-            background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(0,184,148,0.1));
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            border: 1px dashed rgba(255,71,87,0.3);
         }
         
         .footer {
@@ -382,6 +359,7 @@
             .container { padding: 15px; }
             .videos-grid { grid-template-columns: 1fr; }
             .donate-banner { flex-direction: column; text-align: center; }
+            .pix-area { justify-content: center; }
         }
     </style>
 </head>
@@ -399,26 +377,27 @@
     </div>
 
     <div class="container">
-        <!-- BANNER DE DOAÇÃO -->
-        <div class="donate-banner" id="donateBanner">
+        <!-- BANNER DE DOAÇÃO PIX -->
+        <div class="donate-banner">
             <div class="text">
-                <h3><i class="fas fa-heart"></i> Apoie o WolfTube!</h3>
-                <p>Sua doação nos ajuda a manter o site e melhorar cada vez mais!</p>
+                <h3><i class="fas fa-heart" style="color: #ff4757;"></i> Apoie o WolfTube!</h3>
+                <p>Sua doação ajuda a manter o site no ar e trazer mais conteúdo para você!</p>
+                <p style="font-size: 12px; margin-top: 5px;">✨ Qualquer valor é bem-vindo! ✨</p>
             </div>
             <div class="pix-area">
-                <i class="fas fa-qrcode" style="font-size: 24px;"></i>
-                <code id="pixCode">clique para copiar</code>
-                <button class="btn-donate" onclick="copiarPix()" style="padding: 8px 15px;">
+                <i class="fas fa-qrcode" style="font-size: 28px;"></i>
+                <code id="pixCode">Clique para copiar</code>
+                <button class="btn-donate" onclick="copiarPix()" style="padding: 10px 20px;">
                     <i class="fas fa-copy"></i> Copiar Pix
                 </button>
             </div>
         </div>
 
         <!-- BANNER PREMIUM -->
-        <div class="premium-banner" id="premiumBanner" onclick="mostrarPlanos()">
+        <div class="premium-banner" onclick="mostrarPlanos()">
             <div class="premium-badge"><i class="fas fa-crown"></i> WolfTube Premium</div>
             <h3>🌟 Desbloqueie benefícios exclusivos!</h3>
-            <p>Sem anúncios • Conteúdo exclusivo • Suporte VIP • Marca verificada</p>
+            <p><i class="fas fa-check-circle"></i> Sem anúncios • <i class="fas fa-check-circle"></i> Conteúdo exclusivo • <i class="fas fa-check-circle"></i> Marca verificada • <i class="fas fa-check-circle"></i> Suporte VIP</p>
             <button class="btn-premium" style="margin-top: 10px;"><i class="fas fa-gem"></i> Assinar por R$9,90/mês</button>
         </div>
 
@@ -454,16 +433,8 @@
         </div>
 
         <div class="videos-header">
-            <h2><i class="fas fa-video"></i> Vídeos <span id="premiumBadgeHeader"></span></h2>
+            <h2><i class="fas fa-video"></i> Vídeos</h2>
             <div class="sync-status" id="syncStatus"><i class="fas fa-sync-alt fa-spin"></i> Carregando...</div>
-        </div>
-        
-        <!-- ANÚNCIO ENTRE VÍDEOS -->
-        <div class="ad-between" id="adBetween">
-            <div class="ad-label">Publicidade</div>
-            <div style="font-size: 14px;">
-                🎬 Anuncie aqui! 📧 wolftube@anuncios.com
-            </div>
         </div>
         
         <div class="videos-grid" id="videosGrid"></div>
@@ -476,15 +447,14 @@
             <a href="#" onclick="mostrarPolitica()">Política de Privacidade</a>
             <a href="#" onclick="mostrarTermos()">Termos de Uso</a>
             <a href="#" onclick="mostrarContato()">Contato</a>
-            <a href="#" onclick="mostrarPlanos()">Planos Premium</a>
         </div>
-        <p style="font-size: 11px; opacity: 0.6;">WolfTube não armazena vídeos. Todo conteúdo é hospedado no Google Drive dos usuários.</p>
+        <p style="font-size: 11px; opacity: 0.6;">WolfTube - Sua plataforma de vídeos</p>
     </div>
 
-    <!-- Modal Política -->
+    <!-- Modais -->
     <div id="politicaModal" class="modal hidden"><div class="modal-content" style="max-width: 600px; text-align: left;"><h2><i class="fas fa-shield-alt"></i> Política de Privacidade</h2><div style="margin-top: 20px;"><p><strong>1. Coleta de Informações</strong><br>Coletamos apenas email e nome para identificação.</p><p><strong>2. Cookies</strong><br>Utilizamos cookies para melhorar sua experiência.</p><p><strong>3. Seus Dados</strong><br>Você pode solicitar exclusão dos seus dados a qualquer momento.</p><p><strong>4. Contato</strong><br>wolftube@contato.com</p></div><button class="btn-primary" onclick="fecharPolitica()">Fechar</button></div></div>
     
-    <div id="termosModal" class="modal hidden"><div class="modal-content" style="max-width: 600px; text-align: left;"><h2><i class="fas fa-file-contract"></i> Termos de Uso</h2><div style="margin-top: 20px;"><p><strong>1. Conteúdo</strong><br>Você é responsável pelo conteúdo que publica.</p><p><strong>2. Proibições</strong><br>Não é permitido conteúdo ilegal ou violento.</p><p><strong>3. Direitos Autorais</strong><br>Respeite direitos autorais ao publicar vídeos.</p></div><button class="btn-primary" onclick="fecharTermos()">Fechar</button></div></div>
+    <div id="termosModal" class="modal hidden"><div class="modal-content" style="max-width: 600px; text-align: left;"><h2><i class="fas fa-file-contract"></i> Termos de Uso</h2><div style="margin-top: 20px;"><p><strong>1. Conteúdo</strong><br>Você é responsável pelo conteúdo que publica.</p><p><strong>2. Proibições</strong><br>Não é permitido conteúdo ilegal ou violento.</p><p><strong>3. Direitos Autorais</strong><br>Respeite direitos autorais ao publicar vídeos.</p><p><strong>4. Remoção</strong><br>Podemos remover conteúdo que viole estas regras.</p></div><button class="btn-primary" onclick="fecharTermos()">Fechar</button></div></div>
     
     <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2><i class="fas fa-envelope"></i> Contato</h2><p style="margin: 20px 0;">📧 Email: wolftube@contato.com</p><p>📱 WhatsApp: (11) 99999-9999</p><p>📸 Instagram: @wolftube</p><button class="btn-primary" onclick="fecharContato()">Fechar</button></div></div>
 
@@ -495,29 +465,33 @@
             <div style="margin: 20px 0; text-align: left;">
                 <div style="background: rgba(243,156,18,0.2); padding: 15px; border-radius: 15px; margin-bottom: 15px;">
                     <h3 style="color: #f39c12;">🌟 Plano Mensal - R$9,90/mês</h3>
-                    <p>✓ Sem anúncios</p>
-                    <p>✓ Conteúdo exclusivo</p>
-                    <p>✓ Marca verificada</p>
-                    <p>✓ Suporte prioritário</p>
-                    <button class="btn-premium" onclick="assinarPremium()" style="margin-top: 15px; width: 100%;">Assinar Agora</button>
+                    <p><i class="fas fa-check-circle"></i> Sem anúncios</p>
+                    <p><i class="fas fa-check-circle"></i> Conteúdo exclusivo</p>
+                    <p><i class="fas fa-check-circle"></i> Marca verificada</p>
+                    <p><i class="fas fa-check-circle"></i> Suporte prioritário</p>
+                    <button class="btn-premium" onclick="assinarPremium()" style="margin-top: 15px; width: 100%;"><i class="fas fa-gem"></i> Assinar Agora</button>
                 </div>
                 <div style="background: rgba(0,184,148,0.2); padding: 15px; border-radius: 15px;">
                     <h3 style="color: #00b894;">🎬 Plano Criador - R$29,90/mês</h3>
-                    <p>✓ Todos os benefícios Premium</p>
-                    <p>✓ Destaque nos vídeos</p>
-                    <p>✓ Suporte 24h</p>
-                    <p>✓ Análise de métricas</p>
-                    <button class="btn-secondary" onclick="assinarCriador()" style="margin-top: 15px; width: 100%;">Assinar Agora</button>
+                    <p><i class="fas fa-check-circle"></i> Todos os benefícios Premium</p>
+                    <p><i class="fas fa-check-circle"></i> Destaque nos vídeos</p>
+                    <p><i class="fas fa-check-circle"></i> Suporte 24h</p>
+                    <p><i class="fas fa-check-circle"></i> Análise de métricas</p>
+                    <button class="btn-secondary" onclick="assinarCriador()" style="margin-top: 15px; width: 100%;"><i class="fas fa-crown"></i> Assinar Agora</button>
                 </div>
             </div>
-            <button class="btn-danger" onclick="fecharPlanos()">Fechar</button>
+            <p style="font-size: 12px; margin-top: 10px;">💳 Pix: wolftube@contato.com</p>
+            <button class="btn-danger" onclick="fecharPlanos()" style="margin-top: 15px;">Fechar</button>
         </div>
     </div>
 
     <!-- Modais Login/Cadastro/Idade/Vídeo -->
     <div class="modal" id="ageModal"><div class="modal-content"><i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757;"></i><h2>🔞 Verificação</h2><p>Você tem 18 anos ou mais?</p><button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button><button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button></div></div>
+    
     <div class="modal hidden" id="loginModal"><div class="login-box"><i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i><h2>Login</h2><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Senha"><button class="btn-primary" onclick="fazerLogin()">Entrar</button><button class="btn-secondary" onclick="fecharLogin()">Fechar</button></div></div>
+    
     <div class="modal hidden" id="registerModal"><div class="login-box"><i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i><h2>Cadastro</h2><input type="text" id="regName" placeholder="Nome"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPassword" placeholder="Senha"><select id="regType"><option value="user">Usuário</option><option value="creator">Criador</option></select><button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button><button class="btn-secondary" onclick="fecharCadastro()">Fechar</button></div></div>
+    
     <div id="videoPlayerModal" class="video-modal hidden"><div class="video-container"><div class="video-header"><h3 id="modalVideoTitle">Título</h3><button class="close-video" onclick="closeVideoModal()">✕</button></div><div class="video-wrapper"><img id="videoThumbnailImg" src="" style="display: block;"><div class="play-overlay" id="playOverlay" onclick="playVideo()"><i class="fas fa-play-circle"></i></div><iframe id="videoIframe" src="" frameborder="0" allowfullscreen style="display: none;"></iframe></div><div class="video-info-modal"><p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p><p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p><p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p></div></div></div>
 
     <script>
@@ -536,13 +510,12 @@
         let usuarioAtual = null;
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
-        let isPremium = false;
 
-        // Funções de Monetização
+        // FUNÇÕES DE APOIO (DOAÇÃO E PREMIUM)
         function copiarPix() {
-            const chavePix = "seu-email@wolfTube.com"; // Mude para sua chave Pix
+            const chavePix = "wolftube@contato.com";
             navigator.clipboard.writeText(chavePix);
-            alert("✅ Chave Pix copiada! Envie qualquer valor para apoiar o WolfTube.");
+            alert("✅ Chave Pix copiada!\n\nChave: wolftube@contato.com\n\nEnvie qualquer valor para apoiar o WolfTube!");
         }
 
         function mostrarPlanos() {
@@ -553,11 +526,11 @@
         }
         
         function assinarPremium() {
-            alert("🌟 Premium ativado!\n\nChave Pix para pagamento:\nseu-email@wolfTube.com\n\nApós o pagamento, envie comprovante para wolftube@contato.com");
+            alert("🌟 Plano Premium - R$9,90/mês\n\nChave Pix: wolftube@contato.com\n\nApós o pagamento, envie comprovante para wolftube@contato.com\nSeu premium será ativado em até 24h!");
         }
         
         function assinarCriador() {
-            alert("🎬 Plano Criador ativado!\n\nChave Pix para pagamento:\nseu-email@wolfTube.com\n\nEntre em contato para ativar seus benefícios exclusivos!");
+            alert("🎬 Plano Criador - R$29,90/mês\n\nChave Pix: wolftube@contato.com\n\n✓ Destaque nos vídeos\n✓ Suporte 24h\n✓ Análise de métricas\n\nEntre em contato após o pagamento!");
         }
         
         function mostrarPolitica() { document.getElementById('politicaModal').classList.remove('hidden'); }
@@ -600,7 +573,7 @@
                 const adminRef = db.collection('usuarios').doc('admin@wolftube.com');
                 const adminDoc = await adminRef.get();
                 if (!adminDoc.exists) {
-                    await adminRef.set({ email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Administrador', type: 'admin', premium: true });
+                    await adminRef.set({ email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Administrador', type: 'admin' });
                     console.log("✅ Admin criado!");
                 }
             } catch (error) { console.error("Erro:", error); }
@@ -620,12 +593,10 @@
                 if (userDoc.exists && userDoc.data().password === senha) {
                     usuarioAtual = userDoc.data();
                     localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
-                    isPremium = usuarioAtual.premium || false;
-                    alert(`Bem-vindo, ${usuarioAtual.name}!${isPremium ? ' 🌟 Você é Premium!' : ''}`);
+                    alert(`Bem-vindo, ${usuarioAtual.name}!`);
                     document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
                     if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadArea').style.display = 'block'; }
-                    if (isPremium) { document.getElementById('premiumBanner').style.display = 'none'; document.getElementById('adBetween').style.display = 'none'; document.getElementById('premiumBadgeHeader').innerHTML = '<i class="fas fa-crown premium-icon"></i> Premium'; }
                     fecharLogin();
                     carregarVideos();
                 } else { alert('Email ou senha incorretos!'); }
@@ -641,7 +612,7 @@
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
                 if (userDoc.exists) { alert('Email já cadastrado!'); return; }
-                await db.collection('usuarios').doc(email).set({ email, password, name, type, premium: false });
+                await db.collection('usuarios').doc(email).set({ email, password, name, type });
                 alert('Cadastro realizado! Faça login.');
                 fecharCadastro();
             } catch (error) { alert('Erro: ' + error.message); }
@@ -653,9 +624,6 @@
             document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex'; });
             document.getElementById('logoutBtn').style.display = 'none';
             document.getElementById('uploadArea').style.display = 'none';
-            document.getElementById('premiumBanner').style.display = 'flex';
-            document.getElementById('adBetween').style.display = 'block';
-            document.getElementById('premiumBadgeHeader').innerHTML = '';
             mostrarLogin();
         }
 
@@ -674,7 +642,7 @@
                 else if (link.includes('id=')) { fileId = link.split('id=')[1].split('&')[0]; }
                 if (fileId) embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
             }
-            const video = { title: titulo, url: embedUrl, thumbnail: currentThumbnailBase64 || '', description: descricao || 'Sem descrição', author: usuarioAtual.name, authorEmail: usuarioAtual.email, date: new Date().toISOString(), views: 0, premium: false };
+            const video = { title: titulo, url: embedUrl, thumbnail: currentThumbnailBase64 || '', description: descricao || 'Sem descrição', author: usuarioAtual.name, authorEmail: usuarioAtual.email, date: new Date().toISOString(), views: 0 };
             try {
                 await db.collection('videos').add(video);
                 alert('✅ Vídeo publicado!');
@@ -699,10 +667,9 @@
                         <div class="video-card" onclick="abrirVideoModal('${video.docId}')">
                             <div class="video-thumbnail" style="background-image: url('${video.thumbnail || 'https://via.placeholder.com/320x200/ff4757/ffffff?text=WolfTube'}');">
                                 ${!video.thumbnail ? '<i class="fas fa-play-circle"></i>' : ''}
-                                ${video.premium ? '<span style="position:absolute; top:10px; right:10px; background:#f39c12; padding:5px 10px; border-radius:20px; font-size:10px;"><i class="fas fa-crown"></i> Premium</span>' : ''}
                             </div>
                             <div class="video-info">
-                                <div class="video-title">${escapeHtml(video.title)}${video.premium ? ' <i class="fas fa-crown premium-icon"></i>' : ''}</div>
+                                <div class="video-title">${escapeHtml(video.title)}</div>
                                 <div class="video-meta">
                                     <div><i class="fas fa-user"></i> ${escapeHtml(video.author)}</div>
                                     <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
@@ -724,11 +691,6 @@
                 const video = await videoRef.get();
                 if (!video.exists) { alert('Vídeo não encontrado!'); return; }
                 const videoData = video.data();
-                if (videoData.premium && !isPremium && (!usuarioAtual || usuarioAtual.type !== 'admin')) {
-                    alert('🌟 Este é um vídeo PREMIUM!\n\nAssine o WolfTube Premium por R$9,90/mês para assistir!');
-                    mostrarPlanos();
-                    return;
-                }
                 const views = (videoData.views || 0) + 1;
                 await videoRef.update({ views: views });
                 document.getElementById('modalVideoTitle').textContent = videoData.title;
@@ -783,11 +745,9 @@
             const salvo = localStorage.getItem('usuario');
             if (salvo) {
                 usuarioAtual = JSON.parse(salvo);
-                isPremium = usuarioAtual.premium || false;
                 if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadArea').style.display = 'block'; }
                 document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
-                if (isPremium) { document.getElementById('premiumBanner').style.display = 'none'; document.getElementById('adBetween').style.display = 'none'; document.getElementById('premiumBadgeHeader').innerHTML = '<i class="fas fa-crown premium-icon"></i> Premium'; }
             }
             carregarVideos();
         }
