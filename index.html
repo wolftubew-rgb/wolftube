@@ -399,7 +399,7 @@
     <script>
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
-        let isLoading = false; // 🔥 IMPEDE CARREGAMENTO DUPLICADO
+        let isLoading = false;
 
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
@@ -446,22 +446,30 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // 🔥 CARREGAR USUÁRIOS DO FIREBASE
-        async function carregarUsuarios() {
-            const snapshot = await db.collection('usuarios').get();
-            if (snapshot.empty) {
-                await db.collection('usuarios').doc('admin@wolftube.com').set({
+        // 🔥 CRIAR ADMIN AUTOMATICAMENTE SE NÃO EXISTIR
+        async function criarAdminSeNecessario() {
+            const adminRef = db.collection('usuarios').doc('admin@wolftube.com');
+            const adminDoc = await adminRef.get();
+            
+            if (!adminDoc.exists) {
+                await adminRef.set({
                     email: 'admin@wolftube.com',
                     password: 'wolfadmin2010',
-                    name: 'Admin',
+                    name: 'Administrador',
                     type: 'admin'
                 });
+                console.log("✅ Admin criado automaticamente!");
             }
         }
 
         async function doLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showMessage('Preencha email e senha!', 'error');
+                return;
+            }
             
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
@@ -476,6 +484,7 @@
                     showMessage('Email ou senha incorretos!', 'error');
                 }
             } catch (error) {
+                console.error('Erro no login:', error);
                 showMessage('Erro ao fazer login: ' + error.message, 'error');
             }
         }
@@ -531,6 +540,8 @@
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
+                } else {
+                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
@@ -585,15 +596,14 @@
                 document.getElementById('videoUrl').value = '';
                 document.getElementById('videoDesc').value = '';
                 removeThumbnail();
-                await carregarVideos(); // Aguarda carregar antes de continuar
+                await carregarVideos();
             } catch (error) {
                 showMessage('Erro ao publicar: ' + error.message, 'error');
             }
         }
 
-        // 🔥 CORREÇÃO: Impede carregamento duplicado
         async function carregarVideos() {
-            if (isLoading) return; // Se já está carregando, não carrega de novo
+            if (isLoading) return;
             isLoading = true;
             
             try {
@@ -750,14 +760,21 @@
         function closeRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
 
         // Inicialização
-        carregarUsuarios();
-        const savedUser = localStorage.getItem('wolftube_currentUser');
-        if (savedUser) {
-            currentUser = JSON.parse(savedUser);
-            updateUI();
+        async function init() {
+            await criarAdminSeNecessario();
+            const savedUser = localStorage.getItem('wolftube_currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUI();
+            }
+            await carregarVideos();
         }
-        carregarVideos();
+        
+        init();
     </script>
 </body>
 </html>
+
+
+
 
