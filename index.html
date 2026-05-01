@@ -399,6 +399,7 @@
     <script>
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
+        let isLoading = false; // 🔥 IMPEDE CARREGAMENTO DUPLICADO
 
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
@@ -449,7 +450,6 @@
         async function carregarUsuarios() {
             const snapshot = await db.collection('usuarios').get();
             if (snapshot.empty) {
-                // Criar admin padrão se não existir
                 await db.collection('usuarios').doc('admin@wolftube.com').set({
                     email: 'admin@wolftube.com',
                     password: 'wolfadmin2010',
@@ -585,13 +585,17 @@
                 document.getElementById('videoUrl').value = '';
                 document.getElementById('videoDesc').value = '';
                 removeThumbnail();
-                carregarVideos();
+                await carregarVideos(); // Aguarda carregar antes de continuar
             } catch (error) {
                 showMessage('Erro ao publicar: ' + error.message, 'error');
             }
         }
 
+        // 🔥 CORREÇÃO: Impede carregamento duplicado
         async function carregarVideos() {
+            if (isLoading) return; // Se já está carregando, não carrega de novo
+            isLoading = true;
+            
             try {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
@@ -610,6 +614,8 @@
             } catch (error) {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
                 console.error('Erro ao carregar:', error);
+            } finally {
+                isLoading = false;
             }
         }
 
@@ -716,7 +722,7 @@
                 try {
                     await db.collection('videos').doc(docId).delete();
                     showMessage('Vídeo excluído!', 'success');
-                    carregarVideos();
+                    await carregarVideos();
                 } catch (error) {
                     showMessage('Erro ao excluir: ' + error.message, 'error');
                 }
@@ -754,5 +760,4 @@
     </script>
 </body>
 </html>
-
 
