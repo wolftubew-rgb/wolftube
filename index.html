@@ -4,23 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>WolfTube - Apoie o Canal</title>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white;
             min-height: 100vh;
         }
+
+        /* Header */
         .header {
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
-            padding: 15px 30px;
+            padding: 20px 30px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             flex-wrap: wrap;
             border-bottom: 3px solid #ff4757;
@@ -28,338 +33,356 @@
             top: 0;
             z-index: 100;
         }
+
         .logo {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            color: #ff4757;
+            font-size: 36px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo span:first-child {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo span:last-child {
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Banner de Doação Principal */
+        .donate-main {
+            background: linear-gradient(135deg, #11c76f, #7fba00);
+            border-radius: 30px;
+            padding: 50px 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(17,199,111,0.3);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .donate-main h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .donate-main h1 i {
+            margin-right: 10px;
+        }
+
+        .donate-main p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .pix-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 60px;
+            padding: 15px 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .pix-card code {
+            font-size: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .btn-pix {
+            background: white;
+            color: #11c76f;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-pix:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Cards de Apoio */
+        .support-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 71, 87, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card i {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .card .price {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff4757;
+            margin: 15px 0;
+        }
+
+        .card .price small {
+            font-size: 14px;
+            font-weight: normal;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .card p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .card ul {
+            text-align: left;
+            margin: 20px 0;
+            list-style: none;
+        }
+
+        .card ul li {
+            margin: 10px 0;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .logo i { color: #ff4757; font-size: 32px; animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+
+        .card ul li i {
+            font-size: 18px;
+            width: 24px;
         }
-        .logo span:first-child { background: linear-gradient(135deg, #ff4757, #ff6b81); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo span:last-child { color: white; }
-        .nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
-        .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
-        .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
-        .btn-premium { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
-        .btn-donate { background: linear-gradient(135deg, #11c76f, #7fba00); color: white; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
-        
-        /* Banner de Doação */
-        .donate-banner {
-            background: linear-gradient(135deg, #11c76f, #7fba00);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            box-shadow: 0 10px 30px rgba(17,199,111,0.3);
-        }
-        .donate-banner .text { flex: 1; }
-        .donate-banner h3 { font-size: 24px; margin-bottom: 5px; }
-        .donate-banner p { font-size: 14px; opacity: 0.9; }
-        .pix-area {
-            background: rgba(0,0,0,0.3);
-            padding: 12px 20px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .pix-area code {
-            font-size: 14px;
-            background: rgba(0,0,0,0.5);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-family: monospace;
-        }
-        
-        /* Banner Premium */
-        .premium-banner {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(243,156,18,0.3);
-        }
-        .premium-banner:hover { transform: scale(1.02); }
-        .premium-banner h3 { font-size: 24px; margin-bottom: 10px; }
-        .premium-banner p { margin-bottom: 15px; }
-        .premium-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-        
-        .upload-area {
-            background: linear-gradient(135deg, rgba(255,71,87,0.1), rgba(0,184,148,0.1));
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .upload-area h2 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #ff4757; }
-        .form-group input, .form-group textarea {
+
+        .btn-card {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             font-size: 16px;
-            background: rgba(255,255,255,0.9);
-        }
-        .thumbnail-upload {
-            border: 2px dashed rgba(255,71,87,0.5);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(0,0,0,0.3);
+            margin-top: 10px;
         }
-        .thumbnail-upload:hover { border-color: #ff4757; background: rgba(255,71,87,0.1); }
-        .thumbnail-upload i { font-size: 48px; color: #ff4757; margin-bottom: 10px; }
-        .thumbnail-preview { margin-top: 15px; position: relative; display: inline-block; }
-        .thumbnail-preview img {
-            max-width: 200px;
-            max-height: 120px;
-            border-radius: 10px;
-            border: 2px solid #ff4757;
-            object-fit: cover;
-        }
-        .remove-thumbnail {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #ff4757;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            cursor: pointer;
+
+        .btn-premium {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
             color: white;
-            font-size: 12px;
         }
-        .help-text { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px; }
-        .videos-header {
+
+        .btn-creator {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .btn-card:hover {
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+
+        /* Seção de Metas */
+        .goals-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .goals-section h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .goal-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            height: 30px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .goal-progress {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            width: 0%;
+            height: 100%;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+
+        .goal-stats {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
+            font-size: 14px;
+            opacity: 0.8;
         }
-        .sync-status {
-            background: rgba(0,0,0,0.5);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
+
+        /* Footer */
         .footer {
             margin-top: 60px;
             padding: 30px;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 20px;
             text-align: center;
             font-size: 13px;
         }
-        .footer a { color: #ff4757; text-decoration: none; margin: 0 15px; }
-        .footer a:hover { text-decoration: underline; }
-        
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
+
+        .footer a {
+            color: #ff4757;
+            text-decoration: none;
+            margin: 0 15px;
         }
-        .video-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
+
+        .footer a:hover {
+            text-decoration: underline;
         }
-        .video-card:hover { transform: translateY(-10px); border-color: rgba(255,71,87,0.5); }
-        .video-thumbnail {
-            width: 100%;
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .video-thumbnail::after {
-            content: '▶';
-            position: absolute;
-            font-size: 48px;
-            color: white;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .video-card:hover .video-thumbnail::after { opacity: 0.9; }
-        .video-info { padding: 20px; }
-        .video-title { font-weight: bold; margin-bottom: 10px; font-size: 18px; color: #ff4757; }
-        .video-meta { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 10px; }
-        .video-meta i { margin-right: 5px; width: 20px; }
-        .premium-icon { color: #f39c12; margin-left: 5px; }
-        
-        .video-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .video-container {
-            background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-            border-radius: 20px;
-            width: 90%;
-            max-width: 900px;
-            max-height: 90vh;
-            overflow: hidden;
-            border: 2px solid rgba(255,71,87,0.3);
-        }
-        .video-header {
-            padding: 15px 20px;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .video-header h3 { color: #ff4757; }
-        .close-video {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: white;
-        }
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            background: #000;
-            cursor: pointer;
-        }
-        .video-wrapper iframe, .video-wrapper img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            object-fit: contain;
-        }
-        .play-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-        .play-overlay i { font-size: 64px; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        .video-info-modal { padding: 20px; }
-        .video-info-modal p { margin: 5px 0; color: rgba(255,255,255,0.8); }
+
+        /* Modal */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            animation: fadeIn 0.3s ease;
         }
-        .modal-content, .login-box {
+
+        .modal-content {
             background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
             padding: 40px;
-            border-radius: 20px;
+            border-radius: 28px;
             width: 90%;
-            max-width: 450px;
+            max-width: 500px;
             text-align: center;
+            border: 2px solid rgba(255, 71, 87, 0.3);
         }
-        .login-box input, .login-box select {
-            width: 100%;
-            padding: 12px;
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #ff4757;
+        }
+
+        .modal-content .pix-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .modal-content .pix-info code {
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: inline-block;
             margin: 10px 0;
+        }
+
+        .btn-close {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 30px;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
         }
-        .hidden { display: none; }
-        .alert {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
+
+        .hidden {
+            display: none;
         }
-        .success { background: #00b894; color: white; }
-        .error { background: #ff4757; color: white; }
-        .delete-btn { margin-top: 10px; width: 100%; padding: 8px; font-size: 12px; }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .videos-grid { grid-template-columns: 1fr; }
-            .donate-banner { flex-direction: column; text-align: center; }
-            .pix-area { justify-content: center; }
+            .donate-main h1 { font-size: 32px; }
+            .pix-card code { font-size: 14px; }
+            .card .price { font-size: 24px; }
+            .support-cards { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -369,389 +392,224 @@
             <i class="fas fa-wolf-pack-battalion"></i>
             <span>Wolf</span><span>Tube</span>
         </div>
-        <div class="nav-buttons">
-            <button class="btn-primary" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            <button class="btn-secondary" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> Cadastrar</button>
-            <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> Sair</button>
-        </div>
     </div>
 
     <div class="container">
-        <!-- BANNER DE DOAÇÃO PIX -->
-        <div class="donate-banner">
-            <div class="text">
-                <h3><i class="fas fa-heart" style="color: #ff4757;"></i> Apoie o WolfTube!</h3>
-                <p>Sua doação ajuda a manter o site no ar e trazer mais conteúdo para você!</p>
-                <p style="font-size: 12px; margin-top: 5px;">✨ Qualquer valor é bem-vindo! ✨</p>
-            </div>
-            <div class="pix-area">
-                <i class="fas fa-qrcode" style="font-size: 28px;"></i>
-                <code id="pixCode">Clique para copiar</code>
-                <button class="btn-donate" onclick="copiarPix()" style="padding: 10px 20px;">
+        <!-- Banner Principal de Doação -->
+        <div class="donate-main">
+            <h1><i class="fas fa-heart"></i> Apoie o WolfTube</h1>
+            <p>Sua contribuição nos ajuda a continuar trazendo o melhor conteúdo para você!</p>
+            <div class="pix-card">
+                <i class="fas fa-qrcode" style="font-size: 32px;"></i>
+                <code id="pixCode">wolftube@contato.com</code>
+                <button class="btn-pix" onclick="copiarPix()">
                     <i class="fas fa-copy"></i> Copiar Pix
                 </button>
             </div>
         </div>
 
-        <!-- BANNER PREMIUM -->
-        <div class="premium-banner" onclick="mostrarPlanos()">
-            <div class="premium-badge"><i class="fas fa-crown"></i> WolfTube Premium</div>
-            <h3>🌟 Desbloqueie benefícios exclusivos!</h3>
-            <p><i class="fas fa-check-circle"></i> Sem anúncios • <i class="fas fa-check-circle"></i> Conteúdo exclusivo • <i class="fas fa-check-circle"></i> Marca verificada • <i class="fas fa-check-circle"></i> Suporte VIP</p>
-            <button class="btn-premium" style="margin-top: 10px;"><i class="fas fa-gem"></i> Assinar por R$9,90/mês</button>
+        <!-- Cards de Apoio -->
+        <div class="support-cards">
+            <!-- Card Doação Única -->
+            <div class="card" onclick="mostrarDoacao()">
+                <i class="fas fa-hand-holding-heart" style="color: #ff4757;"></i>
+                <h3>Doação Única</h3>
+                <div class="price">Qualquer valor</div>
+                <p>Contribua com quanto quiser e nos ajude a manter o projeto vivo!</p>
+                <ul>
+                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Apoio direto</li>
+                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Menção nos agradecimentos</li>
+                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Satisfação de ajudar</li>
+                </ul>
+                <button class="btn-card btn-premium"><i class="fas fa-heart"></i> Doar Agora</button>
+            </div>
+
+            <!-- Card Premium -->
+            <div class="card" onclick="mostrarPremium()">
+                <i class="fas fa-crown" style="color: #f39c12;"></i>
+                <h3>WolfTube Premium</h3>
+                <div class="price">R$9,90 <small>/mês</small></div>
+                <p>Benefícios exclusivos para apoiadores mensais!</p>
+                <ul>
+                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Conteúdo exclusivo</li>
+                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Marca verificada</li>
+                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Suporte prioritário</li>
+                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Emblema de apoiador</li>
+                </ul>
+                <button class="btn-card btn-premium"><i class="fas fa-gem"></i> Assinar Premium</button>
+            </div>
+
+            <!-- Card Criador -->
+            <div class="card" onclick="mostrarCriador()">
+                <i class="fas fa-video" style="color: #00b894;"></i>
+                <h3>Plano Criador</h3>
+                <div class="price">R$29,90 <small>/mês</small></div>
+                <p>Para criadores que querem destaque!</p>
+                <ul>
+                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Todos benefícios Premium</li>
+                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Destaque nos vídeos</li>
+                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Suporte 24h</li>
+                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Análise de métricas</li>
+                </ul>
+                <button class="btn-card btn-creator"><i class="fas fa-crown"></i> Assinar Criador</button>
+            </div>
         </div>
 
-        <!-- ÁREA DE UPLOAD (só para criadores/admin) -->
-        <div class="upload-area" id="uploadArea" style="display:none;">
-            <h2><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</h2>
-            <div class="form-group">
-                <label><i class="fas fa-heading"></i> Título</label>
-                <input type="text" id="videoTitle" placeholder="Título do vídeo">
+        <!-- Metas -->
+        <div class="goals-section">
+            <h2><i class="fas fa-chart-line"></i> Metas do Projeto</h2>
+            <div class="goal-bar">
+                <div class="goal-progress" id="goalProgress" style="width: 35%;">35%</div>
             </div>
-            <div class="form-group">
-                <label><i class="fas fa-images"></i> Capa do Vídeo</label>
-                <div class="thumbnail-upload" onclick="document.getElementById('thumbnailInput').click()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>📸 Clique para escolher uma foto da galeria</p>
-                </div>
-                <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="previewThumbnail(this)">
-                <div id="thumbnailPreviewContainer" style="display: none;" class="thumbnail-preview">
-                    <img id="thumbnailPreview" src="">
-                    <button class="remove-thumbnail" onclick="removeThumbnail()">✕</button>
-                </div>
+            <div class="goal-stats">
+                <span>📊 Arrecadado: <span id="arrecadado">R$ 350,00</span></span>
+                <span>🎯 Meta: R$ 1.000,00</span>
+                <span>👥 Apoiadores: <span id="apoiadores">12</span></span>
             </div>
-            <div class="form-group">
-                <label><i class="fab fa-google-drive"></i> Link do Vídeo</label>
-                <input type="text" id="videoUrl" placeholder="https://drive.google.com/file/d/SEU_ID/view">
-                <div class="help-text">📌 Cole o link do Google Drive do seu vídeo</div>
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-align-left"></i> Descrição</label>
-                <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..."></textarea>
-            </div>
-            <button class="btn-primary" onclick="publicarVideo()"><i class="fas fa-paper-plane"></i> Publicar</button>
+            <p style="margin-top: 20px; opacity: 0.7;">Próxima meta: Servidor dedicado para melhor performance!</p>
         </div>
-
-        <div class="videos-header">
-            <h2><i class="fas fa-video"></i> Vídeos</h2>
-            <div class="sync-status" id="syncStatus"><i class="fas fa-sync-alt fa-spin"></i> Carregando...</div>
-        </div>
-        
-        <div class="videos-grid" id="videosGrid"></div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <div class="footer">
         <p>© 2024 WolfTube - Todos os direitos reservados</p>
         <div style="margin: 15px 0;">
-            <a href="#" onclick="mostrarPolitica()">Política de Privacidade</a>
-            <a href="#" onclick="mostrarTermos()">Termos de Uso</a>
+            <a href="#" onclick="mostrarPix()">Doar via Pix</a>
+            <a href="#" onclick="mostrarPremium()">Plano Premium</a>
             <a href="#" onclick="mostrarContato()">Contato</a>
         </div>
         <p style="font-size: 11px; opacity: 0.6;">WolfTube - Sua plataforma de vídeos</p>
     </div>
 
-    <!-- Modais -->
-    <div id="politicaModal" class="modal hidden"><div class="modal-content" style="max-width: 600px; text-align: left;"><h2><i class="fas fa-shield-alt"></i> Política de Privacidade</h2><div style="margin-top: 20px;"><p><strong>1. Coleta de Informações</strong><br>Coletamos apenas email e nome para identificação.</p><p><strong>2. Cookies</strong><br>Utilizamos cookies para melhorar sua experiência.</p><p><strong>3. Seus Dados</strong><br>Você pode solicitar exclusão dos seus dados a qualquer momento.</p><p><strong>4. Contato</strong><br>wolftube@contato.com</p></div><button class="btn-primary" onclick="fecharPolitica()">Fechar</button></div></div>
-    
-    <div id="termosModal" class="modal hidden"><div class="modal-content" style="max-width: 600px; text-align: left;"><h2><i class="fas fa-file-contract"></i> Termos de Uso</h2><div style="margin-top: 20px;"><p><strong>1. Conteúdo</strong><br>Você é responsável pelo conteúdo que publica.</p><p><strong>2. Proibições</strong><br>Não é permitido conteúdo ilegal ou violento.</p><p><strong>3. Direitos Autorais</strong><br>Respeite direitos autorais ao publicar vídeos.</p><p><strong>4. Remoção</strong><br>Podemos remover conteúdo que viole estas regras.</p></div><button class="btn-primary" onclick="fecharTermos()">Fechar</button></div></div>
-    
-    <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2><i class="fas fa-envelope"></i> Contato</h2><p style="margin: 20px 0;">📧 Email: wolftube@contato.com</p><p>📱 WhatsApp: (11) 99999-9999</p><p>📸 Instagram: @wolftube</p><button class="btn-primary" onclick="fecharContato()">Fechar</button></div></div>
-
-    <!-- Modal Planos Premium -->
-    <div id="planosModal" class="modal hidden">
+    <!-- Modal Pix -->
+    <div id="pixModal" class="modal hidden">
         <div class="modal-content">
-            <h2><i class="fas fa-crown" style="color: #f39c12;"></i> WolfTube Premium</h2>
-            <div style="margin: 20px 0; text-align: left;">
-                <div style="background: rgba(243,156,18,0.2); padding: 15px; border-radius: 15px; margin-bottom: 15px;">
-                    <h3 style="color: #f39c12;">🌟 Plano Mensal - R$9,90/mês</h3>
-                    <p><i class="fas fa-check-circle"></i> Sem anúncios</p>
-                    <p><i class="fas fa-check-circle"></i> Conteúdo exclusivo</p>
-                    <p><i class="fas fa-check-circle"></i> Marca verificada</p>
-                    <p><i class="fas fa-check-circle"></i> Suporte prioritário</p>
-                    <button class="btn-premium" onclick="assinarPremium()" style="margin-top: 15px; width: 100%;"><i class="fas fa-gem"></i> Assinar Agora</button>
-                </div>
-                <div style="background: rgba(0,184,148,0.2); padding: 15px; border-radius: 15px;">
-                    <h3 style="color: #00b894;">🎬 Plano Criador - R$29,90/mês</h3>
-                    <p><i class="fas fa-check-circle"></i> Todos os benefícios Premium</p>
-                    <p><i class="fas fa-check-circle"></i> Destaque nos vídeos</p>
-                    <p><i class="fas fa-check-circle"></i> Suporte 24h</p>
-                    <p><i class="fas fa-check-circle"></i> Análise de métricas</p>
-                    <button class="btn-secondary" onclick="assinarCriador()" style="margin-top: 15px; width: 100%;"><i class="fas fa-crown"></i> Assinar Agora</button>
-                </div>
+            <i class="fas fa-qrcode" style="font-size: 56px; color: #11c76f; margin-bottom: 20px;"></i>
+            <h2>Doar via Pix</h2>
+            <div class="pix-info">
+                <p><strong>Chave Pix (Email):</strong></p>
+                <code id="modalPixCode">wolftube@contato.com</code>
+                <button class="btn-pix" onclick="copiarPixModal()" style="margin-top: 15px;">
+                    <i class="fas fa-copy"></i> Copiar Chave
+                </button>
             </div>
-            <p style="font-size: 12px; margin-top: 10px;">💳 Pix: wolftube@contato.com</p>
-            <button class="btn-danger" onclick="fecharPlanos()" style="margin-top: 15px;">Fechar</button>
+            <p style="margin-top: 15px;">💚 Qualquer valor ajuda! 💚</p>
+            <button class="btn-close" onclick="fecharModal()">Fechar</button>
         </div>
     </div>
 
-    <!-- Modais Login/Cadastro/Idade/Vídeo -->
-    <div class="modal" id="ageModal"><div class="modal-content"><i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757;"></i><h2>🔞 Verificação</h2><p>Você tem 18 anos ou mais?</p><button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button><button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button></div></div>
-    
-    <div class="modal hidden" id="loginModal"><div class="login-box"><i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i><h2>Login</h2><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Senha"><button class="btn-primary" onclick="fazerLogin()">Entrar</button><button class="btn-secondary" onclick="fecharLogin()">Fechar</button></div></div>
-    
-    <div class="modal hidden" id="registerModal"><div class="login-box"><i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i><h2>Cadastro</h2><input type="text" id="regName" placeholder="Nome"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPassword" placeholder="Senha"><select id="regType"><option value="user">Usuário</option><option value="creator">Criador</option></select><button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button><button class="btn-secondary" onclick="fecharCadastro()">Fechar</button></div></div>
-    
-    <div id="videoPlayerModal" class="video-modal hidden"><div class="video-container"><div class="video-header"><h3 id="modalVideoTitle">Título</h3><button class="close-video" onclick="closeVideoModal()">✕</button></div><div class="video-wrapper"><img id="videoThumbnailImg" src="" style="display: block;"><div class="play-overlay" id="playOverlay" onclick="playVideo()"><i class="fas fa-play-circle"></i></div><iframe id="videoIframe" src="" frameborder="0" allowfullscreen style="display: none;"></iframe></div><div class="video-info-modal"><p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p><p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p><p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p></div></div></div>
+    <!-- Modal Premium -->
+    <div id="premiumModal" class="modal hidden">
+        <div class="modal-content">
+            <i class="fas fa-crown" style="font-size: 56px; color: #f39c12; margin-bottom: 20px;"></i>
+            <h2>WolfTube Premium</h2>
+            <div class="pix-info">
+                <p><strong>R$9,90/mês</strong></p>
+                <p>Chave Pix para pagamento:</p>
+                <code>wolftube@contato.com</code>
+                <p style="margin-top: 15px; font-size: 14px;">Após o pagamento, envie comprovante para <strong>wolftube@contato.com</strong><br>Seu acesso será liberado em até 24h!</p>
+            </div>
+            <button class="btn-close" onclick="fecharModal()">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal Criador -->
+    <div id="criadorModal" class="modal hidden">
+        <div class="modal-content">
+            <i class="fas fa-video" style="font-size: 56px; color: #00b894; margin-bottom: 20px;"></i>
+            <h2>Plano Criador</h2>
+            <div class="pix-info">
+                <p><strong>R$29,90/mês</strong></p>
+                <p>Chave Pix para pagamento:</p>
+                <code>wolftube@contato.com</code>
+                <p style="margin-top: 15px; font-size: 14px;">Após o pagamento, envie comprovante para <strong>wolftube@contato.com</strong><br>Seu plano será ativado em até 24h!</p>
+            </div>
+            <button class="btn-close" onclick="fecharModal()">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal Contato -->
+    <div id="contatoModal" class="modal hidden">
+        <div class="modal-content">
+            <i class="fas fa-envelope" style="font-size: 56px; color: #ff4757; margin-bottom: 20px;"></i>
+            <h2>Contato</h2>
+            <div class="pix-info">
+                <p>📧 Email: <strong>wolftube@contato.com</strong></p>
+                <p>📱 WhatsApp: <strong>(11) 99999-9999</strong></p>
+                <p>📸 Instagram: <strong>@wolftube</strong></p>
+                <p>🐦 Twitter/X: <strong>@wolftube</strong></p>
+            </div>
+            <button class="btn-close" onclick="fecharModal()">Fechar</button>
+        </div>
+    </div>
 
     <script>
-        // Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
-            authDomain: "wolftube-56e62.firebaseapp.com",
-            projectId: "wolftube-56e62",
-            storageBucket: "wolftube-56e62.firebasestorage.app",
-            messagingSenderId: "251733558803",
-            appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
-        let usuarioAtual = null;
-        let currentThumbnailBase64 = null;
-        let currentVideoUrl = null;
+        // Chave Pix (SUBSTITUA PELA SUA CHAVE PIX REAL)
+        const CHAVE_PIX = "wolftube@contato.com";
 
-        // FUNÇÕES DE APOIO (DOAÇÃO E PREMIUM)
+        // Função para copiar Pix
         function copiarPix() {
-            const chavePix = "wolftube@contato.com";
-            navigator.clipboard.writeText(chavePix);
-            alert("✅ Chave Pix copiada!\n\nChave: wolftube@contato.com\n\nEnvie qualquer valor para apoiar o WolfTube!");
+            navigator.clipboard.writeText(CHAVE_PIX);
+            alert("✅ Chave Pix copiada!\n\nChave: " + CHAVE_PIX + "\n\nEnvie qualquer valor para apoiar o WolfTube!");
         }
 
-        function mostrarPlanos() {
-            document.getElementById('planosModal').classList.remove('hidden');
-        }
-        function fecharPlanos() {
-            document.getElementById('planosModal').classList.add('hidden');
-        }
-        
-        function assinarPremium() {
-            alert("🌟 Plano Premium - R$9,90/mês\n\nChave Pix: wolftube@contato.com\n\nApós o pagamento, envie comprovante para wolftube@contato.com\nSeu premium será ativado em até 24h!");
-        }
-        
-        function assinarCriador() {
-            alert("🎬 Plano Criador - R$29,90/mês\n\nChave Pix: wolftube@contato.com\n\n✓ Destaque nos vídeos\n✓ Suporte 24h\n✓ Análise de métricas\n\nEntre em contato após o pagamento!");
-        }
-        
-        function mostrarPolitica() { document.getElementById('politicaModal').classList.remove('hidden'); }
-        function fecharPolitica() { document.getElementById('politicaModal').classList.add('hidden'); }
-        function mostrarTermos() { document.getElementById('termosModal').classList.remove('hidden'); }
-        function fecharTermos() { document.getElementById('termosModal').classList.add('hidden'); }
-        function mostrarContato() { document.getElementById('contatoModal').classList.remove('hidden'); }
-        function fecharContato() { document.getElementById('contatoModal').classList.add('hidden'); }
-
-        function verifyAge(hasAge) {
-            if (hasAge) {
-                localStorage.setItem('ageVerified', 'true');
-                document.getElementById('ageModal').style.display = 'none';
-            } else {
-                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>🔞 Acesso negado</h1></div>';
-            }
-        }
-        if (!localStorage.getItem('ageVerified')) { document.getElementById('ageModal').style.display = 'flex'; }
-
-        function previewThumbnail(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentThumbnailBase64 = e.target.result;
-                    document.getElementById('thumbnailPreview').src = currentThumbnailBase64;
-                    document.getElementById('thumbnailPreviewContainer').style.display = 'inline-block';
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-        function removeThumbnail() {
-            currentThumbnailBase64 = null;
-            document.getElementById('thumbnailPreviewContainer').style.display = 'none';
-            document.getElementById('thumbnailPreview').src = '';
-            document.getElementById('thumbnailInput').value = '';
+        function copiarPixModal() {
+            navigator.clipboard.writeText(CHAVE_PIX);
+            alert("✅ Chave Pix copiada!\n\nChave: " + CHAVE_PIX);
         }
 
-        async function criarAdmin() {
-            try {
-                const adminRef = db.collection('usuarios').doc('admin@wolftube.com');
-                const adminDoc = await adminRef.get();
-                if (!adminDoc.exists) {
-                    await adminRef.set({ email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Administrador', type: 'admin' });
-                    console.log("✅ Admin criado!");
+        // Mostrar modais
+        function mostrarDoacao() {
+            document.getElementById('pixModal').classList.remove('hidden');
+        }
+
+        function mostrarPremium() {
+            document.getElementById('premiumModal').classList.remove('hidden');
+        }
+
+        function mostrarCriador() {
+            document.getElementById('criadorModal').classList.remove('hidden');
+        }
+
+        function mostrarContato() {
+            document.getElementById('contatoModal').classList.remove('hidden');
+        }
+
+        function mostrarPix() {
+            document.getElementById('pixModal').classList.remove('hidden');
+        }
+
+        function fecharModal() {
+            document.getElementById('pixModal').classList.add('hidden');
+            document.getElementById('premiumModal').classList.add('hidden');
+            document.getElementById('criadorModal').classList.add('hidden');
+            document.getElementById('contatoModal').classList.add('hidden');
+        }
+
+        // Fechar modal clicando fora
+        window.onclick = function(event) {
+            const modais = ['pixModal', 'premiumModal', 'criadorModal', 'contatoModal'];
+            modais.forEach(modal => {
+                const el = document.getElementById(modal);
+                if (event.target === el) {
+                    el.classList.add('hidden');
                 }
-            } catch (error) { console.error("Erro:", error); }
+            });
         }
 
-        function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
-        function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
-        function mostrarCadastro() { document.getElementById('registerModal').classList.remove('hidden'); }
-        function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
+        // Atualizar metas (valores de exemplo - você pode atualizar manualmente)
+        let arrecadado = 350;
+        let apoiadores = 12;
 
-        async function fazerLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const senha = document.getElementById('loginPassword').value;
-            if (!email || !senha) { alert('Preencha email e senha!'); return; }
-            try {
-                const userDoc = await db.collection('usuarios').doc(email).get();
-                if (userDoc.exists && userDoc.data().password === senha) {
-                    usuarioAtual = userDoc.data();
-                    localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
-                    alert(`Bem-vindo, ${usuarioAtual.name}!`);
-                    document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
-                    document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadArea').style.display = 'block'; }
-                    fecharLogin();
-                    carregarVideos();
-                } else { alert('Email ou senha incorretos!'); }
-            } catch (error) { alert('Erro: ' + error.message); }
+        function atualizarMetas() {
+            const percentual = (arrecadado / 1000) * 100;
+            document.getElementById('goalProgress').style.width = percentual + '%';
+            document.getElementById('goalProgress').textContent = Math.floor(percentual) + '%';
+            document.getElementById('arrecadado').textContent = `R$ ${arrecadado},00`;
+            document.getElementById('apoiadores').textContent = apoiadores;
         }
 
-        async function fazerCadastro() {
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const type = document.getElementById('regType').value;
-            if (!name || !email || !password) { alert('Preencha todos os campos!'); return; }
-            try {
-                const userDoc = await db.collection('usuarios').doc(email).get();
-                if (userDoc.exists) { alert('Email já cadastrado!'); return; }
-                await db.collection('usuarios').doc(email).set({ email, password, name, type });
-                alert('Cadastro realizado! Faça login.');
-                fecharCadastro();
-            } catch (error) { alert('Erro: ' + error.message); }
-        }
-
-        function logout() {
-            usuarioAtual = null;
-            localStorage.removeItem('usuario');
-            document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex'; });
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('uploadArea').style.display = 'none';
-            mostrarLogin();
-        }
-
-        async function publicarVideo() {
-            const titulo = document.getElementById('videoTitle').value;
-            let link = document.getElementById('videoUrl').value;
-            const descricao = document.getElementById('videoDesc').value;
-            if (!titulo) { alert('Digite um título!'); return; }
-            if (!link) { alert('Cole o link do Google Drive!'); return; }
-            if (!usuarioAtual) { alert('Faça login primeiro!'); return; }
-            if (usuarioAtual.type !== 'creator' && usuarioAtual.type !== 'admin') { alert('Apenas criadores podem postar vídeos!'); return; }
-            let embedUrl = link;
-            if (link.includes('drive.google.com')) {
-                let fileId = '';
-                if (link.includes('/file/d/')) { fileId = link.split('/file/d/')[1].split('/')[0]; }
-                else if (link.includes('id=')) { fileId = link.split('id=')[1].split('&')[0]; }
-                if (fileId) embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
-            }
-            const video = { title: titulo, url: embedUrl, thumbnail: currentThumbnailBase64 || '', description: descricao || 'Sem descrição', author: usuarioAtual.name, authorEmail: usuarioAtual.email, date: new Date().toISOString(), views: 0 };
-            try {
-                await db.collection('videos').add(video);
-                alert('✅ Vídeo publicado!');
-                document.getElementById('videoTitle').value = '';
-                document.getElementById('videoUrl').value = '';
-                document.getElementById('videoDesc').value = '';
-                removeThumbnail();
-                carregarVideos();
-            } catch (error) { alert('Erro: ' + error.message); }
-        }
-
-        async function carregarVideos() {
-            try {
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
-                const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
-                const videos = [];
-                snapshot.forEach(doc => { videos.push({ docId: doc.id, ...doc.data() }); });
-                const grid = document.getElementById('videosGrid');
-                if (videos.length === 0) { grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda</p>'; }
-                else {
-                    grid.innerHTML = videos.map(video => `
-                        <div class="video-card" onclick="abrirVideoModal('${video.docId}')">
-                            <div class="video-thumbnail" style="background-image: url('${video.thumbnail || 'https://via.placeholder.com/320x200/ff4757/ffffff?text=WolfTube'}');">
-                                ${!video.thumbnail ? '<i class="fas fa-play-circle"></i>' : ''}
-                            </div>
-                            <div class="video-info">
-                                <div class="video-title">${escapeHtml(video.title)}</div>
-                                <div class="video-meta">
-                                    <div><i class="fas fa-user"></i> ${escapeHtml(video.author)}</div>
-                                    <div><i class="fas fa-eye"></i> ${video.views || 0} views</div>
-                                </div>
-                                ${usuarioAtual && (usuarioAtual.email === video.authorEmail || usuarioAtual.type === 'admin') ? 
-                                    `<button class="btn-danger delete-btn" onclick="event.stopPropagation(); excluirVideo('${video.docId}')"><i class="fas fa-trash"></i> Excluir</button>` : ''}
-                            </div>
-                        </div>
-                    `).join('');
-                }
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
-                setTimeout(() => { document.getElementById('syncStatus').innerHTML = '<i class="fas fa-cloud"></i> Nuvem'; }, 2000);
-            } catch (error) { console.error('Erro:', error); document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro'; }
-        }
-
-        async function abrirVideoModal(docId) {
-            try {
-                const videoRef = db.collection('videos').doc(docId);
-                const video = await videoRef.get();
-                if (!video.exists) { alert('Vídeo não encontrado!'); return; }
-                const videoData = video.data();
-                const views = (videoData.views || 0) + 1;
-                await videoRef.update({ views: views });
-                document.getElementById('modalVideoTitle').textContent = videoData.title;
-                document.getElementById('modalAuthor').textContent = videoData.author;
-                document.getElementById('modalViews').textContent = views;
-                document.getElementById('modalDescription').textContent = videoData.description;
-                const thumbnailImg = document.getElementById('videoThumbnailImg');
-                const iframe = document.getElementById('videoIframe');
-                const playOverlay = document.getElementById('playOverlay');
-                currentVideoUrl = videoData.url;
-                if (videoData.thumbnail && videoData.thumbnail !== '') {
-                    thumbnailImg.style.display = 'block';
-                    thumbnailImg.src = videoData.thumbnail;
-                    iframe.style.display = 'none';
-                    playOverlay.style.display = 'flex';
-                } else {
-                    thumbnailImg.style.display = 'none';
-                    iframe.style.display = 'block';
-                    iframe.src = videoData.url;
-                    playOverlay.style.display = 'none';
-                }
-                document.getElementById('videoPlayerModal').classList.remove('hidden');
-            } catch (error) { alert('Erro ao carregar vídeo'); }
-        }
-
-        function playVideo() {
-            const thumbnailImg = document.getElementById('videoThumbnailImg');
-            const iframe = document.getElementById('videoIframe');
-            const playOverlay = document.getElementById('playOverlay');
-            thumbnailImg.style.display = 'none';
-            iframe.style.display = 'block';
-            playOverlay.style.display = 'none';
-            iframe.src = currentVideoUrl;
-        }
-        function closeVideoModal() {
-            document.getElementById('videoPlayerModal').classList.add('hidden');
-            const iframe = document.getElementById('videoIframe');
-            const thumbnailImg = document.getElementById('videoThumbnailImg');
-            const playOverlay = document.getElementById('playOverlay');
-            iframe.src = ''; thumbnailImg.src = ''; thumbnailImg.style.display = 'block'; iframe.style.display = 'none'; playOverlay.style.display = 'flex'; currentVideoUrl = null;
-        }
-        async function excluirVideo(docId) {
-            if (confirm('Excluir este vídeo?')) {
-                try { await db.collection('videos').doc(docId).delete(); alert('Vídeo excluído!'); carregarVideos(); } 
-                catch (error) { alert('Erro ao excluir'); }
-            }
-        }
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-
-        async function init() {
-            await criarAdmin();
-            const salvo = localStorage.getItem('usuario');
-            if (salvo) {
-                usuarioAtual = JSON.parse(salvo);
-                if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadArea').style.display = 'block'; }
-                document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
-                document.getElementById('logoutBtn').style.display = 'inline-flex';
-            }
-            carregarVideos();
-        }
-        init();
+        atualizarMetas();
     </script>
 </body>
 </html>
