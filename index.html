@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Vídeos com Capa</title>
+    <title>WolfTube - Vídeos</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -306,11 +306,10 @@
                 <input type="text" id="videoTitle" placeholder="Título do vídeo">
             </div>
             <div class="form-group">
-                <label><i class="fas fa-images"></i> Capa do Vídeo (da galeria)</label>
+                <label><i class="fas fa-images"></i> Capa do Vídeo</label>
                 <div class="thumbnail-upload" onclick="document.getElementById('thumbnailInput').click()">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <p>📸 Clique aqui para escolher uma foto da galeria</p>
-                    <p style="font-size: 12px;">A foto escolhida vai ser a CAPA do vídeo</p>
+                    <p>📸 Clique para escolher uma foto</p>
                 </div>
                 <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="previewThumbnail(this)">
                 <div id="thumbnailPreviewContainer" style="display: none;" class="thumbnail-preview">
@@ -319,13 +318,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label><i class="fab fa-google-drive"></i> Link do Vídeo (Google Drive)</label>
+                <label><i class="fab fa-google-drive"></i> Link do Vídeo</label>
                 <input type="text" id="videoUrl" placeholder="https://drive.google.com/file/d/SEU_ID/view">
-                <div class="help-text">📌 Cole o link do Google Drive do seu vídeo</div>
             </div>
             <div class="form-group">
                 <label><i class="fas fa-align-left"></i> Descrição</label>
-                <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..."></textarea>
+                <textarea id="videoDesc" rows="3" placeholder="Descrição..."></textarea>
             </div>
             <button class="btn-primary" onclick="postVideo()"><i class="fas fa-paper-plane"></i> Publicar</button>
         </div>
@@ -381,7 +379,7 @@
                 <h3 id="modalVideoTitle">Título</h3>
                 <button class="close-video" onclick="closeVideoModal()">✕</button>
             </div>
-            <div class="video-wrapper" id="videoWrapper">
+            <div class="video-wrapper">
                 <img id="videoThumbnailImg" src="" style="display: block;">
                 <div class="play-overlay" id="playOverlay" onclick="playVideo()">
                     <i class="fas fa-play-circle"></i>
@@ -399,7 +397,6 @@
     <script>
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
-        let isLoading = false;
 
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
@@ -446,19 +443,23 @@
             document.getElementById('ageModal').style.display = 'flex';
         }
 
-        // 🔥 CRIAR ADMIN AUTOMATICAMENTE SE NÃO EXISTIR
+        // Criar admin automaticamente
         async function criarAdminSeNecessario() {
-            const adminRef = db.collection('usuarios').doc('admin@wolftube.com');
-            const adminDoc = await adminRef.get();
-            
-            if (!adminDoc.exists) {
-                await adminRef.set({
-                    email: 'admin@wolftube.com',
-                    password: 'wolfadmin2010',
-                    name: 'Administrador',
-                    type: 'admin'
-                });
-                console.log("✅ Admin criado automaticamente!");
+            try {
+                const adminRef = db.collection('usuarios').doc('admin@wolftube.com');
+                const adminDoc = await adminRef.get();
+                
+                if (!adminDoc.exists) {
+                    await adminRef.set({
+                        email: 'admin@wolftube.com',
+                        password: 'wolfadmin2010',
+                        name: 'Administrador',
+                        type: 'admin'
+                    });
+                    console.log("✅ Admin criado!");
+                }
+            } catch (error) {
+                console.error("Erro ao criar admin:", error);
             }
         }
 
@@ -540,8 +541,6 @@
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
                 if (currentUser.type === 'creator' || currentUser.type === 'admin') {
                     document.getElementById('uploadArea').style.display = 'block';
-                } else {
-                    document.getElementById('uploadArea').style.display = 'none';
                 }
             } else {
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
@@ -589,23 +588,29 @@
                 views: 0
             };
             
+            console.log("📤 Enviando vídeo:", novoVideo);
+            
             try {
-                await db.collection('videos').add(novoVideo);
+                const docRef = await db.collection('videos').add(novoVideo);
+                console.log("✅ Vídeo salvo com ID:", docRef.id);
                 showMessage('✅ Vídeo publicado!', 'success');
+                
+                // Limpar formulário
                 document.getElementById('videoTitle').value = '';
                 document.getElementById('videoUrl').value = '';
                 document.getElementById('videoDesc').value = '';
                 removeThumbnail();
+                
+                // Recarregar vídeos
                 await carregarVideos();
+                
             } catch (error) {
+                console.error("❌ Erro detalhado:", error);
                 showMessage('Erro ao publicar: ' + error.message, 'error');
             }
         }
 
         async function carregarVideos() {
-            if (isLoading) return;
-            isLoading = true;
-            
             try {
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
@@ -616,16 +621,15 @@
                         ...doc.data() 
                     });
                 });
+                console.log("📹 Vídeos carregados:", videos.length);
                 exibirVideos(videos);
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado';
                 setTimeout(() => {
                     document.getElementById('syncStatus').innerHTML = '<i class="fas fa-cloud"></i> Nuvem';
                 }, 2000);
             } catch (error) {
-                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
                 console.error('Erro ao carregar:', error);
-            } finally {
-                isLoading = false;
+                document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro';
             }
         }
 
@@ -667,7 +671,6 @@
                 }
                 
                 const videoData = video.data();
-                
                 const views = (videoData.views || 0) + 1;
                 await videoRef.update({ views: views });
                 
@@ -697,8 +700,8 @@
                 document.getElementById('videoPlayerModal').classList.remove('hidden');
                 
             } catch (error) {
-                console.error('Erro detalhado:', error);
-                showMessage('Erro ao carregar vídeo: ' + error.message, 'error');
+                console.error('Erro:', error);
+                showMessage('Erro ao carregar vídeo', 'error');
             }
         }
 
@@ -774,6 +777,7 @@
     </script>
 </body>
 </html>
+
 
 
 
