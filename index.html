@@ -24,27 +24,21 @@
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
             padding: 20px 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
+            text-align: center;
             border-bottom: 3px solid #ff4757;
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
 
         .logo {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 12px;
         }
 
         .logo i {
             color: #ff4757;
-            font-size: 36px;
+            font-size: 40px;
             animation: pulse 2s infinite;
         }
 
@@ -66,241 +60,190 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
-        /* Banner de Doação Principal */
-        .donate-main {
-            background: linear-gradient(135deg, #11c76f, #7fba00);
+        /* Card Principal de Doação */
+        .donate-card {
+            background: linear-gradient(135deg, rgba(17,199,111,0.15), rgba(127,186,0,0.1));
             border-radius: 30px;
             padding: 50px 30px;
-            margin-bottom: 40px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(17,199,111,0.3);
-            animation: fadeInUp 0.6s ease;
-        }
-
-        .donate-main h1 {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
-        .donate-main h1 i {
-            margin-right: 10px;
-        }
-
-        .donate-main p {
-            font-size: 18px;
+            border: 2px solid rgba(17,199,111,0.3);
+            backdrop-filter: blur(10px);
             margin-bottom: 30px;
-            opacity: 0.95;
+            transition: all 0.3s ease;
         }
 
-        .pix-card {
+        .donate-card:hover {
+            transform: scale(1.02);
+            border-color: #11c76f;
+            box-shadow: 0 20px 40px rgba(17,199,111,0.2);
+        }
+
+        .donate-card i {
+            font-size: 80px;
+            color: #11c76f;
+            margin-bottom: 20px;
+        }
+
+        .donate-card h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .donate-card p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 30px;
+        }
+
+        .pix-area {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 60px;
-            padding: 15px 30px;
+            padding: 15px 25px;
             display: inline-flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
             justify-content: center;
-            backdrop-filter: blur(10px);
         }
 
-        .pix-card code {
-            font-size: 20px;
+        .pix-code {
             background: rgba(0, 0, 0, 0.5);
             padding: 12px 20px;
             border-radius: 50px;
             font-family: monospace;
+            font-size: 16px;
             letter-spacing: 1px;
         }
 
         .btn-pix {
-            background: white;
-            color: #11c76f;
+            background: #11c76f;
+            color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-pix:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Cards de Apoio */
-        .support-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 30px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(255, 71, 87, 0.5);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .card i {
-            font-size: 56px;
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .card .price {
-            font-size: 32px;
-            font-weight: bold;
-            color: #ff4757;
-            margin: 15px 0;
-        }
-
-        .card .price small {
-            font-size: 14px;
-            font-weight: normal;
-            color: rgba(255,255,255,0.7);
-        }
-
-        .card p {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .card ul {
-            text-align: left;
-            margin: 20px 0;
-            list-style: none;
-        }
-
-        .card ul li {
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card ul li i {
-            font-size: 18px;
-            width: 24px;
-        }
-
-        .btn-card {
-            width: 100%;
-            padding: 14px;
-            border: none;
+            padding: 12px 25px;
             border-radius: 50px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-premium {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
+        .btn-pix:hover {
+            background: #0da85e;
+            transform: scale(1.05);
         }
 
-        .btn-creator {
-            background: linear-gradient(135deg, #00b894, #00cec9);
-            color: white;
+        /* Valores Sugeridos */
+        .valores-sugeridos {
+            text-align: center;
+            margin: 30px 0;
         }
 
-        .btn-card:hover {
-            transform: scale(1.02);
-            filter: brightness(1.05);
+        .valores-sugeridos h3 {
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.7);
         }
 
-        /* Seção de Metas */
-        .goals-section {
+        .valores {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .valor-item {
+            background: rgba(255,255,255,0.1);
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .valor-item:hover {
+            background: #11c76f;
+            transform: scale(1.05);
+        }
+
+        /* Seção de Apoiadores */
+        .apoiadores {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 30px;
-            margin-top: 40px;
+            margin-top: 30px;
             text-align: center;
         }
 
-        .goals-section h2 {
+        .apoiadores h3 {
             margin-bottom: 20px;
-            font-size: 28px;
-        }
-
-        .goal-bar {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            height: 30px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        .goal-progress {
-            background: linear-gradient(135deg, #ff4757, #ff6b81);
-            width: 0%;
-            height: 100%;
-            border-radius: 30px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding-right: 15px;
-            color: white;
-            font-weight: bold;
-            transition: width 1s ease;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .goal-stats {
+        .lista-apoiadores {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .apoiador-item {
+            background: rgba(255,255,255,0.08);
+            padding: 10px 15px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            opacity: 0.8;
+            align-items: center;
+        }
+
+        .apoiador-nome {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .apoiador-nome i {
+            color: #ff4757;
+        }
+
+        .apoiador-valor {
+            color: #11c76f;
+            font-weight: bold;
+        }
+
+        .total-arrecadado {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .total-arrecadado .valor {
+            font-size: 36px;
+            font-weight: bold;
         }
 
         /* Footer */
         .footer {
-            margin-top: 60px;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 20px;
+            margin-top: 40px;
+            padding: 20px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
+            opacity: 0.6;
         }
 
-        .footer a {
-            color: #ff4757;
-            text-decoration: none;
-            margin: 0 15px;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Modal */
+        /* Modal do Pix */
         .modal {
             position: fixed;
             top: 0;
@@ -313,76 +256,64 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
         }
 
         .modal-content {
             background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
             padding: 40px;
-            border-radius: 28px;
+            border-radius: 30px;
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             text-align: center;
-            border: 2px solid rgba(255, 71, 87, 0.3);
+            border: 2px solid #11c76f;
+        }
+
+        .modal-content i {
+            font-size: 64px;
+            color: #11c76f;
+            margin-bottom: 20px;
         }
 
         .modal-content h2 {
             margin-bottom: 20px;
-            color: #ff4757;
         }
 
-        .modal-content .pix-info {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
+        .modal-pix-code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
             border-radius: 15px;
             margin: 20px 0;
-        }
-
-        .modal-content .pix-info code {
+            font-family: monospace;
             font-size: 18px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 15px;
-            border-radius: 10px;
-            display: inline-block;
-            margin: 10px 0;
+            word-break: break-all;
         }
 
-        .btn-close {
-            background: #2c3e50;
+        .btn-modal {
+            background: #11c76f;
             color: white;
-            padding: 12px 30px;
+            padding: 12px 25px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .btn-modal-fechar {
+            background: #2c3e50;
         }
 
         .hidden {
             display: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .donate-main h1 { font-size: 32px; }
-            .pix-card code { font-size: 14px; }
-            .card .price { font-size: 24px; }
-            .support-cards { grid-template-columns: 1fr; }
+        @media (max-width: 480px) {
+            .logo { font-size: 24px; }
+            .logo i { font-size: 28px; }
+            .donate-card { padding: 30px 20px; }
+            .donate-card h1 { font-size: 28px; }
+            .pix-code { font-size: 12px; }
         }
     </style>
 </head>
@@ -395,221 +326,148 @@
     </div>
 
     <div class="container">
-        <!-- Banner Principal de Doação -->
-        <div class="donate-main">
-            <h1><i class="fas fa-heart"></i> Apoie o WolfTube</h1>
-            <p>Sua contribuição nos ajuda a continuar trazendo o melhor conteúdo para você!</p>
-            <div class="pix-card">
-                <i class="fas fa-qrcode" style="font-size: 32px;"></i>
-                <code id="pixCode">wolftube@contato.com</code>
+        <!-- Card Principal de Doação -->
+        <div class="donate-card">
+            <i class="fas fa-hand-holding-heart"></i>
+            <h1>Apoie o WolfTube</h1>
+            <p>Sua doação ajuda a manter o site no ar e traz mais conteúdo para você!</p>
+            
+            <div class="pix-area">
+                <i class="fas fa-qrcode" style="font-size: 24px;"></i>
+                <span class="pix-code" id="pixCode">wolftube@contato.com</span>
                 <button class="btn-pix" onclick="copiarPix()">
                     <i class="fas fa-copy"></i> Copiar Pix
                 </button>
             </div>
         </div>
 
-        <!-- Cards de Apoio -->
-        <div class="support-cards">
-            <!-- Card Doação Única -->
-            <div class="card" onclick="mostrarDoacao()">
-                <i class="fas fa-hand-holding-heart" style="color: #ff4757;"></i>
-                <h3>Doação Única</h3>
-                <div class="price">Qualquer valor</div>
-                <p>Contribua com quanto quiser e nos ajude a manter o projeto vivo!</p>
-                <ul>
-                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Apoio direto</li>
-                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Menção nos agradecimentos</li>
-                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Satisfação de ajudar</li>
-                </ul>
-                <button class="btn-card btn-premium"><i class="fas fa-heart"></i> Doar Agora</button>
-            </div>
-
-            <!-- Card Premium -->
-            <div class="card" onclick="mostrarPremium()">
-                <i class="fas fa-crown" style="color: #f39c12;"></i>
-                <h3>WolfTube Premium</h3>
-                <div class="price">R$9,90 <small>/mês</small></div>
-                <p>Benefícios exclusivos para apoiadores mensais!</p>
-                <ul>
-                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Conteúdo exclusivo</li>
-                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Marca verificada</li>
-                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Suporte prioritário</li>
-                    <li><i class="fas fa-check-circle" style="color: #f39c12;"></i> Emblema de apoiador</li>
-                </ul>
-                <button class="btn-card btn-premium"><i class="fas fa-gem"></i> Assinar Premium</button>
-            </div>
-
-            <!-- Card Criador -->
-            <div class="card" onclick="mostrarCriador()">
-                <i class="fas fa-video" style="color: #00b894;"></i>
-                <h3>Plano Criador</h3>
-                <div class="price">R$29,90 <small>/mês</small></div>
-                <p>Para criadores que querem destaque!</p>
-                <ul>
-                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Todos benefícios Premium</li>
-                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Destaque nos vídeos</li>
-                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Suporte 24h</li>
-                    <li><i class="fas fa-check-circle" style="color: #00b894;"></i> Análise de métricas</li>
-                </ul>
-                <button class="btn-card btn-creator"><i class="fas fa-crown"></i> Assinar Criador</button>
+        <!-- Valores Sugeridos -->
+        <div class="valores-sugeridos">
+            <h3>💚 Valores sugeridos 💚</h3>
+            <div class="valores">
+                <div class="valor-item" onclick="doarValor(5)">R$5</div>
+                <div class="valor-item" onclick="doarValor(10)">R$10</div>
+                <div class="valor-item" onclick="doarValor(20)">R$20</div>
+                <div class="valor-item" onclick="doarValor(50)">R$50</div>
+                <div class="valor-item" onclick="doarValor(100)">R$100</div>
             </div>
         </div>
 
-        <!-- Metas -->
-        <div class="goals-section">
-            <h2><i class="fas fa-chart-line"></i> Metas do Projeto</h2>
-            <div class="goal-bar">
-                <div class="goal-progress" id="goalProgress" style="width: 35%;">35%</div>
+        <!-- Últimos Apoiadores -->
+        <div class="apoiadores">
+            <h3><i class="fas fa-users"></i> Últimos Apoiadores</h3>
+            <div class="lista-apoiadores" id="listaApoiadores">
+                <div class="apoiador-item">
+                    <div class="apoiador-nome">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Maria S.</span>
+                    </div>
+                    <div class="apoiador-valor">R$50</div>
+                </div>
+                <div class="apoiador-item">
+                    <div class="apoiador-nome">
+                        <i class="fas fa-user-circle"></i>
+                        <span>João P.</span>
+                    </div>
+                    <div class="apoiador-valor">R$20</div>
+                </div>
+                <div class="apoiador-item">
+                    <div class="apoiador-nome">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Ana C.</span>
+                    </div>
+                    <div class="apoiador-valor">R$100</div>
+                </div>
+                <div class="apoiador-item">
+                    <div class="apoiador-nome">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Carlos M.</span>
+                    </div>
+                    <div class="apoiador-valor">R$10</div>
+                </div>
+                <div class="apoiador-item">
+                    <div class="apoiador-nome">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Fernanda L.</span>
+                    </div>
+                    <div class="apoiador-valor">R$25</div>
+                </div>
             </div>
-            <div class="goal-stats">
-                <span>📊 Arrecadado: <span id="arrecadado">R$ 350,00</span></span>
-                <span>🎯 Meta: R$ 1.000,00</span>
-                <span>👥 Apoiadores: <span id="apoiadores">12</span></span>
-            </div>
-            <p style="margin-top: 20px; opacity: 0.7;">Próxima meta: Servidor dedicado para melhor performance!</p>
+        </div>
+
+        <!-- Total Arrecadado -->
+        <div class="total-arrecadado">
+            <div style="font-size: 14px; opacity: 0.8;">Total arrecadado até agora</div>
+            <div class="valor" id="totalArrecadado">R$ 205,00</div>
+            <div style="font-size: 12px; margin-top: 5px;">✨ Gratidão a todos os apoiadores! ✨</div>
         </div>
     </div>
 
-    <!-- Footer -->
     <div class="footer">
         <p>© 2024 WolfTube - Todos os direitos reservados</p>
-        <div style="margin: 15px 0;">
-            <a href="#" onclick="mostrarPix()">Doar via Pix</a>
-            <a href="#" onclick="mostrarPremium()">Plano Premium</a>
-            <a href="#" onclick="mostrarContato()">Contato</a>
-        </div>
-        <p style="font-size: 11px; opacity: 0.6;">WolfTube - Sua plataforma de vídeos</p>
+        <p style="margin-top: 5px;">💚 Qualquer ajuda é bem-vinda! 💚</p>
     </div>
 
     <!-- Modal Pix -->
     <div id="pixModal" class="modal hidden">
         <div class="modal-content">
-            <i class="fas fa-qrcode" style="font-size: 56px; color: #11c76f; margin-bottom: 20px;"></i>
+            <i class="fab fa-pix"></i>
             <h2>Doar via Pix</h2>
-            <div class="pix-info">
-                <p><strong>Chave Pix (Email):</strong></p>
-                <code id="modalPixCode">wolftube@contato.com</code>
-                <button class="btn-pix" onclick="copiarPixModal()" style="margin-top: 15px;">
-                    <i class="fas fa-copy"></i> Copiar Chave
-                </button>
-            </div>
-            <p style="margin-top: 15px;">💚 Qualquer valor ajuda! 💚</p>
-            <button class="btn-close" onclick="fecharModal()">Fechar</button>
-        </div>
-    </div>
-
-    <!-- Modal Premium -->
-    <div id="premiumModal" class="modal hidden">
-        <div class="modal-content">
-            <i class="fas fa-crown" style="font-size: 56px; color: #f39c12; margin-bottom: 20px;"></i>
-            <h2>WolfTube Premium</h2>
-            <div class="pix-info">
-                <p><strong>R$9,90/mês</strong></p>
-                <p>Chave Pix para pagamento:</p>
-                <code>wolftube@contato.com</code>
-                <p style="margin-top: 15px; font-size: 14px;">Após o pagamento, envie comprovante para <strong>wolftube@contato.com</strong><br>Seu acesso será liberado em até 24h!</p>
-            </div>
-            <button class="btn-close" onclick="fecharModal()">Fechar</button>
-        </div>
-    </div>
-
-    <!-- Modal Criador -->
-    <div id="criadorModal" class="modal hidden">
-        <div class="modal-content">
-            <i class="fas fa-video" style="font-size: 56px; color: #00b894; margin-bottom: 20px;"></i>
-            <h2>Plano Criador</h2>
-            <div class="pix-info">
-                <p><strong>R$29,90/mês</strong></p>
-                <p>Chave Pix para pagamento:</p>
-                <code>wolftube@contato.com</code>
-                <p style="margin-top: 15px; font-size: 14px;">Após o pagamento, envie comprovante para <strong>wolftube@contato.com</strong><br>Seu plano será ativado em até 24h!</p>
-            </div>
-            <button class="btn-close" onclick="fecharModal()">Fechar</button>
-        </div>
-    </div>
-
-    <!-- Modal Contato -->
-    <div id="contatoModal" class="modal hidden">
-        <div class="modal-content">
-            <i class="fas fa-envelope" style="font-size: 56px; color: #ff4757; margin-bottom: 20px;"></i>
-            <h2>Contato</h2>
-            <div class="pix-info">
-                <p>📧 Email: <strong>wolftube@contato.com</strong></p>
-                <p>📱 WhatsApp: <strong>(11) 99999-9999</strong></p>
-                <p>📸 Instagram: <strong>@wolftube</strong></p>
-                <p>🐦 Twitter/X: <strong>@wolftube</strong></p>
-            </div>
-            <button class="btn-close" onclick="fecharModal()">Fechar</button>
+            <div class="modal-pix-code" id="modalPixCode">wolftube@contato.com</div>
+            <button class="btn-modal" onclick="copiarPixModal()">
+                <i class="fas fa-copy"></i> Copiar
+            </button>
+            <button class="btn-modal btn-modal-fechar" onclick="fecharModal()">
+                <i class="fas fa-times"></i> Fechar
+            </button>
         </div>
     </div>
 
     <script>
-        // Chave Pix (SUBSTITUA PELA SUA CHAVE PIX REAL)
+        // 🔥 COLOQUE SUA CHAVE PIX AQUI (SUBSTITUA PELA SUA) 🔥
         const CHAVE_PIX = "wolftube@contato.com";
+
+        // Total arrecadado (atualize manualmente quando receber doações)
+        let totalArrecadado = 205;
 
         // Função para copiar Pix
         function copiarPix() {
             navigator.clipboard.writeText(CHAVE_PIX);
-            alert("✅ Chave Pix copiada!\n\nChave: " + CHAVE_PIX + "\n\nEnvie qualquer valor para apoiar o WolfTube!");
+            mostrarModal();
         }
 
         function copiarPixModal() {
             navigator.clipboard.writeText(CHAVE_PIX);
-            alert("✅ Chave Pix copiada!\n\nChave: " + CHAVE_PIX);
+            alert("✅ Chave Pix copiada!\n\nChave: " + CHAVE_PIX + "\n\nAbra seu app do banco e faça a doação!");
         }
 
-        // Mostrar modais
-        function mostrarDoacao() {
-            document.getElementById('pixModal').classList.remove('hidden');
-        }
-
-        function mostrarPremium() {
-            document.getElementById('premiumModal').classList.remove('hidden');
-        }
-
-        function mostrarCriador() {
-            document.getElementById('criadorModal').classList.remove('hidden');
-        }
-
-        function mostrarContato() {
-            document.getElementById('contatoModal').classList.remove('hidden');
-        }
-
-        function mostrarPix() {
+        function mostrarModal() {
             document.getElementById('pixModal').classList.remove('hidden');
         }
 
         function fecharModal() {
             document.getElementById('pixModal').classList.add('hidden');
-            document.getElementById('premiumModal').classList.add('hidden');
-            document.getElementById('criadorModal').classList.add('hidden');
-            document.getElementById('contatoModal').classList.add('hidden');
         }
+
+        // Doar valor sugerido
+        function doarValor(valor) {
+            alert("💚 Você escolheu doar R$" + valor + "!\n\nChave Pix: " + CHAVE_PIX + "\n\nAbra seu app do banco e faça a doação.\n\nMuito obrigado pelo apoio! 🙏");
+        }
+
+        // Atualizar total arrecadado
+        function atualizarTotal() {
+            document.getElementById('totalArrecadado').innerText = 'R$ ' + totalArrecadado.toFixed(2);
+        }
+
+        atualizarTotal();
 
         // Fechar modal clicando fora
         window.onclick = function(event) {
-            const modais = ['pixModal', 'premiumModal', 'criadorModal', 'contatoModal'];
-            modais.forEach(modal => {
-                const el = document.getElementById(modal);
-                if (event.target === el) {
-                    el.classList.add('hidden');
-                }
-            });
+            const modal = document.getElementById('pixModal');
+            if (event.target === modal) {
+                modal.classList.add('hidden');
+            }
         }
-
-        // Atualizar metas (valores de exemplo - você pode atualizar manualmente)
-        let arrecadado = 350;
-        let apoiadores = 12;
-
-        function atualizarMetas() {
-            const percentual = (arrecadado / 1000) * 100;
-            document.getElementById('goalProgress').style.width = percentual + '%';
-            document.getElementById('goalProgress').textContent = Math.floor(percentual) + '%';
-            document.getElementById('arrecadado').textContent = `R$ ${arrecadado},00`;
-            document.getElementById('apoiadores').textContent = apoiadores;
-        }
-
-        atualizarMetas();
     </script>
 </body>
 </html>
