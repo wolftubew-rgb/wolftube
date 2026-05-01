@@ -60,6 +60,7 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
+        .btn-warning { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
         .btn-donate { background: linear-gradient(135deg, #11c76f, #7fba00); color: white; }
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         
@@ -93,6 +94,57 @@
             padding: 8px 12px;
             border-radius: 8px;
             font-family: monospace;
+        }
+        
+        /* Área Admin */
+        .admin-area {
+            background: linear-gradient(135deg, rgba(231,76,60,0.2), rgba(192,57,43,0.1));
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(231,76,60,0.5);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .admin-header h3 {
+            color: #e74c3c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+        }
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .btn-delete-all {
+            background: #e74c3c;
+            color: white;
+            padding: 12px 25px;
+        }
+        .btn-delete-all:hover {
+            background: #c0392b;
         }
         
         .upload-area {
@@ -333,6 +385,7 @@
             .container { padding: 15px; }
             .videos-grid { grid-template-columns: 1fr; }
             .donate-banner { flex-direction: column; text-align: center; }
+            .admin-stats { justify-content: center; }
         }
     </style>
 </head>
@@ -362,6 +415,30 @@
                 <button class="btn-donate" onclick="copiarPix()">
                     <i class="fas fa-copy"></i> Copiar Pix
                 </button>
+            </div>
+        </div>
+
+        <!-- ÁREA ADMIN (só aparece para admin) -->
+        <div id="adminArea" class="admin-area hidden">
+            <div class="admin-header">
+                <h3><i class="fas fa-shield-alt"></i> Painel do Administrador</h3>
+                <button class="btn-warning btn-delete-all" onclick="excluirTodosVideos()">
+                    <i class="fas fa-trash-alt"></i> 🗑️ EXCLUIR TODOS OS VÍDEOS
+                </button>
+            </div>
+            <div class="admin-stats" id="adminStats">
+                <div class="stat-card">
+                    <div class="number" id="totalVideos">0</div>
+                    <div>Total de Vídeos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalViews">0</div>
+                    <div>Visualizações</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalCriadores">0</div>
+                    <div>Criadores</div>
+                </div>
             </div>
         </div>
 
@@ -422,6 +499,24 @@
     
     <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2><i class="fas fa-envelope"></i> Contato</h2><p style="margin: 20px 0;">📧 Email: wolftube@contato.com</p><p>📱 WhatsApp: (11) 99999-9999</p><p>📸 Instagram: @wolftube</p><button class="btn-primary" onclick="fecharContato()">Fechar</button></div></div>
 
+    <!-- Confirmação de exclusão -->
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content">
+            <i class="fas fa-exclamation-triangle" style="font-size: 56px; color: #e74c3c; margin-bottom: 20px;"></i>
+            <h2 style="color: #e74c3c;">⚠️ ATENÇÃO!</h2>
+            <p style="margin: 20px 0;">Você tem certeza que deseja <strong>EXCLUIR TODOS OS VÍDEOS</strong>?</p>
+            <p style="margin-bottom: 20px;">Esta ação é <strong>IRREVERSÍVEL</strong> e todos os vídeos serão apagados permanentemente!</p>
+            <div>
+                <button class="btn-warning" onclick="confirmarExcluirTodos()" style="margin: 5px;">
+                    <i class="fas fa-trash-alt"></i> SIM, EXCLUIR TUDO
+                </button>
+                <button class="btn-secondary" onclick="fecharConfirmModal()" style="margin: 5px;">
+                    <i class="fas fa-times"></i> CANCELAR
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modais Login/Cadastro/Idade/Vídeo -->
     <div class="modal" id="ageModal"><div class="modal-content"><i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff4757;"></i><h2>🔞 Verificação</h2><p>Você tem 18 anos ou mais?</p><button class="btn-primary" onclick="verifyAge(true)">✅ SIM</button><button class="btn-danger" onclick="verifyAge(false)">❌ NÃO</button></div></div>
     
@@ -455,6 +550,7 @@
         let usuarioAtual = null;
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
+        let videosCache = [];
 
         function verifyAge(hasAge) {
             if (hasAge) {
@@ -505,6 +601,48 @@
         function fecharTermos() { document.getElementById('termosModal').classList.add('hidden'); }
         function mostrarContato() { document.getElementById('contatoModal').classList.remove('hidden'); }
         function fecharContato() { document.getElementById('contatoModal').classList.add('hidden'); }
+        
+        function mostrarConfirmModal() { document.getElementById('confirmModal').classList.remove('hidden'); }
+        function fecharConfirmModal() { document.getElementById('confirmModal').classList.add('hidden'); }
+
+        // Função para excluir todos os vídeos
+        function excluirTodosVideos() {
+            mostrarConfirmModal();
+        }
+
+        async function confirmarExcluirTodos() {
+            fecharConfirmModal();
+            
+            if (!usuarioAtual || usuarioAtual.type !== 'admin') {
+                alert("❌ Apenas o administrador pode excluir todos os vídeos!");
+                return;
+            }
+            
+            try {
+                const snapshot = await db.collection('videos').get();
+                const videos = [];
+                snapshot.forEach(doc => { videos.push(doc.id); });
+                
+                if (videos.length === 0) {
+                    alert("📭 Não há vídeos para excluir!");
+                    return;
+                }
+                
+                const batch = db.batch();
+                videos.forEach(videoId => {
+                    const videoRef = db.collection('videos').doc(videoId);
+                    batch.delete(videoRef);
+                });
+                
+                await batch.commit();
+                alert(`✅ ${videos.length} vídeos foram excluídos com sucesso!`);
+                await carregarVideos();
+                
+            } catch (error) {
+                console.error("Erro ao excluir vídeos:", error);
+                alert("❌ Erro ao excluir vídeos: " + error.message);
+            }
+        }
 
         async function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
@@ -516,9 +654,18 @@
                     usuarioAtual = userDoc.data();
                     localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
                     alert(`Bem-vindo, ${usuarioAtual.name}!`);
+                    
                     document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadArea').style.display = 'block'; }
+                    
+                    if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { 
+                        document.getElementById('uploadArea').style.display = 'block'; 
+                    }
+                    
+                    if (usuarioAtual.type === 'admin') {
+                        document.getElementById('adminArea').classList.remove('hidden');
+                    }
+                    
                     fecharLogin();
                     carregarVideos();
                 } else { alert('Email ou senha incorretos!'); }
@@ -546,6 +693,7 @@
             document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex'; });
             document.getElementById('logoutBtn').style.display = 'none';
             document.getElementById('uploadArea').style.display = 'none';
+            document.getElementById('adminArea').classList.add('hidden');
             mostrarLogin();
         }
 
@@ -581,7 +729,25 @@
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
                 const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
                 const videos = [];
-                snapshot.forEach(doc => { videos.push({ docId: doc.id, ...doc.data() }); });
+                let totalViews = 0;
+                snapshot.forEach(doc => { 
+                    const data = doc.data();
+                    videos.push({ docId: doc.id, ...data });
+                    totalViews += data.views || 0;
+                });
+                videosCache = videos;
+                
+                // Atualizar estatísticas do admin
+                if (usuarioAtual && usuarioAtual.type === 'admin') {
+                    document.getElementById('totalVideos').textContent = videos.length;
+                    document.getElementById('totalViews').textContent = totalViews;
+                    
+                    // Contar criadores únicos
+                    const criadores = new Set();
+                    videos.forEach(v => criadores.add(v.authorEmail));
+                    document.getElementById('totalCriadores').textContent = criadores.size;
+                }
+                
                 const grid = document.getElementById('videosGrid');
                 if (videos.length === 0) { grid.innerHTML = '<p style="text-align:center;">🎬 Nenhum vídeo ainda</p>'; }
                 else {
@@ -668,6 +834,7 @@
             if (salvo) {
                 usuarioAtual = JSON.parse(salvo);
                 if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadArea').style.display = 'block'; }
+                if (usuarioAtual.type === 'admin') { document.getElementById('adminArea').classList.remove('hidden'); }
                 document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
             }
@@ -677,5 +844,4 @@
     </script>
 </body>
 </html>
-
 
