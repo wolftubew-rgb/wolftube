@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Vídeos, Apoio e Comentários</title>
+    <title>WolfTube - Vídeos, Doações e Comentários</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -61,9 +61,10 @@
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
         .btn-donate { background: linear-gradient(135deg, #11c76f, #7fba00); color: white; }
+        .btn-send { background: #ff4757; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; transition: all 0.3s; }
+        .btn-send:hover { background: #ff6b81; transform: scale(1.02); }
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         
-        /* SEÇÃO DE DOAÇÃO PIX */
         .donation-section {
             background: linear-gradient(135deg, #11c76f, #7fba00);
             border-radius: 20px;
@@ -72,13 +73,7 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(17,199,111,0.3);
         }
-        .donation-section h2 {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+        .donation-section h2 { margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .pix-container {
             background: rgba(0, 0, 0, 0.2);
             border-radius: 20px;
@@ -90,18 +85,9 @@
             align-items: center;
             gap: 30px;
         }
-        .qr-code {
-            background: white;
-            border-radius: 20px;
-            padding: 15px;
-        }
-        .qr-code img {
-            width: 180px;
-            height: 180px;
-        }
-        .pix-info {
-            text-align: left;
-        }
+        .qr-code { background: white; border-radius: 20px; padding: 15px; }
+        .qr-code img { width: 180px; height: 180px; }
+        .pix-info { text-align: left; }
         .pix-info p { margin: 10px 0; }
         .pix-key {
             background: rgba(0, 0, 0, 0.5);
@@ -112,20 +98,8 @@
             word-break: break-all;
             margin: 10px 0;
         }
-        .valores-sugeridos {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-        .valor-btn {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+        .valores-sugeridos { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+        .valor-btn { background: rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
         .valor-btn:hover { background: #ff4757; transform: scale(1.05); }
         
         .upload-area {
@@ -159,13 +133,7 @@
         .thumbnail-upload:hover { border-color: #ff4757; background: rgba(255,71,87,0.1); }
         .thumbnail-upload i { font-size: 48px; color: #ff4757; margin-bottom: 10px; }
         .thumbnail-preview { margin-top: 15px; position: relative; display: inline-block; }
-        .thumbnail-preview img {
-            max-width: 200px;
-            max-height: 120px;
-            border-radius: 10px;
-            border: 2px solid #ff4757;
-            object-fit: cover;
-        }
+        .thumbnail-preview img { max-width: 200px; max-height: 120px; border-radius: 10px; border: 2px solid #ff4757; object-fit: cover; }
         .remove-thumbnail {
             position: absolute;
             top: -10px;
@@ -205,14 +173,7 @@
             margin-bottom: 30px;
             border: 1px solid rgba(231,76,60,0.5);
         }
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
         .admin-header h3 { color: #e74c3c; display: flex; align-items: center; gap: 10px; }
         .admin-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 15px; }
         .stat-card { text-align: center; padding: 10px 20px; background: rgba(255,255,255,0.1); border-radius: 15px; }
@@ -271,7 +232,6 @@
         .video-meta { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 10px; }
         .video-meta i { margin-right: 5px; width: 20px; }
         
-        /* MODAL DO VÍDEO COM COMENTÁRIOS */
         .video-modal {
             position: fixed;
             top: 0;
@@ -305,13 +265,7 @@
             z-index: 10;
         }
         .video-header h3 { color: #ff4757; }
-        .close-video {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: white;
-        }
+        .close-video { background: none; border: none; font-size: 28px; cursor: pointer; color: white; }
         .video-wrapper {
             position: relative;
             width: 100%;
@@ -319,8 +273,7 @@
             background: #000;
             cursor: pointer;
         }
-        .video-wrapper iframe,
-        .video-wrapper img {
+        .video-wrapper iframe, .video-wrapper img {
             position: absolute;
             top: 0;
             left: 0;
@@ -341,115 +294,26 @@
             background: rgba(0, 0, 0, 0.3);
             z-index: 10;
         }
-        .play-overlay i {
-            font-size: 64px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        .video-info-modal {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .video-info-modal p {
-            margin: 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .video-info-modal i {
-            width: 24px;
-            color: #ff4757;
-        }
+        .play-overlay i { font-size: 64px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
+        .video-info-modal { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .video-info-modal p { margin: 8px 0; display: flex; align-items: center; gap: 10px; }
+        .video-info-modal i { width: 24px; color: #ff4757; }
         
-        /* SEÇÃO DE COMENTÁRIOS */
-        .comments-section {
-            padding: 20px;
-        }
-        .comments-section h4 {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-        }
-        .comment-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .comment-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-        }
-        .comment-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px #ff4757;
-        }
-        .btn-send {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-send:hover {
-            background: #ff6b81;
-            transform: scale(1.02);
-        }
-        .comments-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .comment-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-        .comment-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-        .comment-author {
-            color: #ff4757;
-            font-weight: bold;
-        }
-        .comment-date {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 11px;
-        }
-        .comment-text {
-            font-size: 14px;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-        .delete-comment {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            font-size: 12px;
-            margin-left: auto;
-            padding: 5px;
-        }
-        .delete-comment:hover {
-            color: #ff4757;
-        }
-        .no-comments {
-            text-align: center;
-            padding: 30px;
-            color: rgba(255, 255, 255, 0.5);
-        }
+        .comments-section { padding: 20px; }
+        .comments-section h4 { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-size: 18px; }
+        .comment-form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .comment-input { flex: 1; padding: 12px 15px; border: none; border-radius: 25px; background: rgba(255, 255, 255, 0.9); font-size: 14px; }
+        .comment-input:focus { outline: none; box-shadow: 0 0 0 2px #ff4757; }
+        .comment-name { width: 150px; padding: 12px 15px; border: none; border-radius: 25px; background: rgba(255, 255, 255, 0.9); font-size: 14px; }
+        .comments-list { max-height: 300px; overflow-y: auto; }
+        .comment-item { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 12px; margin-bottom: 10px; }
+        .comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; flex-wrap: wrap; }
+        .comment-author { color: #ff4757; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .comment-date { color: rgba(255, 255, 255, 0.5); font-size: 11px; }
+        .comment-text { font-size: 14px; line-height: 1.4; word-break: break-word; margin-top: 5px; }
+        .delete-comment { background: none; border: none; color: rgba(255, 255, 255, 0.5); cursor: pointer; font-size: 12px; margin-left: auto; padding: 5px; }
+        .delete-comment:hover { color: #ff4757; }
+        .no-comments { text-align: center; padding: 30px; color: rgba(255, 255, 255, 0.5); }
         
         .modal, .login-box {
             background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
@@ -488,6 +352,8 @@
             .videos-grid { grid-template-columns: 1fr; }
             .pix-container { flex-direction: column; }
             .admin-stats { justify-content: center; }
+            .comment-form { flex-direction: column; }
+            .comment-name { width: 100%; }
         }
     </style>
 </head>
@@ -505,7 +371,6 @@
     </div>
 
     <div class="container">
-        <!-- DOAÇÃO PIX -->
         <div class="donation-section">
             <h2><i class="fas fa-heart"></i> Apoie o WolfTube</h2>
             <p>Sua doação ajuda a manter o site no ar!</p>
@@ -527,7 +392,6 @@
             </div>
         </div>
 
-        <!-- ÁREA ADMIN -->
         <div id="adminArea" class="admin-area hidden">
             <div class="admin-header">
                 <h3><i class="fas fa-shield-alt"></i> Painel Admin</h3>
@@ -540,13 +404,9 @@
             </div>
         </div>
 
-        <!-- PUBLICAR VÍDEO -->
         <div class="upload-area" id="uploadArea" style="display:none;">
             <h2><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</h2>
-            <div class="form-group">
-                <label>Título</label>
-                <input type="text" id="videoTitle" placeholder="Título do vídeo">
-            </div>
+            <div class="form-group"><label>Título</label><input type="text" id="videoTitle" placeholder="Título do vídeo"></div>
             <div class="form-group">
                 <label>Capa do Vídeo</label>
                 <div class="thumbnail-upload" onclick="document.getElementById('thumbnailInput').click()">
@@ -559,14 +419,8 @@
                     <button class="remove-thumbnail" onclick="removeThumbnail()">✕</button>
                 </div>
             </div>
-            <div class="form-group">
-                <label>Link do Vídeo (Google Drive)</label>
-                <input type="text" id="videoUrl" placeholder="https://drive.google.com/file/d/SEU_ID/view">
-            </div>
-            <div class="form-group">
-                <label>Descrição</label>
-                <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..."></textarea>
-            </div>
+            <div class="form-group"><label>Link do Vídeo (Google Drive)</label><input type="text" id="videoUrl" placeholder="https://drive.google.com/file/d/SEU_ID/view"></div>
+            <div class="form-group"><label>Descrição</label><textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..."></textarea></div>
             <button class="btn-primary" onclick="publicarVideo()">Publicar</button>
         </div>
 
@@ -583,15 +437,15 @@
     </div>
 
     <!-- MODAIS -->
-    <div id="politicaModal" class="modal hidden"><div class="modal-content"><h2>Política de Privacidade</h2><p>Coletamos apenas email e nome para identificação.</p><button onclick="fecharPolitica()">Fechar</button></div></div>
-    <div id="termosModal" class="modal hidden"><div class="modal-content"><h2>Termos de Uso</h2><p>Você é responsável pelo conteúdo que publica.</p><button onclick="fecharTermos()">Fechar</button></div></div>
+    <div id="politicaModal" class="modal hidden"><div class="modal-content"><h2>Política de Privacidade</h2><p>Coletamos apenas nome para comentários.</p><button onclick="fecharPolitica()">Fechar</button></div></div>
+    <div id="termosModal" class="modal hidden"><div class="modal-content"><h2>Termos de Uso</h2><p>Seja respeitoso nos comentários.</p><button onclick="fecharTermos()">Fechar</button></div></div>
     <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2>Contato</h2><p>📧 wolftube@contato.com</p><button onclick="fecharContato()">Fechar</button></div></div>
-    <div id="confirmModal" class="modal hidden"><div class="modal-content"><h2>⚠️ Excluir todos?</h2><button onclick="confirmarExcluirTodos()">Sim, excluir</button><button onclick="fecharConfirmModal()">Cancelar</button></div></div>
+    <div id="confirmModal" class="modal hidden"><div class="modal-content"><h2>⚠️ Excluir todos?</h2><button onclick="confirmarExcluirTodos()">Sim</button><button onclick="fecharConfirmModal()">Cancelar</button></div></div>
     <div class="modal" id="ageModal"><div class="modal-content"><h2>🔞 Verificação</h2><p>Você tem 18 anos ou mais?</p><button onclick="verifyAge(true)">SIM</button><button onclick="verifyAge(false)">NÃO</button></div></div>
     <div class="modal hidden" id="loginModal"><div class="login-box"><h2>Login</h2><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Senha"><button onclick="fazerLogin()">Entrar</button><button onclick="fecharLogin()">Fechar</button></div></div>
     <div class="modal hidden" id="registerModal"><div class="login-box"><h2>Cadastro</h2><input type="text" id="regName" placeholder="Nome"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPassword" placeholder="Senha"><select id="regType"><option value="user">Usuário</option><option value="creator">Criador</option></select><button onclick="fazerCadastro()">Cadastrar</button><button onclick="fecharCadastro()">Fechar</button></div></div>
 
-    <!-- MODAL DO VÍDEO COM COMENTÁRIOS -->
+    <!-- MODAL DO VÍDEO COM COMENTÁRIOS PÚBLICOS -->
     <div id="videoPlayerModal" class="video-modal hidden">
         <div class="video-container">
             <div class="video-header">
@@ -609,16 +463,18 @@
                 <p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p>
             </div>
             
-            <!-- SEÇÃO DE COMENTÁRIOS -->
+            <!-- SEÇÃO DE COMENTÁRIOS PÚBLICOS - NÃO PRECISA DE LOGIN -->
             <div class="comments-section">
                 <h4><i class="fas fa-comments"></i> Comentários (<span id="commentCount">0</span>)</h4>
                 <div class="comment-form">
-                    <input type="text" id="commentInput" class="comment-input" placeholder="Escreva um comentário...">
-                    <button class="btn-send" onclick="enviarComentario()"><i class="fas fa-paper-plane"></i> Enviar</button>
+                    <input type="text" id="commentName" class="comment-name" placeholder="Seu nome (opcional)" maxlength="50">
+                    <input type="text" id="commentInput" class="comment-input" placeholder="Escreva seu comentário...">
+                    <button class="btn-send" onclick="enviarComentario()"><i class="fas fa-paper-plane"></i> Publicar</button>
                 </div>
                 <div class="comments-list" id="commentsList">
                     <div class="no-comments">Seja o primeiro a comentar!</div>
                 </div>
+                <p style="font-size: 11px; text-align: center; margin-top: 10px; opacity: 0.5;">Comentários públicos - Seja respeitoso!</p>
             </div>
         </div>
     </div>
@@ -644,7 +500,7 @@
         let usuarioAtual = null;
         let currentThumbnailBase64 = null;
         let currentVideoUrl = null;
-        let videoIdAtual = null;
+        let videoIdAtualComentario = null;
 
         function verifyAge(hasAge) {
             if (hasAge) { localStorage.setItem('ageVerified', 'true'); document.getElementById('ageModal').style.display = 'none'; }
@@ -802,9 +658,7 @@
             } catch (error) { console.error('Erro:', error); document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro'; }
         }
 
-        // COMENTÁRIOS
-        let videoIdAtualComentario = null;
-
+        // COMENTÁRIOS PÚBLICOS - QUALQUER PESSOA PODE COMENTAR!
         async function carregarComentarios(videoId) {
             const snapshot = await db.collection('videos').doc(videoId).collection('comentarios').orderBy('data', 'desc').get();
             const comentarios = [];
@@ -814,16 +668,16 @@
             commentCount.textContent = comentarios.length;
             
             if (comentarios.length === 0) {
-                commentsList.innerHTML = '<div class="no-comments">Seja o primeiro a comentar!</div>';
+                commentsList.innerHTML = '<div class="no-comments">💬 Seja o primeiro a comentar!</div>';
                 return;
             }
             
             commentsList.innerHTML = comentarios.map(com => `
                 <div class="comment-item">
                     <div class="comment-header">
-                        <span class="comment-author"><i class="fas fa-user-circle"></i> ${escapeHtml(com.autor)}</span>
+                        <span class="comment-author"><i class="fas fa-user-circle"></i> ${escapeHtml(com.autor || 'Anônimo')}</span>
                         <span class="comment-date">${new Date(com.data).toLocaleDateString('pt-BR')} ${new Date(com.data).toLocaleTimeString('pt-BR')}</span>
-                        ${(usuarioAtual && (usuarioAtual.email === com.email || usuarioAtual.type === 'admin')) ? 
+                        ${(usuarioAtual && (usuarioAtual.type === 'admin')) ? 
                             `<button class="delete-comment" onclick="excluirComentario('${videoId}', '${com.id}')"><i class="fas fa-trash"></i></button>` : ''}
                     </div>
                     <div class="comment-text">${escapeHtml(com.texto)}</div>
@@ -832,18 +686,17 @@
         }
 
         async function enviarComentario() {
-            if (!usuarioAtual) {
-                alert("Faça login para comentar!");
-                mostrarLogin();
-                return;
-            }
             const texto = document.getElementById('commentInput').value.trim();
+            let nome = document.getElementById('commentName').value.trim();
+            
             if (!texto) { alert("Digite um comentário!"); return; }
             if (!videoIdAtualComentario) return;
             
+            if (nome === "") { nome = "Anônimo"; }
+            if (nome.length > 50) { nome = nome.substring(0, 50); }
+            
             const comentario = {
-                autor: usuarioAtual.name,
-                email: usuarioAtual.email,
+                autor: nome,
                 texto: texto,
                 data: new Date().toISOString()
             };
@@ -851,7 +704,9 @@
             try {
                 await db.collection('videos').doc(videoIdAtualComentario).collection('comentarios').add(comentario);
                 document.getElementById('commentInput').value = '';
+                document.getElementById('commentName').value = '';
                 carregarComentarios(videoIdAtualComentario);
+                alert("💬 Comentário publicado!");
             } catch (error) {
                 alert("Erro ao enviar comentário: " + error.message);
             }
