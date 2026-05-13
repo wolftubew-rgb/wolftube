@@ -533,7 +533,7 @@
     <div id="videoPlayerModal" class="video-modal hidden"><div class="video-container"><div class="video-header"><h3 id="modalVideoTitle">Título</h3><button class="close-video" onclick="closeVideoModal()">✕</button></div><div class="video-wrapper"><img id="videoThumbnailImg" src="" style="display: block;"><div class="play-overlay" id="playOverlay" onclick="playVideo()"><i class="fas fa-play-circle"></i></div><iframe id="videoIframe" src="" frameborder="0" allowfullscreen style="display: none;"></iframe></div><div class="video-info-modal"><p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p><p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p><p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p></div></div></div>
 
     <script>
-        // 🔥 SEUS DADOS PIX 🔥
+        // 🔥 DADOS PIX WOLFTUBE 🔥
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
         const QR_CODE_PIX = "00020126580014BR.GOV.BCB.PIX0136aea8ea33-ce23-459a-8261-7b04e25d9f7e5204000053039865802BR5901N6001C62070503***6304503E";
 
@@ -546,10 +546,6 @@
             const mensagem = `💚 Doação WolfTube - R$ ${valor}\nChave Pix: ${CHAVE_PIX}`;
             navigator.clipboard.writeText(mensagem);
             alert(`✅ Informações para doar R$ ${valor} copiadas!\n\nChave: ${CHAVE_PIX}`);
-        }
-
-        function copiarPixModal() {
-            copiarPix();
         }
 
         // Firebase
