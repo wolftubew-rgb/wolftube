@@ -34,20 +34,25 @@
             z-index: 100;
         }
         .logo {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        .logo i { color: #ff4757; font-size: 32px; animation: pulse 2s infinite; }
+        .logo i { color: #ff4757; font-size: 36px; animation: pulse 2s infinite; }
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
-        .logo span:first-child { background: linear-gradient(135deg, #ff4757, #ff6b81); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .logo span:last-child { color: white; }
+        .logo span { 
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 32px;
+        }
         
         .nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
         button {
@@ -112,6 +117,7 @@
         .btn-delete-all { background: #e74c3c; color: white; padding: 12px 25px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
         
         .donation-section { text-align: center; }
+        .donation-section h2 i { color: #ff4757; }
         .pix-container {
             background: rgba(0,0,0,0.2);
             border-radius: 20px;
@@ -413,7 +419,7 @@
     <div class="header">
         <div class="logo">
             <i class="fas fa-eye"></i>
-            <span>OLHA</span><span>AÍ</span>
+            <span>OLHA AÍ</span>
         </div>
         <div class="nav-buttons">
             <button class="btn-primary" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
@@ -431,7 +437,7 @@
                 <i class="fas fa-cloud-upload-alt"></i> 📤 Publicar Vídeo
             </button>
             <button class="main-btn btn-donate" onclick="mostrarDoacao()">
-                <i class="fas fa-heart"></i> 💚 Apoiar
+                <i class="fas fa-heart"></i> 💚 Apoiar Olha Aí
             </button>
         </div>
 
@@ -518,7 +524,7 @@
     <div id="videoPlayerModal" class="video-modal hidden"><div class="video-container"><div class="video-header"><h3 id="modalVideoTitle">Título</h3><button class="close-video" onclick="closeVideoModal()">✕</button></div><div class="video-wrapper"><img id="videoThumbnailImg" src="" style="display: block;"><div class="play-overlay" id="playOverlay" onclick="playVideo()"><i class="fas fa-play-circle"></i></div><iframe id="videoIframe" src="" frameborder="0" allowfullscreen style="display: none;"></iframe></div><div class="video-info-modal"><p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p><p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p><p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p></div></div></div>
     <div id="politicaModal" class="modal hidden"><div class="modal-content"><h2>Política de Privacidade</h2><p>Seus dados são seguros.</p><button onclick="fecharPolitica()">Fechar</button></div></div>
     <div id="termosModal" class="modal hidden"><div class="modal-content"><h2>Termos de Uso</h2><p>Seja respeitoso.</p><button onclick="fecharTermos()">Fechar</button></div></div>
-    <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2>Contato</h2><p>📧 olhaai@contato.com</p><button onclick="fecharContato()">Fechar</button></div></div>
+    <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2>Contato</h2><p>📧 contato@olhaai.com</p><button onclick="fecharContato()">Fechar</button></div></div>
     <div id="confirmModal" class="modal hidden"><div class="modal-content"><i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c;"></i><h2>⚠️ Atenção!</h2><p>Tem certeza que deseja EXCLUIR TODOS OS VÍDEOS?</p><button class="btn-delete-all" onclick="confirmarExcluirTodos()">SIM</button><button class="btn-secondary" onclick="fecharConfirmModal()">CANCELAR</button></div></div>
 
     <script>
