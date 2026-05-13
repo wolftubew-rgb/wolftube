@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>WolfTube - Comentários Mundiais</title>
+    <title>Olha Aí - Plataforma de Vídeos</title>
+    <meta name="description" content="Olha Aí - Plataforma de vídeos online. Assista e compartilhe vídeos gratuitamente.">
+    <meta name="keywords" content="vídeos, plataforma, olha ai, assistir, compartilhar">
+    <meta name="author" content="Olha Aí">
+    <meta name="robots" content="index, follow">
+    
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -41,7 +46,7 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        .logo span:first-child { background: linear-gradient(135deg, #ff4757, #ff6b81); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo span:first-child { background: linear-gradient(135deg, #ff4757, #ff6b81); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .logo span:last-child { color: white; }
         
         .nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -162,7 +167,6 @@
             color: white;
         }
         
-        /* 🌍 COMENTÁRIOS MUNDIAIS - SEMPRE VISÍVEL */
         .world-comments {
             background: linear-gradient(135deg, rgba(142,68,173,0.2), rgba(155,89,182,0.15));
             border: 2px solid #9b59b6;
@@ -408,8 +412,8 @@
 <body>
     <div class="header">
         <div class="logo">
-            <i class="fas fa-wolf-pack-battalion"></i>
-            <span>Wolf</span><span>Tube</span>
+            <i class="fas fa-eye"></i>
+            <span>OLHA</span><span>AÍ</span>
         </div>
         <div class="nav-buttons">
             <button class="btn-primary" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
@@ -419,7 +423,6 @@
     </div>
 
     <div class="container">
-        <!-- BOTÕES PRINCIPAIS -->
         <div class="main-buttons">
             <button class="main-btn btn-admin" id="adminBtn" onclick="mostrarAdmin()" style="display:none;">
                 <i class="fas fa-shield-alt"></i> 🛡️ Painel Admin
@@ -432,7 +435,6 @@
             </button>
         </div>
 
-        <!-- SEÇÃO ADMIN -->
         <div id="adminSection" class="section">
             <h2><i class="fas fa-shield-alt"></i> Painel do Administrador</h2>
             <div class="admin-stats">
@@ -443,7 +445,6 @@
             <button class="btn-delete-all" onclick="excluirTodosVideos()"><i class="fas fa-trash-alt"></i> EXCLUIR TODOS OS VÍDEOS</button>
         </div>
 
-        <!-- SEÇÃO PUBLICAR VÍDEO -->
         <div id="uploadSection" class="section">
             <h2><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</h2>
             <div class="form-group"><label>Título</label><input type="text" id="videoTitle" placeholder="Título do vídeo"></div>
@@ -464,9 +465,8 @@
             <button class="btn-primary" onclick="publicarVideo()"><i class="fas fa-paper-plane"></i> Publicar</button>
         </div>
 
-        <!-- SEÇÃO DOAÇÃO -->
         <div id="donationSection" class="section donation-section">
-            <h2><i class="fas fa-heart"></i> Apoie o WolfTube</h2>
+            <h2><i class="fas fa-heart"></i> Apoie o Olha Aí</h2>
             <div class="pix-container">
                 <div class="qr-code">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014BR.GOV.BCB.PIX0136aea8ea33-ce23-459a-8261-7b04e25d9f7e5204000053039865802BR5901N6001C62070503***6304503E" alt="QR Code Pix">
@@ -485,7 +485,7 @@
             </div>
         </div>
 
-        <!-- 🌍 COMENTÁRIOS MUNDIAIS - SEMPRE VISÍVEL -->
+        <!-- 🌍 COMENTÁRIOS MUNDIAIS -->
         <div class="world-comments">
             <h3><i class="fas fa-globe-americas"></i> 🌍 COMENTÁRIOS MUNDIAIS</h3>
             <p style="margin-bottom: 15px; opacity: 0.8;">Converse com pessoas do mundo todo! Deixe sua mensagem global.</p>
@@ -499,7 +499,6 @@
             </div>
         </div>
 
-        <!-- LISTA DE VÍDEOS -->
         <div class="videos-header">
             <h2><i class="fas fa-video"></i> Vídeos</h2>
             <div class="sync-status" id="syncStatus"><i class="fas fa-sync-alt fa-spin"></i> Carregando...</div>
@@ -508,7 +507,7 @@
     </div>
 
     <div class="footer">
-        <p>© 2024 WolfTube - Todos os direitos reservados</p>
+        <p>© 2024 Olha Aí - Todos os direitos reservados</p>
         <div><a onclick="mostrarPolitica()">Política</a> <a onclick="mostrarTermos()">Termos</a> <a onclick="mostrarContato()">Contato</a></div>
     </div>
 
@@ -519,13 +518,13 @@
     <div id="videoPlayerModal" class="video-modal hidden"><div class="video-container"><div class="video-header"><h3 id="modalVideoTitle">Título</h3><button class="close-video" onclick="closeVideoModal()">✕</button></div><div class="video-wrapper"><img id="videoThumbnailImg" src="" style="display: block;"><div class="play-overlay" id="playOverlay" onclick="playVideo()"><i class="fas fa-play-circle"></i></div><iframe id="videoIframe" src="" frameborder="0" allowfullscreen style="display: none;"></iframe></div><div class="video-info-modal"><p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p><p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p><p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p></div></div></div>
     <div id="politicaModal" class="modal hidden"><div class="modal-content"><h2>Política de Privacidade</h2><p>Seus dados são seguros.</p><button onclick="fecharPolitica()">Fechar</button></div></div>
     <div id="termosModal" class="modal hidden"><div class="modal-content"><h2>Termos de Uso</h2><p>Seja respeitoso.</p><button onclick="fecharTermos()">Fechar</button></div></div>
-    <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2>Contato</h2><p>📧 wolftube@contato.com</p><button onclick="fecharContato()">Fechar</button></div></div>
+    <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2>Contato</h2><p>📧 olhaai@contato.com</p><button onclick="fecharContato()">Fechar</button></div></div>
     <div id="confirmModal" class="modal hidden"><div class="modal-content"><i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c;"></i><h2>⚠️ Atenção!</h2><p>Tem certeza que deseja EXCLUIR TODOS OS VÍDEOS?</p><button class="btn-delete-all" onclick="confirmarExcluirTodos()">SIM</button><button class="btn-secondary" onclick="fecharConfirmModal()">CANCELAR</button></div></div>
 
     <script>
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
         function copiarPix() { navigator.clipboard.writeText(CHAVE_PIX); alert("✅ Chave Pix copiada!"); }
-        function copiarComValor(valor) { navigator.clipboard.writeText(`Doação WolfTube - R$ ${valor}\nChave: ${CHAVE_PIX}`); alert(`✅ R$ ${valor}`); }
+        function copiarComValor(valor) { navigator.clipboard.writeText(`Doação Olha Aí - R$ ${valor}\nChave: ${CHAVE_PIX}`); alert(`✅ R$ ${valor}`); }
         
         function mostrarAdmin() { document.getElementById('adminSection').classList.add('show'); document.getElementById('uploadSection').classList.remove('show'); document.getElementById('donationSection').classList.remove('show'); carregarEstatisticas(); }
         function mostrarUpload() { document.getElementById('uploadSection').classList.add('show'); document.getElementById('adminSection').classList.remove('show'); document.getElementById('donationSection').classList.remove('show'); }
@@ -581,10 +580,10 @@
         }
 
         async function criarAdmin() {
-            const adminRef = db.collection('usuarios').doc('admin@wolftube.com');
+            const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
             const adminDoc = await adminRef.get();
             if (!adminDoc.exists) {
-                await adminRef.set({ email: 'admin@wolftube.com', password: 'wolfadmin2010', name: 'Administrador', type: 'admin' });
+                await adminRef.set({ email: 'admin@olhaai.com', password: 'admin123', name: 'Administrador', type: 'admin' });
                 console.log("✅ Admin criado!");
             }
         }
@@ -689,7 +688,7 @@
                 else {
                     grid.innerHTML = videos.map(video => `
                         <div class="video-card" onclick="abrirVideoModal('${video.docId}')">
-                            <div class="video-thumbnail" style="background-image: url('${video.thumbnail || 'https://via.placeholder.com/320x200/ff4757/ffffff?text=WolfTube'}');">
+                            <div class="video-thumbnail" style="background-image: url('${video.thumbnail || 'https://via.placeholder.com/320x200/ff4757/ffffff?text=Olha+A%C3%AD'}');">
                                 ${!video.thumbnail ? '<i class="fas fa-play-circle"></i>' : ''}
                             </div>
                             <div class="video-info">
@@ -743,12 +742,7 @@
             if (nome === "") nome = "Anônimo";
             if (nome.length > 30) nome = nome.substring(0, 30);
             
-            const comentario = { 
-                autor: nome, 
-                texto: texto, 
-                data: new Date().toISOString() 
-            };
-            
+            const comentario = { autor: nome, texto: texto, data: new Date().toISOString() };
             try {
                 await db.collection('comentarios_mundiais').add(comentario);
                 document.getElementById('worldCommentInput').value = '';
