@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Olha Aí - Plataforma de Vídeos</title>
-    <meta name="description" content="Olha Aí - Plataforma de vídeos online. Assista e compartilhe vídeos gratuitamente.">
-    <meta name="keywords" content="vídeos, plataforma, olha ai, assistir, compartilhar">
+    <title>Olha Aí - Plataforma de Vídeos com IA</title>
+    <meta name="description" content="Olha Aí - Plataforma de vídeos online com IA exclusiva para administrador">
+    <meta name="keywords" content="vídeos, plataforma, olha ai, IA, assistir">
     <meta name="author" content="Olha Aí">
     <meta name="robots" content="index, follow">
     
@@ -71,6 +71,7 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
+        .btn-ai { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
         
         .main-buttons {
             display: flex;
@@ -96,6 +97,7 @@
         .btn-admin { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
         .btn-upload { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
         .btn-donate { background: linear-gradient(135deg, #11c76f, #7fba00); color: white; }
+        .btn-ai-main { background: linear-gradient(135deg, #9b59b6, #6c3483); color: white; }
         
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
         
@@ -111,13 +113,110 @@
         .section.show { display: block; }
         .section h2 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 24px; }
         
+        /* ESTILOS DA IA */
+        .ai-section {
+            background: linear-gradient(135deg, rgba(155,89,182,0.2), rgba(142,68,173,0.3));
+            border: 2px solid #9b59b6;
+        }
+        .ai-chat-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .ai-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .ai-message {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .ai-message.user { justify-content: flex-end; }
+        .ai-message.bot { justify-content: flex-start; }
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+        .user .message-bubble {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        .bot .message-bubble {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-bottom-left-radius: 5px;
+            border-left: 3px solid #9b59b6;
+        }
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #9b59b6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .ai-input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .ai-input-area input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.9);
+        }
+        .ai-commands {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .ai-command-btn {
+            background: rgba(155,89,182,0.3);
+            border: 1px solid #9b59b6;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .ai-command-btn:hover { background: #9b59b6; }
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+        }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+        
         .admin-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
         .stat-card { background: rgba(0,0,0,0.4); padding: 20px 30px; border-radius: 15px; text-align: center; flex: 1; }
         .stat-card .number { font-size: 36px; font-weight: bold; color: #e74c3c; }
         .btn-delete-all { background: #e74c3c; color: white; padding: 12px 25px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; }
         
         .donation-section { text-align: center; }
-        .donation-section h2 i { color: #ff4757; }
         .pix-container {
             background: rgba(0,0,0,0.2);
             border-radius: 20px;
@@ -219,7 +318,6 @@
             cursor: pointer;
             font-weight: bold;
         }
-        .btn-send-world:hover { background: #8e44ad; transform: scale(1.02); }
         .world-comments-list {
             max-height: 400px;
             overflow-y: auto;
@@ -412,6 +510,7 @@
             .admin-stats { flex-direction: column; }
             .world-comments-form { flex-direction: column; }
             .world-comments-name { width: 100%; }
+            .ai-input-area { flex-direction: column; }
         }
     </style>
 </head>
@@ -439,6 +538,9 @@
             <button class="main-btn btn-donate" onclick="mostrarDoacao()">
                 <i class="fas fa-heart"></i> 💚 Apoiar Olha Aí
             </button>
+            <button class="main-btn btn-ai-main" id="aiBtn" onclick="mostrarIA()" style="display:none;">
+                <i class="fas fa-robot"></i> 🤖 IA Assistente
+            </button>
         </div>
 
         <div id="adminSection" class="section">
@@ -449,6 +551,40 @@
                 <div class="stat-card"><div class="number" id="totalCriadores">0</div><div>Criadores</div></div>
             </div>
             <button class="btn-delete-all" onclick="excluirTodosVideos()"><i class="fas fa-trash-alt"></i> EXCLUIR TODOS OS VÍDEOS</button>
+        </div>
+
+        <!-- SEÇÃO DA IA - APENAS ADMIN -->
+        <div id="aiSection" class="section ai-section">
+            <h2><i class="fas fa-robot"></i> 🤖 Assistente IA - Olha Aí Bot</h2>
+            <p style="margin-bottom: 15px; opacity: 0.8;">💡 IA exclusiva para o administrador. Pergunte qualquer coisa sobre o site, dicas, moderação ou peça ajuda!</p>
+            <div class="ai-chat-container">
+                <div class="ai-messages" id="aiMessages">
+                    <div class="ai-message bot">
+                        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+                        <div class="message-bubble">
+                            Olá Admin! 👋<br>
+                            Sou a IA do Olha Aí. Posso ajudar com:<br>
+                            • 📊 Estatísticas do site<br>
+                            • 🎬 Sugestões de moderação<br>
+                            • 💡 Dicas de crescimento<br>
+                            • 📝 Respostas automáticas<br>
+                            • 🔍 Análise de conteúdo<br><br>
+                            Como posso ajudar você hoje?
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-input-area">
+                    <input type="text" id="aiInput" placeholder="Digite sua pergunta para a IA..." onkeypress="if(event.key==='Enter') perguntarIA()">
+                    <button class="btn-primary" onclick="perguntarIA()"><i class="fas fa-paper-plane"></i> Enviar</button>
+                </div>
+                <div class="ai-commands">
+                    <span class="ai-command-btn" onclick="comandoRapido('estatísticas')">📊 Ver estatísticas</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('dicas moderação')">🎯 Dicas moderação</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('crescimento')">📈 Crescimento</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('responder comentário')">💬 Responder comentário</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('analisar conteúdo')">🔍 Analisar conteúdo</span>
+                </div>
+            </div>
         </div>
 
         <div id="uploadSection" class="section">
@@ -532,9 +668,122 @@
         function copiarPix() { navigator.clipboard.writeText(CHAVE_PIX); alert("✅ Chave Pix copiada!"); }
         function copiarComValor(valor) { navigator.clipboard.writeText(`Doação Olha Aí - R$ ${valor}\nChave: ${CHAVE_PIX}`); alert(`✅ R$ ${valor}`); }
         
-        function mostrarAdmin() { document.getElementById('adminSection').classList.add('show'); document.getElementById('uploadSection').classList.remove('show'); document.getElementById('donationSection').classList.remove('show'); carregarEstatisticas(); }
-        function mostrarUpload() { document.getElementById('uploadSection').classList.add('show'); document.getElementById('adminSection').classList.remove('show'); document.getElementById('donationSection').classList.remove('show'); }
-        function mostrarDoacao() { document.getElementById('donationSection').classList.add('show'); document.getElementById('adminSection').classList.remove('show'); document.getElementById('uploadSection').classList.remove('show'); }
+        function mostrarAdmin() { document.getElementById('adminSection').classList.add('show'); document.getElementById('uploadSection').classList.remove('show'); document.getElementById('donationSection').classList.remove('show'); document.getElementById('aiSection').classList.remove('show'); carregarEstatisticas(); }
+        function mostrarUpload() { document.getElementById('uploadSection').classList.add('show'); document.getElementById('adminSection').classList.remove('show'); document.getElementById('donationSection').classList.remove('show'); document.getElementById('aiSection').classList.remove('show'); }
+        function mostrarDoacao() { document.getElementById('donationSection').classList.add('show'); document.getElementById('adminSection').classList.remove('show'); document.getElementById('uploadSection').classList.remove('show'); document.getElementById('aiSection').classList.remove('show'); }
+        function mostrarIA() { document.getElementById('aiSection').classList.add('show'); document.getElementById('adminSection').classList.remove('show'); document.getElementById('uploadSection').classList.remove('show'); document.getElementById('donationSection').classList.remove('show'); }
+        
+        // ============ IA DO ADMIN ============
+        async function perguntarIA() {
+            const input = document.getElementById('aiInput');
+            const pergunta = input.value.trim();
+            if (!pergunta) return;
+            
+            // Adiciona mensagem do usuário
+            adicionarMensagemIA(pergunta, 'user');
+            input.value = '';
+            
+            // Mostra indicador de digitação
+            mostrarDigitandoIA();
+            
+            // Processa a pergunta (simulação de IA)
+            setTimeout(async () => {
+                const resposta = await processarPerguntaIA(pergunta);
+                removerDigitandoIA();
+                adicionarMensagemIA(resposta, 'bot');
+            }, 1000);
+        }
+        
+        function adicionarMensagemIA(texto, tipo) {
+            const container = document.getElementById('aiMessages');
+            const div = document.createElement('div');
+            div.className = `ai-message ${tipo}`;
+            
+            if (tipo === 'bot') {
+                div.innerHTML = `
+                    <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+                    <div class="message-bubble">${texto}</div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="message-bubble">${texto}</div>
+                `;
+            }
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function mostrarDigitandoIA() {
+            const container = document.getElementById('aiMessages');
+            const div = document.createElement('div');
+            div.className = 'ai-message bot';
+            div.id = 'typingIndicator';
+            div.innerHTML = `
+                <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+                <div class="message-bubble">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function removerDigitandoIA() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+        
+        async function processarPerguntaIA(pergunta) {
+            const perguntaLower = pergunta.toLowerCase();
+            
+            // Estatísticas
+            if (perguntaLower.includes('estatística') || perguntaLower.includes('estatisticas') || perguntaLower.includes('quantos vídeos')) {
+                const snapshot = await db.collection('videos').get();
+                let totalViews = 0;
+                snapshot.forEach(doc => { totalViews += doc.data().views || 0; });
+                return `📊 **Estatísticas do Olha Aí:**\n\n• Total de vídeos: ${snapshot.size}\n• Total de visualizações: ${totalViews}\n• Criadores ativos: ${new Set(snapshot.docs.map(d => d.data().authorEmail)).size}\n\nContinue com ótimo trabalho! 🚀`;
+            }
+            
+            // Dicas de moderação
+            if (perguntaLower.includes('moderação') || perguntaLower.includes('moderar') || perguntaLower.includes('dica')) {
+                return `🎯 **Dicas de Moderação:**\n\n1. ✅ Revise vídeos antes de aprovar\n2. 🗑️ Remova conteúdo impróprio rapidamente\n3. 💬 Responda comentários ofensivos\n4. 📝 Crie regras claras para criadores\n5. ⭐ Destaque os melhores conteúdos\n\nQuer ajuda específica com algum desses pontos?`;
+            }
+            
+            // Crescimento
+            if (perguntaLower.includes('crescimento') || perguntaLower.includes('aumentar') || perguntaLower.includes('divulgar')) {
+                return `📈 **Estratégias de Crescimento:**\n\n• Compartilhe vídeos nas redes sociais\n• Incentive criadores a divulgarem\n• Use hashtags relevantes (#OlhaAi)\n• Crie desafios semanais\n• Parcerias com influenciadores\n• Promova comentários mundiais\n\nPosso elaborar um plano personalizado!`;
+            }
+            
+            // Responder comentários
+            if (perguntaLower.includes('responder comentário') || perguntaLower.includes('comentario')) {
+                return `💬 **Modelos de Resposta para Comentários:**\n\n**Positivo:** "Obrigado pelo apoio! 🎉"\n**Crítica construtiva:** "Obrigado pelo feedback! Vamos melhorar 👍"\n**Ofensivo:** Remova o comentário e avise o usuário.\n\nPrecisa de ajuda com algum comentário específico?`;
+            }
+            
+            // Análise de conteúdo
+            if (perguntaLower.includes('analisar conteúdo') || perguntaLower.includes('analisar conteudo')) {
+                return `🔍 **Checklist para Análise de Conteúdo:**\n\n✓ Título apropriado\n✓ Thumbnail atrativa\n✓ Descrição detalhada\n✓ Conteúdo original\n✓ Sem violação de direitos\n✓ Classificação indicativa\n\nQuer que eu analise algum vídeo específico?`;
+            }
+            
+            // Saudação
+            if (perguntaLower.includes('olá') || perguntaLower.includes('oi') || perguntaLower.includes('opa')) {
+                return `Olá, Admin! 👋\n\nComo posso ajudar você hoje? Posso falar sobre estatísticas, moderação, crescimento, ou responder comentários. É só me perguntar! 🚀`;
+            }
+            
+            // Ajuda
+            if (perguntaLower.includes('ajuda') || perguntaLower.includes('comandos') || perguntaLower.includes('o que você pode fazer')) {
+                return `🤖 **Comandos disponíveis:**\n\n• "estatísticas" - Ver dados do site\n• "dicas moderação" - Sugestões de moderação\n• "crescimento" - Estratégias de divulgação\n• "responder comentário" - Modelos de resposta\n• "analisar conteúdo" - Checklist de qualidade\n\nPergunte qualquer coisa! 💡`;
+            }
+            
+            // Resposta padrão
+            return `💡 **Sugestão da IA:**\n\n${pergunta}\n\nPosso ajudar com:\n• 📊 Estatísticas do site\n• 🎯 Dicas de moderação\n• 📈 Estratégias de crescimento\n• 💬 Respostas para comentários\n• 🔍 Análise de conteúdo\n\nDeseja saber mais sobre algum desses tópicos?`;
+        }
+        
+        function comandoRapido(comando) {
+            document.getElementById('aiInput').value = comando;
+            perguntarIA();
+        }
         
         async function carregarEstatisticas() {
             const snapshot = await db.collection('videos').get();
@@ -620,7 +869,10 @@
                     document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
                     if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadBtn').style.display = 'inline-flex'; }
-                    if (usuarioAtual.type === 'admin') { document.getElementById('adminBtn').style.display = 'inline-flex'; }
+                    if (usuarioAtual.type === 'admin') { 
+                        document.getElementById('adminBtn').style.display = 'inline-flex';
+                        document.getElementById('aiBtn').style.display = 'inline-flex';
+                    }
                     fecharLogin();
                     carregarVideos();
                     carregarComentariosMundiais();
@@ -650,8 +902,10 @@
             document.getElementById('logoutBtn').style.display = 'none';
             document.getElementById('adminBtn').style.display = 'none';
             document.getElementById('uploadBtn').style.display = 'none';
+            document.getElementById('aiBtn').style.display = 'none';
             document.getElementById('adminSection').classList.remove('show');
             document.getElementById('uploadSection').classList.remove('show');
+            document.getElementById('aiSection').classList.remove('show');
             mostrarLogin();
         }
 
@@ -714,7 +968,6 @@
             } catch (error) { console.error('Erro:', error); document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro'; }
         }
 
-        // 🌍 COMENTÁRIOS MUNDIAIS
         async function carregarComentariosMundiais() {
             try {
                 const snapshot = await db.collection('comentarios_mundiais').orderBy('data', 'desc').get();
@@ -781,6 +1034,10 @@
                     carregarEstatisticas();
                 } catch (error) { alert('Erro ao excluir: ' + error.message); }
             }
+        }
+
+        async function excluirTodosVideos() {
+            mostrarConfirmModal();
         }
 
         async function confirmarExcluirTodos() {
@@ -857,7 +1114,10 @@
             if (salvo) {
                 usuarioAtual = JSON.parse(salvo);
                 if (usuarioAtual.type === 'creator' || usuarioAtual.type === 'admin') { document.getElementById('uploadBtn').style.display = 'inline-flex'; }
-                if (usuarioAtual.type === 'admin') { document.getElementById('adminBtn').style.display = 'inline-flex'; }
+                if (usuarioAtual.type === 'admin') { 
+                    document.getElementById('adminBtn').style.display = 'inline-flex';
+                    document.getElementById('aiBtn').style.display = 'inline-flex';
+                }
                 document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
             }
