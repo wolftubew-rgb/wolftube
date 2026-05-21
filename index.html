@@ -104,7 +104,6 @@
         .section.show { display: block; }
         .section h2 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 24px; }
         
-        /* IA Styles */
         .ai-section { background: linear-gradient(135deg, rgba(155,89,182,0.2), rgba(142,68,173,0.3)); border: 2px solid #9b59b6; }
         .ai-chat-container { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 20px; margin-top: 20px; }
         .ai-messages { max-height: 400px; overflow-y: auto; margin-bottom: 20px; padding: 10px; }
@@ -217,12 +216,12 @@
 
         <div id="aiSection" class="section ai-section">
             <h2><i class="fas fa-robot"></i> IA Assistente - Olha Aí Bot</h2>
-            <p>💡 IA inteligente para ajudar o admin. Configure sua chave DeepSeek no código!</p>
+            <p>💡 IA super inteligente para ajudar o admin!</p>
             <div class="ai-chat-container">
                 <div class="ai-messages" id="aiMessages">
                     <div class="ai-message bot">
                         <div class="ai-avatar"><i class="fas fa-robot"></i></div>
-                        <div class="message-bubble">Olá Admin! 👋<br><br>Para usar a IA, você precisa:<br><br>1. Acesse platform.deepseek.com<br>2. Crie uma chave API grátis<br>3. Cole no código onde está "SUA_CHAVE_AQUI"<br><br>Enquanto isso, posso ajudar com comandos básicos!</div>
+                        <div class="message-bubble">Olá Admin! 👋<br><br>Sou a IA do Olha Aí! Posso ajudar com:<br><br>📊 Estatísticas do site<br>🎯 Dicas de moderação<br>📈 Estratégias de crescimento<br>💬 Respostas para comentários<br><br>Como posso ajudar você hoje?</div>
                     </div>
                 </div>
                 <div class="ai-input-area">
@@ -231,8 +230,9 @@
                 </div>
                 <div class="ai-commands">
                     <span class="ai-command-btn" onclick="comandoRapido('estatísticas')">📊 Estatísticas</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('dicas')">🎯 Dicas</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('ajuda')">❓ Ajuda</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('dicas moderação')">🎯 Dicas</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('crescimento')">📈 Crescimento</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('responder comentário')">💬 Respostas</span>
                 </div>
             </div>
         </div>
@@ -301,7 +301,9 @@
 
     <script>
         // ============ COLOQUE SUA CHAVE DEEPSEEK AQUI ============
-        const MINHA_CHAVE_DEEPSEEK = "SUA_CHAVE_AQUI"; // 👈 COLE SUA CHAVE AQUI!
+        // 👇👇👇 COLE SUA CHAVE DENTRO DAS ASPAS ABAIXO 👇👇👇
+        const MINHA_CHAVE_DEEPSEEK = "SUA_CHAVE_AQUI";
+        // 👆👆👆 COLE SUA CHAVE DENTRO DAS ASPAS ACIMA 👆👆👆
         // ======================================================
         
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
@@ -348,10 +350,10 @@
             try {
                 let resposta;
                 if (!MINHA_CHAVE_DEEPSEEK || MINHA_CHAVE_DEEPSEEK === "SUA_CHAVE_AQUI") {
-                    resposta = "⚠️ **Configure sua chave DeepSeek!**\n\n1. Acesse https://platform.deepseek.com/\n2. Crie uma conta grátis\n3. Vá em 'API Keys' e crie uma chave\n4. Copie a chave\n5. Volte aqui e cole onde está 'SUA_CHAVE_AQUI'\n\nÉ grátis e rápido! 🚀";
+                    resposta = "⚠️ **Você precisa colocar sua chave DeepSeek!**\n\n1. Acesse https://platform.deepseek.com/\n2. Faça login\n3. Vá em 'API Keys'\n4. Clique 'Create API Key'\n5. Copie a chave\n6. Cole no código onde está 'SUA_CHAVE_AQUI'\n\nÉ grátis! 🚀";
                 } else {
                     const stats = await getEstatisticasSite();
-                    const prompt = `Você é o assistente IA do site Olha Aí (plataforma de vídeos). Responda em português do Brasil, seja útil e amigável.
+                    const prompt = `Você é o assistente IA do site Olha Aí (plataforma de vídeos). Responda em português do Brasil, seja útil, amigável e detalhado.
                     
 Dados atuais do site:
 ${stats}
@@ -374,7 +376,10 @@ Resposta:`;
                         })
                     });
                     
-                    if (!response.ok) throw new Error("Erro na API");
+                    if (!response.ok) {
+                        const erro = await response.json();
+                        throw new Error(erro.error?.message || "Erro na API");
+                    }
                     const data = await response.json();
                     resposta = data.choices[0].message.content;
                 }
@@ -395,7 +400,7 @@ Resposta:`;
                     totalViews += doc.data().views || 0;
                     criadores.add(doc.data().authorEmail);
                 });
-                return `• Vídeos: ${snapshot.size}\n• Views: ${totalViews}\n• Criadores: ${criadores.size}`;
+                return `📊 Estatísticas em tempo real:\n• Vídeos: ${snapshot.size}\n• Visualizações: ${totalViews}\n• Criadores: ${criadores.size}`;
             } catch(e) { return "• Não foi possível carregar estatísticas"; }
         }
         
@@ -741,5 +746,3 @@ Resposta:`;
     </script>
 </body>
 </html>
-
-
