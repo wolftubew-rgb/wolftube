@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head> 
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Olha Aí - Plataforma de Vídeos com IA</title>
@@ -301,7 +301,7 @@
 
     <script>
         // ============ CHAVE API DEEPSEEK - JÁ CONFIGURADA ============
-        const MINHA_CHAVE_DEEPSEEK = "sk-670571975cd442a497d894d9a938cb72";
+        const MINHA_CHAVE_DEEPSEEK = "sk-5f298fdf03734cf7a153607ce1ecf1e4";
         // ============================================================
         
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
@@ -346,46 +346,42 @@
             mostrarDigitandoIA();
             
             try {
-                let resposta;
-                if (!MINHA_CHAVE_DEEPSEEK || MINHA_CHAVE_DEEPSEEK === "SUA_CHAVE_AQUI") {
-                    resposta = "⚠️ **Configure sua chave DeepSeek!**\n\n1. Acesse https://platform.deepseek.com/\n2. Crie uma conta grátis\n3. Vá em 'API Keys' e crie uma chave\n4. Copie a chave\n5. Volte aqui e cole onde está 'SUA_CHAVE_AQUI'\n\nÉ grátis e rápido! 🚀";
-                } else {
-                    const stats = await getEstatisticasSite();
-                    const prompt = `Você é o assistente IA do site Olha Aí (plataforma de vídeos). Responda em português do Brasil, seja útil, amigável e detalhado.
-                    
+                const stats = await getEstatisticasSite();
+                const prompt = `Você é o assistente IA do site Olha Aí (plataforma de vídeos). Responda em português do Brasil, seja útil, amigável e detalhado.
+                
 Dados atuais do site:
 ${stats}
 
 Pergunta do admin: ${pergunta}
 
 Resposta:`;
-                    
-                    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${MINHA_CHAVE_DEEPSEEK}`
-                        },
-                        body: JSON.stringify({
-                            model: "deepseek-chat",
-                            messages: [{ role: "user", content: prompt }],
-                            temperature: 0.7,
-                            max_tokens: 800
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        const erro = await response.json();
-                        throw new Error(erro.error?.message || "Erro na API");
-                    }
-                    const data = await response.json();
-                    resposta = data.choices[0].message.content;
+                
+                const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${MINHA_CHAVE_DEEPSEEK}`
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek-chat",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7,
+                        max_tokens: 800
+                    })
+                });
+                
+                if (!response.ok) {
+                    const erro = await response.json();
+                    throw new Error(erro.error?.message || "Erro na API");
                 }
+                const data = await response.json();
+                const resposta = data.choices[0].message.content;
+                
                 removerDigitandoIA();
                 adicionarMensagemIA(resposta, 'bot');
             } catch (error) {
                 removerDigitandoIA();
-                adicionarMensagemIA(`❌ Erro: ${error.message}`, 'bot');
+                adicionarMensagemIA(`❌ Erro: ${error.message}\n\nSua chave pode ter sido desativada. Tente criar uma nova chave no DeepSeek.`, 'bot');
             }
         }
         
