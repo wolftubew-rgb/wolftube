@@ -230,9 +230,9 @@
                 </div>
                 <div class="ai-commands">
                     <span class="ai-command-btn" onclick="comandoRapido('estatísticas')">📊 Estatísticas</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('dicas moderação')">🎯 Dicas</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('dicas')">🎯 Dicas</span>
                     <span class="ai-command-btn" onclick="comandoRapido('crescimento')">📈 Crescimento</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('responder comentário')">💬 Respostas</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('ajuda')">❓ Ajuda</span>
                 </div>
             </div>
         </div>
@@ -300,11 +300,9 @@
     <div id="confirmModal" class="modal hidden"><div class="modal-content"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:#e74c3c"></i><h2>Atenção!</h2><p>Excluir TODOS os vídeos?</p><button class="btn-delete-all" onclick="confirmarExcluirTodos()">SIM</button><button class="btn-secondary" onclick="fecharConfirmModal()">CANCELAR</button></div></div>
 
     <script>
-        // ============ COLOQUE SUA CHAVE DEEPSEEK AQUI ============
-        // 👇👇👇 COLE SUA CHAVE DENTRO DAS ASPAS ABAIXO 👇👇👇
-        const MINHA_CHAVE_DEEPSEEK = "SUA_CHAVE_AQUI";
-        // 👆👆👆 COLE SUA CHAVE DENTRO DAS ASPAS ACIMA 👆👆👆
-        // ======================================================
+        // ============ CHAVE API DEEPSEEK - JÁ CONFIGURADA ============
+        const MINHA_CHAVE_DEEPSEEK = "sk-670571975cd442a497d894d9a938cb72";
+        // ============================================================
         
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
         
@@ -350,7 +348,7 @@
             try {
                 let resposta;
                 if (!MINHA_CHAVE_DEEPSEEK || MINHA_CHAVE_DEEPSEEK === "SUA_CHAVE_AQUI") {
-                    resposta = "⚠️ **Você precisa colocar sua chave DeepSeek!**\n\n1. Acesse https://platform.deepseek.com/\n2. Faça login\n3. Vá em 'API Keys'\n4. Clique 'Create API Key'\n5. Copie a chave\n6. Cole no código onde está 'SUA_CHAVE_AQUI'\n\nÉ grátis! 🚀";
+                    resposta = "⚠️ **Configure sua chave DeepSeek!**\n\n1. Acesse https://platform.deepseek.com/\n2. Crie uma conta grátis\n3. Vá em 'API Keys' e crie uma chave\n4. Copie a chave\n5. Volte aqui e cole onde está 'SUA_CHAVE_AQUI'\n\nÉ grátis e rápido! 🚀";
                 } else {
                     const stats = await getEstatisticasSite();
                     const prompt = `Você é o assistente IA do site Olha Aí (plataforma de vídeos). Responda em português do Brasil, seja útil, amigável e detalhado.
