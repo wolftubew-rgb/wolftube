@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Olha Aí - IA Modificadora</title>
+    <title>Olha Aí - IA Hiper Inteligente</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -22,7 +22,7 @@
             align-items: center;
             flex-wrap: wrap;
             border-bottom: 3px solid #ff4757;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
         .logo {
             font-size: 32px;
@@ -45,17 +45,17 @@
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
         button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
-        .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
-        .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
-        .btn-success { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
+        .btn-secondary { background: #00b894; color: white; }
+        .btn-danger { background: #2c3e50; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-ia { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
         .main-buttons {
             display: flex;
             justify-content: center;
@@ -69,48 +69,96 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .main-btn:hover { transform: translateY(-3px); }
-        .btn-admin { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
-        .btn-ai { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
-        .section {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            display: none;
-        }
-        .section.show { display: block; }
         
-        .ai-section { background: linear-gradient(135deg, rgba(155,89,182,0.2), rgba(142,68,173,0.3)); border: 2px solid #9b59b6; }
-        .ai-chat-container { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 20px; margin-top: 20px; }
-        .ai-messages { max-height: 400px; overflow-y: auto; margin-bottom: 20px; padding: 10px; }
-        .ai-message { margin-bottom: 15px; display: flex; gap: 10px; }
-        .ai-message.user { justify-content: flex-end; }
-        .ai-message.bot { justify-content: flex-start; }
-        .message-bubble { max-width: 70%; padding: 12px 18px; border-radius: 20px; word-wrap: break-word; }
-        .user .message-bubble { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; border-bottom-right-radius: 5px; }
-        .bot .message-bubble { background: rgba(255,255,255,0.15); border-bottom-left-radius: 5px; border-left: 3px solid #9b59b6; }
-        .ai-avatar { width: 40px; height: 40px; border-radius: 50%; background: #9b59b6; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .ai-input-area { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .ai-input-area input { flex: 1; padding: 12px 15px; border: none; border-radius: 25px; background: rgba(255,255,255,0.9); }
-        .ai-commands { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-        .ai-command-btn { background: rgba(155,89,182,0.3); border: 1px solid #9b59b6; padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-        .ai-command-btn:hover { background: #9b59b6; }
-        .typing-indicator { display: flex; gap: 5px; padding: 10px; }
-        .typing-indicator span { width: 8px; height: 8px; background: white; border-radius: 50%; animation: typing 1.4s infinite; }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-            30% { transform: translateY(-10px); opacity: 1; }
+        .ia-painel {
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #9b59b6;
+            backdrop-filter: blur(10px);
         }
+        .ia-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .ia-titulo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ia-status {
+            background: #27ae60;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .chat-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .mensagens {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .mensagem {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        .mensagem.usuario { justify-content: flex-end; }
+        .mensagem.ia { justify-content: flex-start; }
+        .bolha {
+            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+        .usuario .bolha { background: linear-gradient(135deg, #ff4757, #ff6b81); border-bottom-right-radius: 5px; }
+        .ia .bolha { background: rgba(255,255,255,0.12); border-bottom-left-radius: 5px; border-left: 3px solid #9b59b6; }
+        .avatar-ia { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #9b59b6, #8e44ad); display: flex; align-items: center; justify-content: center; }
+        .input-ia {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .input-ia input {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.9);
+            font-size: 15px;
+        }
+        .comandos-rapidos {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .cmd-rapido {
+            background: rgba(155,89,182,0.3);
+            border: 1px solid #9b59b6;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cmd-rapido:hover { background: #9b59b6; transform: scale(1.05); }
         
         .videos-grid {
             display: grid;
@@ -118,15 +166,16 @@
             gap: 25px;
             margin-top: 30px;
         }
-        .video-card {
+        .card {
             background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 20px;
             text-align: center;
             transition: all 0.3s;
             cursor: pointer;
         }
-        .video-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
+        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
         .footer {
             margin-top: 60px;
             padding: 30px;
@@ -154,7 +203,7 @@
             max-width: 400px;
             text-align: center;
         }
-        .login-box input, .login-box select {
+        .login-box input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -162,84 +211,113 @@
             border-radius: 10px;
         }
         .hidden { display: none; }
+        .digitando span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 1.4s infinite;
+            margin: 0 2px;
+        }
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-5px); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         @media (max-width: 768px) {
             .container { padding: 15px; }
-            .ai-input-area { flex-direction: column; }
+            .input-ia { flex-direction: column; }
+            .ia-header { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="header" id="mainHeader">
+    <div class="header">
         <div class="logo">
-            <i class="fas fa-eye" id="logoIcon"></i>
-            <span id="logoSpan">OLHA AÍ</span>
+            <i class="fas fa-brain"></i>
+            <span>OLHA AÍ</span>
         </div>
         <div class="nav-buttons">
             <button class="btn-primary" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            <button class="btn-secondary" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> Cadastrar</button>
+            <button class="btn-secondary" onclick="alert('Use admin@olhaai.com / admin123')"><i class="fas fa-user-plus"></i> Cadastrar</button>
             <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> Sair</button>
         </div>
     </div>
 
     <div class="container">
         <div class="main-buttons">
-            <button class="main-btn btn-admin" id="adminBtn" onclick="mostrarIA()" style="display:none;"><i class="fas fa-robot"></i> 🤖 IA Modificadora</button>
+            <button class="main-btn btn-ia" id="iaBtn" onclick="mostrarIA()" style="display:none;"><i class="fas fa-robot"></i> 🧠 IA Hiper Inteligente</button>
         </div>
 
-        <div id="aiSection" class="section ai-section">
-            <h2><i class="fas fa-robot"></i> IA Modificadora do Site</h2>
-            <p>💡 <strong>COMANDOS QUE FUNCIONAM:</strong> "mude a cor para azul", "crie um botão vermelho", "mude o título para Meu Site", "adicione um card", "deixe o fundo escuro"</p>
-            <div class="ai-chat-container">
-                <div class="ai-messages" id="aiMessages">
-                    <div class="ai-message bot">
-                        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
-                        <div class="message-bubble">🤖 Olá Admin! Eu sou a IA MODIFICADORA!<br><br>
-                        <strong>Comandos disponíveis:</strong><br>
-                        🎨 <strong>Cores:</strong> "mude a cor para azul/verde/roxo/rosa/vermelho/laranja/escuro"<br>
-                        📝 <strong>Título:</strong> "mude o título para [nome]"<br>
-                        🔘 <strong>Botões:</strong> "crie um botão azul chamado Clique Aqui"<br>
-                        📦 <strong>Cards:</strong> "adicione um card com título Exemplo"<br>
-                        🗑️ <strong>Limpar:</strong> "limpe os cards" ou "resetar site"<br><br>
-                        <strong>👉 Digite um comando ou clique nos exemplos abaixo!</strong></div>
+        <!-- PAINEL DA IA INTELIGENTE -->
+        <div id="iaPainel" class="ia-painel" style="display: none;">
+            <div class="ia-header">
+                <div class="ia-titulo">
+                    <i class="fas fa-brain" style="font-size: 28px; color: #9b59b6;"></i>
+                    <h2>IA Hiper Inteligente</h2>
+                </div>
+                <div class="ia-status">
+                    <i class="fas fa-circle" style="font-size: 10px;"></i> Online - Modo Aprendizagem Ativa
+                </div>
+            </div>
+            <p><i class="fas fa-lightbulb"></i> <strong>Eu sou uma IA que APRENDE e MODIFICA seu site!</strong> Posso criar botões, cards, mudar cores, editar textos, e muito mais. Fale comigo em português!</p>
+            <div class="chat-container">
+                <div class="mensagens" id="mensagensChat">
+                    <div class="mensagem ia">
+                        <div class="avatar-ia"><i class="fas fa-robot"></i></div>
+                        <div class="bolha">🧠 <strong>Olá! Eu sou a IA Hiper Inteligente do Olha Aí!</strong><br><br>
+                        <strong>✨ O que eu posso fazer:</strong><br>
+                        • 🎨 <strong>Cores:</strong> "mude para azul", "fundo roxo", "tema escuro"<br>
+                        • 🔘 <strong>Botões:</strong> "crie um botão", "adicione botão vermelho"<br>
+                        • 📦 <strong>Cards:</strong> "crie um card de vídeo", "adicione conteúdo"<br>
+                        • 📝 <strong>Textos:</strong> "mude o título para Olha AI", "edite o rodapé"<br>
+                        • 🗑️ <strong>Limpeza:</strong> "limpe os botões", "resetar site"<br>
+                        • 💡 <strong>Criação:</strong> "crie uma seção de contato", "adicione um menu"<br><br>
+                        <strong>👉 O que você quer que eu modifique hoje?</strong></div>
                     </div>
                 </div>
-                <div class="ai-input-area">
-                    <input type="text" id="aiInput" placeholder="Ex: mude a cor para azul" onkeypress="if(event.key==='Enter') processarComandoIA()">
+                <div class="input-ia">
+                    <input type="text" id="iaInput" placeholder="Ex: mude a cor para azul, crie um botão, adicione um card..." onkeypress="if(event.key==='Enter') processarComandoIA()">
                     <button class="btn-primary" onclick="processarComandoIA()"><i class="fas fa-paper-plane"></i> Executar</button>
                 </div>
-                <div class="ai-commands">
-                    <span class="ai-command-btn" onclick="executarComando('mude a cor para azul')">🎨 AZUL</span>
-                    <span class="ai-command-btn" onclick="executarComando('mude a cor para verde')">🎨 VERDE</span>
-                    <span class="ai-command-btn" onclick="executarComando('mude a cor para roxo')">🎨 ROXO</span>
-                    <span class="ai-command-btn" onclick="executarComando('mude o título para OLHA AI MODIFICADO')">📝 TÍTULO</span>
-                    <span class="ai-command-btn" onclick="executarComando('crie um botão azul chamado Novo Botão')">🔘 NOVO BOTÃO</span>
-                    <span class="ai-command-btn" onclick="executarComando('adicione um card com título Vídeo Novo')">📦 NOVO CARD</span>
-                    <span class="ai-command-btn" onclick="executarComando('resetar site')">🔄 RESETAR</span>
+                <div class="comandos-rapidos">
+                    <span class="cmd-rapido" onclick="comandoRapido('mude a cor para azul')">🔵 AZUL</span>
+                    <span class="cmd-rapido" onclick="comandoRapido('mude a cor para verde')">🟢 VERDE</span>
+                    <span class="cmd-rapido" onclick="comandoRapido('mude a cor para roxo')">🟣 ROXO</span>
+                    <span class="cmd-rapido" onclick="comandoRapido('crie um botão')">🔘 CRIAR BOTÃO</span>
+                    <span class="cmd-rapido" onclick="comandoRapido('crie um card')">📦 CRIAR CARD</span>
+                    <span class="cmd-rapido" onclick="comandoRapido('mude o título para OLHA AI INTELIGENTE')">📝 TÍTULO</span>
+                    <span class="cmd-rapido" onclick="comandoRapido('resetar site')">🔄 RESETAR</span>
+                    <span class="cmd-rapido" onclick="comandoRapido('o que você pode fazer')">❓ AJUDA</span>
                 </div>
             </div>
         </div>
 
-        <!-- ÁREA DE VÍDEOS/CARDS -->
-        <div class="videos-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <!-- CONTEÚDO DO SITE -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2><i class="fas fa-video"></i> Conteúdo</h2>
-            <div id="syncStatus" style="background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px;">✅ Online</div>
+            <div id="stats" style="background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 12px;">📊 Online</div>
         </div>
-        <div class="videos-grid" id="videosGrid">
-            <div class="video-card">
-                <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px; color: #ff4757;"></i>
-                <h3>Bem-vindo ao Olha Aí!</h3>
-                <p>Peça para a IA modificar o site</p>
-                <small>✨ Digite: "mude a cor para azul"</small>
+        <div class="videos-grid" id="conteudoGrid">
+            <div class="card">
+                <i class="fas fa-brain" style="font-size: 48px; margin-bottom: 15px;"></i>
+                <h3>IA Hiper Inteligente</h3>
+                <p>Clique no botão acima e comece a conversar!</p>
+                <small>✨ Peça para eu modificar o site</small>
             </div>
         </div>
     </div>
 
-    <div class="footer" id="mainFooter">
-        <p>© 2024 Olha Aí - IA Modificadora</p>
+    <div class="footer" id="footer">
+        <p>© 2024 Olha Aí - IA Hiper Inteligente</p>
     </div>
 
-    <!-- MODAIS -->
+    <!-- MODAL LOGIN -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
@@ -250,28 +328,47 @@
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
         </div>
     </div>
-    <div class="modal hidden" id="registerModal">
-        <div class="login-box">
-            <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
-            <h2>Cadastro</h2>
-            <input type="text" id="regName" placeholder="Nome">
-            <input type="email" id="regEmail" placeholder="Email">
-            <input type="password" id="regPassword" placeholder="Senha">
-            <button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
-            <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
-        </div>
-    </div>
 
     <script>
-        let usuarioAtual = null;
-        let botoesCriados = 0;
-        let cardsCriados = 0;
-
-        // ============ FUNÇÕES DE MODIFICAÇÃO DO SITE ============
+        let usuarioLogado = false;
+        let historicoComandos = [];
+        let elementosCriados = { botoes: 0, cards: 0 };
         
+        // ============ FUNÇÕES INTELIGENTES DE MODIFICAÇÃO ============
+        
+        function adicionarMensagem(texto, tipo = 'ia') {
+            const container = document.getElementById('mensagensChat');
+            const div = document.createElement('div');
+            div.className = `mensagem ${tipo}`;
+            if (tipo === 'ia') {
+                div.innerHTML = `
+                    <div class="avatar-ia"><i class="fas fa-robot"></i></div>
+                    <div class="bolha">${texto.replace(/\n/g, '<br>')}</div>
+                `;
+            } else {
+                div.innerHTML = `<div class="bolha">${texto}</div>`;
+            }
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function mostrarDigitando() {
+            const container = document.getElementById('mensagensChat');
+            const div = document.createElement('div');
+            div.className = 'mensagem ia';
+            div.id = 'digitandoMsg';
+            div.innerHTML = `<div class="avatar-ia"><i class="fas fa-robot"></i></div><div class="bolha"><div class="digitando"><span></span><span></span><span></span></div></div>`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function removerDigitando() {
+            const msg = document.getElementById('digitandoMsg');
+            if (msg) msg.remove();
+        }
+        
+        // Mudar cores inteligente
         function mudarCorSite(cor) {
-            let corPrimaria, corSecundaria, corFundo1, corFundo2, nomeCor;
-            
             const cores = {
                 azul: { p: "#3498db", s: "#2980b9", f1: "#0f0c29", f2: "#1a1a2e", nome: "AZUL" },
                 verde: { p: "#27ae60", s: "#2ecc71", f1: "#0a2a1a", f2: "#1a3a2a", nome: "VERDE" },
@@ -279,235 +376,286 @@
                 rosa: { p: "#e84393", s: "#fd79a8", f1: "#2a0a1a", f2: "#3a1a2a", nome: "ROSA" },
                 vermelho: { p: "#e74c3c", s: "#c0392b", f1: "#2a0a0a", f2: "#3a1a1a", nome: "VERMELHO" },
                 laranja: { p: "#e67e22", s: "#f39c12", f1: "#2a1a0a", f2: "#3a2a1a", nome: "LARANJA" },
-                escuro: { p: "#2c3e50", s: "#34495e", f1: "#000000", f2: "#1a1a2e", nome: "ESCURO" }
+                escuro: { p: "#2c3e50", s: "#34495e", f1: "#000000", f2: "#1a1a2e", nome: "ESCURO" },
+                claro: { p: "#ecf0f1", s: "#bdc3c7", f1: "#ffffff", f2: "#ecf0f1", nome: "CLARO" }
             };
             
             const c = cores[cor] || cores.azul;
             
             document.body.style.background = `linear-gradient(135deg, ${c.f1} 0%, #302b63 50%, ${c.f2} 100%)`;
-            document.querySelectorAll('.btn-primary, .main-btn, .btn-ai').forEach(btn => {
-                if (btn.classList.contains('btn-primary') || btn.classList.contains('main-btn')) {
-                    btn.style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
+            document.querySelector('.header').style.borderBottomColor = c.p;
+            document.querySelector('.logo i').style.color = c.p;
+            document.querySelector('.logo span').style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
+            document.querySelector('.logo span').style.webkitBackgroundClip = 'text';
+            
+            const botoes = document.querySelectorAll('.btn-primary, .btn-ia');
+            botoes.forEach(btn => {
+                if (btn.classList.contains('btn-primary') || btn.classList.contains('btn-ia')) {
+                    if (!btn.id.includes('ia')) {
+                        btn.style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
+                    }
                 }
             });
-            document.getElementById('mainHeader').style.borderBottomColor = c.p;
-            document.getElementById('logoIcon').style.color = c.p;
-            document.getElementById('logoSpan').style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
             
-            adicionarMensagemIA(`✅ **COR ALTERADA PARA ${c.nOME || c.nome}!**`, 'bot');
+            adicionarMensagem(`✅ **Cor alterada para ${c.nOME || c.nome}!** O site está com um visual ${c.nOME || c.nome} lindo! 🎨`);
+            return true;
         }
         
-        function mudarTituloSite(novoTitulo) {
-            document.getElementById('logoSpan').textContent = novoTitulo.toUpperCase();
-            document.title = novoTitulo;
-            adicionarMensagemIA(`✅ **TÍTULO ALTERADO PARA ${novoTitulo.toUpperCase()}!**`, 'bot');
-        }
-        
-        function criarBotao(cor, texto) {
-            const botoesContainer = document.querySelector('.main-buttons');
+        // Criar botão inteligente
+        function criarBotaoInteligente(texto = null, cor = 'roxo') {
+            const container = document.querySelector('.main-buttons');
             const novoBotao = document.createElement('button');
-            novoBotao.className = `main-btn btn-primary`;
-            novoBotao.style.background = `linear-gradient(135deg, ${cor === 'azul' ? '#3498db' : cor === 'verde' ? '#27ae60' : '#9b59b6'}, ${cor === 'azul' ? '#2980b9' : cor === 'verde' ? '#2ecc71' : '#8e44ad'})`;
-            novoBotao.innerHTML = `<i class="fas fa-plus-circle"></i> ${texto}`;
-            novoBotao.onclick = () => alert(`Botão ${texto} clicado!`);
-            botoesContainer.appendChild(novoBotao);
-            botoesCriados++;
-            adicionarMensagemIA(`✅ **BOTÃO CRIADO!**\n\nTexto: "${texto}"\nCor: ${cor}\nTotal de botões criados: ${botoesCriados}`, 'bot');
+            elementosCriados.botoes++;
+            const nomeBotao = texto || `Botão ${elementosCriados.botoes}`;
+            novoBotao.className = `main-btn btn-primary botao-criado`;
+            novoBotao.style.background = `linear-gradient(135deg, #9b59b6, #8e44ad)`;
+            novoBotao.innerHTML = `<i class="fas fa-star"></i> ${nomeBotao}`;
+            novoBotao.onclick = () => {
+                adicionarMensagem(`🔘 Você clicou em "${nomeBotao}"!`, 'ia');
+                alert(`✨ Você clicou no botão "${nomeBotao}"!`);
+            };
+            container.appendChild(novoBotao);
+            adicionarMensagem(`✅ **Botão criado com sucesso!**\n\n🔘 Nome: ${nomeBotao}\n📊 Total de botões: ${elementosCriados.botoes}\n\nClique no botão para testar!`);
+            return true;
         }
         
-        function adicionarCard(titulo, descricao = "Card criado pela IA") {
-            const grid = document.getElementById('videosGrid');
+        // Criar card inteligente
+        function criarCardInteligente(titulo = null, descricao = null) {
+            const grid = document.getElementById('conteudoGrid');
             const novoCard = document.createElement('div');
-            novoCard.className = 'video-card';
-            novoCard.style.animation = 'fadeIn 0.5s ease';
+            elementosCriados.cards++;
+            const nomeCard = titulo || `Card ${elementosCriados.cards}`;
+            const descCard = descricao || `Este card foi criado pela IA Hiper Inteligente!`;
+            novoCard.className = 'card card-criado';
+            novoCard.style.animation = 'fadeIn 0.3s ease';
             novoCard.innerHTML = `
                 <i class="fas fa-plus-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                <h3>${titulo}</h3>
-                <p>${descricao}</p>
-                <small>✨ Criado pela IA</small>
-                <button class="btn-danger" style="margin-top: 15px; padding: 5px 15px;" onclick="this.parentElement.remove()">🗑️ Remover</button>
+                <h3>${nomeCard}</h3>
+                <p>${descCard}</p>
+                <button class="btn-danger" style="margin-top: 15px; padding: 5px 15px; font-size: 12px;" onclick="this.parentElement.remove(); adicionarMensagem('🗑️ Card removido!', 'ia');">Remover</button>
             `;
             grid.appendChild(novoCard);
-            cardsCriados++;
-            adicionarMensagemIA(`✅ **CARD ADICIONADO!**\n\nTítulo: "${titulo}"\nTotal de cards: ${cardsCriados}`, 'bot');
+            adicionarMensagem(`✅ **Card criado com sucesso!**\n\n📦 Título: ${nomeCard}\n📝 Descrição: ${descCard}\n📊 Total de cards: ${elementosCriados.cards}`);
+            return true;
         }
         
-        function resetarSite() {
+        // Mudar título
+        function mudarTituloSite(novoTitulo) {
+            document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
+            document.title = novoTitulo;
+            adicionarMensagem(`✅ **Título alterado!**\n\nAgora o site se chama: **${novoTitulo.toUpperCase()}**\n\nGostou da mudança?`);
+            return true;
+        }
+        
+        // Mudar rodapé
+        function mudarRodape(novoTexto) {
+            document.getElementById('footer').innerHTML = `<p>${novoTexto}</p>`;
+            adicionarMensagem(`✅ **Rodapé alterado!**\n\n📝 Novo texto: "${novoTexto}"`);
+            return true;
+        }
+        
+        // Resetar site
+        function resetarSiteInteligente() {
             // Resetar cores
             document.body.style.background = "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)";
-            document.getElementById('mainHeader').style.borderBottomColor = "#ff4757";
-            document.getElementById('logoIcon').style.color = "#ff4757";
-            document.getElementById('logoSpan').style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
+            document.querySelector('.header').style.borderBottomColor = "#ff4757";
+            document.querySelector('.logo i').style.color = "#ff4757";
+            document.querySelector('.logo span').style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
             
             // Resetar título
-            document.getElementById('logoSpan').textContent = "OLHA AÍ";
-            document.title = "Olha Aí - IA Modificadora";
+            document.querySelector('.logo span').textContent = "OLHA AÍ";
+            document.title = "Olha Aí - IA Hiper Inteligente";
             
-            // Remover botões criados (manter os originais)
-            const botoesContainer = document.querySelector('.main-buttons');
-            const botoesOriginais = botoesContainer.children.length;
-            while (botoesContainer.children.length > 2) {
-                botoesContainer.removeChild(botoesContainer.lastChild);
+            // Resetar rodapé
+            document.getElementById('footer').innerHTML = '<p>© 2024 Olha Aí - IA Hiper Inteligente</p>';
+            
+            // Remover botões criados
+            const botoes = document.querySelectorAll('.botao-criado');
+            botoes.forEach(btn => btn.remove());
+            
+            // Remover cards criados
+            const cards = document.querySelectorAll('.card-criado');
+            cards.forEach(card => card.remove());
+            
+            // Garantir card original
+            const grid = document.getElementById('conteudoGrid');
+            if (grid.children.length === 0) {
+                grid.innerHTML = `
+                    <div class="card">
+                        <i class="fas fa-brain" style="font-size: 48px; margin-bottom: 15px;"></i>
+                        <h3>IA Hiper Inteligente</h3>
+                        <p>Site resetado! Peça para eu modificar novamente!</p>
+                        <small>✨ Digite "mude a cor para azul"</small>
+                    </div>
+                `;
             }
             
-            // Resetar cards
-            const grid = document.getElementById('videosGrid');
-            grid.innerHTML = `
-                <div class="video-card">
-                    <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px; color: #ff4757;"></i>
-                    <h3>Bem-vindo ao Olha Aí!</h3>
-                    <p>Site resetado! Peça para a IA modificar novamente</p>
-                    <small>✨ Digite: "mude a cor para azul"</small>
-                </div>
+            elementosCriados = { botoes: 0, cards: 0 };
+            adicionarMensagem(`✅ **SITE RESETADO COM SUCESSO!**\n\n🧹 Todas as modificações foram removidas.\n🔘 Botões criados: 0\n📦 Cards criados: 0\n\nO site voltou ao estado original!`);
+            return true;
+        }
+        
+        // Criar seção
+        function criarSecao(titulo) {
+            const container = document.querySelector('.container');
+            const novaSecao = document.createElement('div');
+            novaSecao.className = 'ia-painel';
+            novaSecao.style.marginTop = '20px';
+            novaSecao.innerHTML = `
+                <h3><i class="fas fa-plus-circle"></i> ${titulo}</h3>
+                <p>Esta seção foi criada pela IA a seu pedido!</p>
+                <button class="btn-danger" style="margin-top: 15px;" onclick="this.parentElement.remove()">Remover Seção</button>
             `;
-            
-            botoesCriados = 0;
-            cardsCriados = 0;
-            
-            adicionarMensagemIA(`✅ **SITE RESETADO!**\n\nTodas as modificações foram removidas.\nTotal de botões criados: 0\nTotal de cards: 0`, 'bot');
+            container.insertBefore(novaSecao, document.getElementById('conteudoGrid').parentNode);
+            adicionarMensagem(`✅ **Nova seção criada!**\n\n📌 Título: "${titulo}"\n\nA seção foi adicionada ao site!`);
+            return true;
         }
         
-        // ============ PROCESSADOR DE COMANDOS DA IA ============
+        // ============ IA INTELIGENTE ============
         
-        function executarComando(comando) {
-            document.getElementById('aiInput').value = comando;
-            processarComandoIA();
-        }
-        
-        async function processarComandoIA() {
-            const input = document.getElementById('aiInput');
-            const comando = input.value.trim().toLowerCase();
+        function processarComandoIA() {
+            const input = document.getElementById('iaInput');
+            let comando = input.value.trim();
             if (!comando) return;
             
-            adicionarMensagemIA(comando, 'user');
+            adicionarMensagem(comando, 'usuario');
             input.value = '';
-            mostrarDigitandoIA();
+            mostrarDigitando();
+            
+            // Salvar histórico
+            historicoComandos.push(comando);
+            if (historicoComandos.length > 20) historicoComandos.shift();
             
             setTimeout(() => {
-                removerDigitandoIA();
+                removerDigitando();
+                const cmd = comando.toLowerCase();
+                let executado = false;
                 
                 // CORES
-                if (comando.includes('cor para azul') || (comando.includes('azul') && comando.includes('mude'))) {
-                    mudarCorSite('azul');
+                if (cmd.includes('azul')) { mudarCorSite('azul'); executado = true; }
+                else if (cmd.includes('verde')) { mudarCorSite('verde'); executado = true; }
+                else if (cmd.includes('roxo')) { mudarCorSite('roxo'); executado = true; }
+                else if (cmd.includes('rosa')) { mudarCorSite('rosa'); executado = true; }
+                else if (cmd.includes('vermelho')) { mudarCorSite('vermelho'); executado = true; }
+                else if (cmd.includes('laranja')) { mudarCorSite('laranja'); executado = true; }
+                else if (cmd.includes('escuro') || (cmd.includes('preto'))) { mudarCorSite('escuro'); executado = true; }
+                else if (cmd.includes('claro')) { mudarCorSite('claro'); executado = true; }
+                
+                // BOTÕES
+                else if (cmd.includes('botão') || cmd.includes('botao')) {
+                    let texto = null;
+                    const match = cmd.match(/chamado\s+["']?([^"']+)["']?/i);
+                    if (match) texto = match[1];
+                    criarBotaoInteligente(texto);
+                    executado = true;
                 }
-                else if (comando.includes('cor para verde') || (comando.includes('verde') && comando.includes('mude'))) {
-                    mudarCorSite('verde');
-                }
-                else if (comando.includes('cor para roxo') || (comando.includes('roxo') && comando.includes('mude'))) {
-                    mudarCorSite('roxo');
-                }
-                else if (comando.includes('cor para rosa') || (comando.includes('rosa') && comando.includes('mude'))) {
-                    mudarCorSite('rosa');
-                }
-                else if (comando.includes('cor para vermelho') || (comando.includes('vermelho') && comando.includes('mude'))) {
-                    mudarCorSite('vermelho');
-                }
-                else if (comando.includes('cor para laranja') || (comando.includes('laranja') && comando.includes('mude'))) {
-                    mudarCorSite('laranja');
-                }
-                else if (comando.includes('escuro') || (comando.includes('preto') && comando.includes('mude'))) {
-                    mudarCorSite('escuro');
+                
+                // CARDS
+                else if (cmd.includes('card')) {
+                    let titulo = null, desc = null;
+                    const matchTitulo = cmd.match(/título\s+["']?([^"']+)["']?/i);
+                    if (matchTitulo) titulo = matchTitulo[1];
+                    criarCardInteligente(titulo, desc);
+                    executado = true;
                 }
                 
                 // TÍTULO
-                else if (comando.includes('título') || comando.includes('titulo')) {
+                else if (cmd.includes('título') || cmd.includes('titulo')) {
                     let novoTitulo = comando.replace(/mude o título para|título|titulo/gi, '').trim();
-                    if (novoTitulo) {
-                        mudarTituloSite(novoTitulo);
-                    } else {
-                        adicionarMensagemIA('❌ Especifique um título! Ex: "mude o título para Meu Site"', 'bot');
-                    }
+                    if (novoTitulo) mudarTituloSite(novoTitulo);
+                    else adicionarMensagem(`❌ **Especifique um título!**\n\nExemplo: "mude o título para MEU SITE"`);
+                    executado = true;
                 }
                 
-                // CRIAR BOTÃO
-                else if (comando.includes('crie um botão') || comando.includes('criar botão')) {
-                    let cor = 'azul';
-                    let texto = 'Novo Botão';
-                    
-                    if (comando.includes('azul')) cor = 'azul';
-                    else if (comando.includes('verde')) cor = 'verde';
-                    else if (comando.includes('roxo')) cor = 'roxo';
-                    
-                    const matchTexto = comando.match(/chamado\s+["']?([^"']+)["']?/i);
-                    if (matchTexto) texto = matchTexto[1];
-                    
-                    criarBotao(cor, texto);
+                // RODAPÉ
+                else if (cmd.includes('rodapé') || cmd.includes('rodape') || cmd.includes('footer')) {
+                    let novoTexto = comando.replace(/mude o rodapé para|rodapé|rodape/gi, '').trim();
+                    if (novoTexto) mudarRodape(novoTexto);
+                    else adicionarMensagem(`❌ **Especifique um texto para o rodapé!**\n\nExemplo: "mude o rodapé para Copyright 2024"`);
+                    executado = true;
                 }
                 
-                // ADICIONAR CARD
-                else if (comando.includes('adicione um card') || comando.includes('criar card') || comando.includes('novo card')) {
-                    let titulo = 'Novo Card';
-                    let descricao = 'Card criado pela IA';
-                    
-                    const matchTitulo = comando.match(/título\s+["']?([^"']+)["']?/i);
-                    if (matchTitulo) titulo = matchTitulo[1];
-                    
-                    adicionarCard(titulo, descricao);
+                // SEÇÃO
+                else if (cmd.includes('seção') || cmd.includes('secao')) {
+                    let titulo = comando.replace(/crie uma seção|seção|secao/gi, '').trim();
+                    if (titulo) criarSecao(titulo);
+                    else adicionarMensagem(`❌ **Especifique um título para a seção!**`);
+                    executado = true;
                 }
                 
                 // RESETAR
-                else if (comando.includes('resetar') || comando.includes('limpar tudo') || comando.includes('reset')) {
-                    resetarSite();
+                else if (cmd.includes('reset') || cmd.includes('limpar')) {
+                    resetarSiteInteligente();
+                    executado = true;
+                }
+                
+                // ESTATÍSTICAS
+                else if (cmd.includes('estatísticas') || cmd.includes('stats') || cmd.includes('relatório')) {
+                    adicionarMensagem(`📊 **RELATÓRIO DO SITE**\n\n🔘 Botões criados: ${elementosCriados.botoes}\n📦 Cards criados: ${elementosCriados.cards}\n💬 Comandos executados: ${historicoComandos.length}\n🎨 Site ativo e funcionando!\n\n✨ Quer criar mais alguma coisa?`);
+                    executado = true;
                 }
                 
                 // AJUDA
-                else if (comando.includes('ajuda') || comando.includes('comandos')) {
-                    adicionarMensagemIA(`📋 **COMANDOS DISPONÍVEIS:**\n\n🎨 "mude a cor para azul/verde/roxo/rosa"\n📝 "mude o título para NOME"\n🔘 "crie um botão azul chamado CLIQUE"\n📦 "adicione um card com título EXEMPLO"\n🔄 "resetar site"\n\nExperimente um deles! 🚀`, 'bot');
+                else if (cmd.includes('ajuda') || cmd.includes('o que você pode fazer') || cmd.includes('comandos')) {
+                    adicionarMensagem(`🧠 **COMANDOS DISPONÍVEIS**\n\n` +
+                        `🎨 **Cores:**\n• "mude a cor para azul/verde/roxo/rosa/vermelho/laranja/escuro"\n\n` +
+                        `🔘 **Botões:**\n• "crie um botão"\n• "crie um botão chamado Meu Botão"\n\n` +
+                        `📦 **Cards:**\n• "crie um card"\n• "crie um card com título Vídeo Novo"\n\n` +
+                        `📝 **Textos:**\n• "mude o título para Novo Nome"\n• "mude o rodapé para Texto Novo"\n\n` +
+                        `📊 **Informações:**\n• "estatísticas" - mostra dados do site\n• "o que você pode fazer" - lista comandos\n\n` +
+                        `🔄 **Manutenção:**\n• "resetar site" - limpa todas modificações\n\n` +
+                        `**👉 O que você quer fazer agora?**`);
+                    executado = true;
                 }
                 
-                else {
-                    adicionarMensagemIA(`🤖 **Comando não reconhecido!**\n\nComandos disponíveis:\n• mude a cor para azul\n• mude o título para NOME\n• crie um botão azul chamado TEXTO\n• adicione um card\n• resetar site\n\nDigite "ajuda" para ver todos os comandos.`, 'bot');
+                // RESPOSTA GENIAL
+                else if (!executado) {
+                    adicionarMensagem(`🧠 **Entendi sua solicitação!**\n\nAnalisei seu comando: "${comando}"\n\n` +
+                        `💡 **Sugestões do que posso fazer:**\n` +
+                        `• "mude a cor para azul" - alterar tema do site\n` +
+                        `• "crie um botão" - adicionar novo botão\n` +
+                        `• "crie um card" - adicionar conteúdo\n` +
+                        `• "mude o título para [nome]" - mudar nome do site\n` +
+                        `• "resetar site" - limpar modificações\n` +
+                        `• "ajuda" - ver todos os comandos\n\n` +
+                        `✨ **Deseja que eu execute algum desses comandos para você?**`);
                 }
-            }, 500);
+                
+                // Atualizar stats
+                document.getElementById('stats').innerHTML = `📊 Botões: ${elementosCriados.botoes} | Cards: ${elementosCriados.cards}`;
+            }, 800);
         }
         
-        function adicionarMensagemIA(texto, tipo) {
-            const container = document.getElementById('aiMessages');
-            const div = document.createElement('div');
-            div.className = `ai-message ${tipo}`;
-            const textoFormatado = texto.replace(/\n/g, '<br>');
-            if (tipo === 'bot') {
-                div.innerHTML = `<div class="ai-avatar"><i class="fas fa-robot"></i></div><div class="message-bubble">${textoFormatado}</div>`;
-            } else {
-                div.innerHTML = `<div class="message-bubble">${textoFormatado}</div>`;
+        function comandoRapido(cmd) {
+            document.getElementById('iaInput').value = cmd;
+            processarComandoIA();
+        }
+        
+        function mostrarIA() {
+            const painel = document.getElementById('iaPainel');
+            painel.style.display = painel.style.display === 'none' ? 'block' : 'none';
+            if (painel.style.display === 'block') {
+                adicionarMensagem(`🧠 **IA Hiper Inteligente ativada!**\n\nEstou pronta para modificar seu site. O que você gostaria de fazer hoje?\n\n` +
+                    `✨ **Sugestões:** "mude a cor para azul", "crie um botão", "crie um card", "mude o título"`);
             }
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
-        
-        function mostrarDigitandoIA() {
-            const container = document.getElementById('aiMessages');
-            const div = document.createElement('div');
-            div.className = 'ai-message bot';
-            div.id = 'typingIndicator';
-            div.innerHTML = `<div class="ai-avatar"><i class="fas fa-robot"></i></div><div class="message-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
-        
-        function removerDigitandoIA() {
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) indicator.remove();
         }
         
         // ============ LOGIN ============
         function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
         function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
-        function mostrarCadastro() { document.getElementById('registerModal').classList.remove('hidden'); }
-        function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
         
         function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginPassword').value;
             if (email === 'admin@olhaai.com' && senha === 'admin123') {
-                usuarioAtual = { name: 'Administrador', type: 'admin', email: email };
-                localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
-                alert('✅ Login realizado! Agora você pode usar a IA Modificadora.');
+                usuarioLogado = true;
+                localStorage.setItem('usuario', 'admin');
+                alert('✅ Login realizado! Agora você tem acesso à IA Hiper Inteligente.');
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
-                document.getElementById('adminBtn').style.display = 'inline-flex';
+                document.getElementById('iaBtn').style.display = 'inline-flex';
                 fecharLogin();
                 mostrarIA();
             } else {
@@ -515,50 +663,25 @@
             }
         }
         
-        function fazerCadastro() {
-            alert('Cadastro simplificado! Use admin@olhaai.com / admin123 para teste');
-            fecharCadastro();
-        }
-        
         function logout() {
-            usuarioAtual = null;
+            usuarioLogado = false;
             localStorage.removeItem('usuario');
             document.querySelectorAll('.nav-buttons button').forEach(btn => {
                 if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
             });
             document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('adminBtn').style.display = 'none';
-            document.getElementById('aiSection').classList.remove('show');
-        }
-        
-        function mostrarIA() {
-            document.getElementById('aiSection').classList.add('show');
-            document.getElementById('adminSection?.classList')?.remove('show');
+            document.getElementById('iaBtn').style.display = 'none';
+            document.getElementById('iaPainel').style.display = 'none';
         }
         
         // Inicialização
-        const salvo = localStorage.getItem('usuario');
-        if (salvo) {
-            usuarioAtual = JSON.parse(salvo);
-            if (usuarioAtual.type === 'admin') {
-                document.querySelectorAll('.nav-buttons button').forEach(btn => {
-                    if (btn.id !== 'logoutBtn') btn.style.display = 'none';
-                });
-                document.getElementById('logoutBtn').style.display = 'inline-flex';
-                document.getElementById('adminBtn').style.display = 'inline-flex';
-            }
+        if (localStorage.getItem('usuario') === 'admin') {
+            document.querySelectorAll('.nav-buttons button').forEach(btn => {
+                if (btn.id !== 'logoutBtn') btn.style.display = 'none';
+            });
+            document.getElementById('logoutBtn').style.display = 'inline-flex';
+            document.getElementById('iaBtn').style.display = 'inline-flex';
         }
-        
-        // Animação CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .video-card { animation: fadeIn 0.3s ease; }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
