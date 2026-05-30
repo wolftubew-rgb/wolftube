@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>IA Suprema - Plataforma Completa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA Suprema - Login</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -11,18 +11,15 @@
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white;
             min-height: 100vh;
-            transition: all 0.3s ease;
         }
         .header {
             background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             border-bottom: 3px solid #ff4757;
-            transition: all 0.3s;
         }
         .logo {
             font-size: 28px;
@@ -31,303 +28,33 @@
             align-items: center;
             gap: 8px;
         }
-        .logo i { color: #ff4757; font-size: 32px; transition: all 0.3s; }
+        .logo i { color: #ff4757; font-size: 32px; }
         .logo span { 
             background: linear-gradient(135deg, #ff4757, #ff6b81);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            transition: all 0.3s;
         }
-        .nav-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+        .nav-buttons { display: flex; gap: 12px; }
         button {
             padding: 10px 20px;
             border: none;
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
-        .btn-success { background: #27ae60; color: white; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 30px; }
-        
-        .ia-painel {
-            background: rgba(0,0,0,0.6);
-            border-radius: 20px;
-            padding: 25px;
-            border: 2px solid #9b59b6;
-            backdrop-filter: blur(10px);
-            margin-bottom: 30px;
-        }
-        .chat {
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .mensagens {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            padding: 10px;
-        }
-        .mensagem {
-            margin-bottom: 15px;
-            display: flex;
-            gap: 10px;
-            animation: fadeIn 0.3s ease;
-        }
-        .mensagem.usuario { justify-content: flex-end; }
-        .mensagem.ia { justify-content: flex-start; }
-        .bolha {
-            max-width: 75%;
-            padding: 12px 18px;
-            border-radius: 20px;
-            word-wrap: break-word;
-        }
-        .usuario .bolha { background: linear-gradient(135deg, #ff4757, #ff6b81); border-bottom-right-radius: 5px; }
-        .ia .bolha { background: rgba(255,255,255,0.12); border-bottom-left-radius: 5px; border-left: 3px solid #9b59b6; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #9b59b6; display: flex; align-items: center; justify-content: center; }
-        .input-area {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .input-area input {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255,255,255,0.9);
-            font-size: 14px;
-        }
-        .comandos-rapidos {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-            justify-content: center;
-        }
-        .cmd {
-            background: rgba(155,89,182,0.3);
-            border: 1px solid #9b59b6;
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .cmd:hover { background: #9b59b6; transform: scale(1.05); }
-        
-        .botoes-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
-        .botao-criado {
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            color: white;
-        }
-        .cards-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-        .card-criado {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            transition: all 0.3s;
-            animation: fadeIn 0.3s ease;
-        }
-        .card-criado:hover { transform: translateX(5px); background: rgba(255,255,255,0.15); }
-        
-        .world-comments {
-            background: linear-gradient(135deg, rgba(142,68,173,0.2), rgba(155,89,182,0.15));
-            border: 2px solid #9b59b6;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        .world-comments h3 {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 24px;
-            color: #9b59b6;
-        }
-        .world-comments-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .world-comments-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255,255,255,0.9);
-            font-size: 14px;
-        }
-        .world-comments-name {
-            width: 150px;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 25px;
-            background: rgba(255,255,255,0.9);
-            font-size: 14px;
-        }
-        .btn-send-world {
-            background: #9b59b6;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .world-comments-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .world-comment-item {
-            background: rgba(255,255,255,0.08);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 3px solid #9b59b6;
-        }
-        .world-comment-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 13px;
-            flex-wrap: wrap;
-        }
-        .world-comment-author { color: #9b59b6; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-        .world-comment-date { color: rgba(255,255,255,0.5); font-size: 11px; }
-        .world-comment-text { font-size: 14px; line-height: 1.5; }
-        .delete-world-comment { background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; margin-left: auto; padding: 5px; }
-        .delete-world-comment:hover { color: #ff4757; }
-        .no-world-comments { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
-        
-        .videos-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        .video-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .video-card:hover { transform: translateY(-5px); border-color: #ff4757; }
-        .video-thumbnail {
-            width: 100%;
-            height: 180px;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .video-info { padding: 15px; }
-        .video-title { font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #ff4757; }
-        .video-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 8px; }
-        .delete-video-btn {
-            margin-top: 10px;
-            width: 100%;
-            padding: 8px;
-            background: #ff4757;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-        
-        .video-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .video-container {
-            background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-            border-radius: 20px;
-            width: 90%;
+        .container {
             max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .video-header {
-            padding: 15px 20px;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .close-video { background: none; border: none; font-size: 28px; cursor: pointer; color: white; }
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            background: #000;
-        }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .video-info-modal { padding: 20px; }
-        
-        .footer {
-            margin-top: 30px;
+            margin: 50px auto;
             padding: 30px;
-            background: rgba(0,0,0,0.8);
             text-align: center;
+            background: rgba(255,255,255,0.1);
             border-radius: 20px;
-            transition: all 0.3s;
         }
         .modal {
             position: fixed;
@@ -349,7 +76,7 @@
             max-width: 400px;
             text-align: center;
         }
-        .login-box input, .login-box select {
+        .login-box input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -357,28 +84,6 @@
             border-radius: 10px;
         }
         .hidden { display: none; }
-        .digitando span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: blink 1.4s infinite;
-            margin: 0 2px;
-        }
-        @keyframes blink {
-            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-            30% { opacity: 1; transform: translateY(-5px); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .input-area { flex-direction: column; }
-            .videos-grid { grid-template-columns: 1fr; }
-        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -391,81 +96,25 @@
             <span>IA SUPREMA</span>
         </div>
         <div class="nav-buttons">
-            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> Cadastrar</button>
-            <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            <!-- BOTÃO DE LOGIN - AQUI! -->
+            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+            <!-- BOTÃO DE CADASTRO - AQUI! -->
+            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()">
+                <i class="fas fa-user-plus"></i> Cadastrar
+            </button>
+            <!-- BOTÃO DE SAIR - AQUI! (escondido até logar) -->
+            <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
         </div>
     </div>
 
     <div class="container">
-        <!-- BOTÕES CRIADOS PELA IA -->
-        <div class="botoes-container" id="botoesContainer"></div>
-
-        <!-- PAINEL DA IA - SÓ APARECE PARA ADMIN -->
-        <div class="ia-painel" id="iaPainel" style="display: none;">
-            <h2 style="text-align: center;"><i class="fas fa-brain"></i> IA QUE MODIFICA TUDO</h2>
-            <p style="text-align: center; opacity: 0.8;">Digite qualquer comando e eu modifico o site instantaneamente!</p>
-            
-            <div class="chat">
-                <div class="mensagens" id="mensagensChat">
-                    <div class="mensagem ia">
-                        <div class="avatar"><i class="fas fa-crown"></i></div>
-                        <div class="bolha">👑 <strong>EU SOU A IA SUPREMA!</strong><br><br>
-                        <strong>✨ COMANDOS DISPONÍVEIS:</strong><br><br>
-                        🎨 <strong>CORES:</strong> "azul", "verde", "roxo", "rosa", "vermelho", "escuro"<br>
-                        🔘 <strong>BOTÕES:</strong> "criar botao", "tirar botao", "remover todos botoes"<br>
-                        📦 <strong>CARDS:</strong> "criar card", "tirar card", "remover todos cards"<br>
-                        📝 <strong>TEXTO:</strong> "titulo NOVO NOME", "rodape NOVO TEXTO"<br>
-                        🔄 <strong>RESET:</strong> "resetar tudo"<br><br>
-                        <strong>👉 Digite algo: "criar botao" ou "azul"</strong></div>
-                    </div>
-                </div>
-                <div class="input-area">
-                    <input type="text" id="iaInput" placeholder="Ex: azul, criar botao, titulo MEU SITE..." onkeypress="if(event.key==='Enter') processarComando()">
-                    <button class="btn-primary" onclick="processarComando()"><i class="fas fa-paper-plane"></i> Executar</button>
-                </div>
-                <div class="comandos-rapidos">
-                    <span class="cmd" onclick="executarComando('azul')">🔵 AZUL</span>
-                    <span class="cmd" onclick="executarComando('verde')">🟢 VERDE</span>
-                    <span class="cmd" onclick="executarComando('roxo')">🟣 ROXO</span>
-                    <span class="cmd" onclick="executarComando('criar botao')">➕ CRIAR BOTÃO</span>
-                    <span class="cmd" onclick="executarComando('criar card')">📦 CRIAR CARD</span>
-                    <span class="cmd" onclick="executarComando('resetar tudo')">🔄 RESETAR</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- CARDS CRIADOS PELA IA -->
-        <div class="cards-container" id="cardsContainer"></div>
-
-        <!-- COMENTÁRIOS MUNDIAIS -->
-        <div class="world-comments">
-            <h3><i class="fas fa-globe-americas"></i> 🌍 COMENTÁRIOS MUNDIAIS</h3>
-            <div class="world-comments-form">
-                <input type="text" id="worldCommentName" class="world-comments-name" placeholder="Seu nome">
-                <input type="text" id="worldCommentInput" class="world-comments-input" placeholder="Escreva sua mensagem mundial...">
-                <button class="btn-send-world" onclick="enviarComentarioMundial()"><i class="fas fa-paper-plane"></i> Publicar</button>
-            </div>
-            <div class="world-comments-list" id="worldCommentsList">
-                <div class="no-world-comments">🌍 Carregando mensagens...</div>
-            </div>
-        </div>
-
-        <!-- VÍDEOS -->
-        <div class="videos-header">
-            <h2><i class="fas fa-video"></i> Vídeos</h2>
-            <button class="btn-success" onclick="mostrarUploadVideo()" style="display:none;" id="uploadVideoBtn"><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</button>
-        </div>
-        <div class="videos-grid" id="videosGrid">
-            <div class="video-card" style="text-align: center; padding: 40px;">
-                <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                <h3>Carregando vídeos...</h3>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer" id="footer">
-        <p>✨ IA Suprema - Modifica Tudo no Site ✨</p>
+        <h1><i class="fas fa-robot"></i> IA Suprema</h1>
+        <p>Clique em <strong>"Entrar"</strong> para acessar a IA que modifica o site!</p>
+        <p style="margin-top: 20px; opacity: 0.7;">Admin: admin@olhaai.com / admin123</p>
     </div>
 
     <!-- MODAL LOGIN -->
@@ -473,11 +122,10 @@
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
             <h2>Login</h2>
-            <input type="email" id="loginEmail" placeholder="Email">
-            <input type="password" id="loginPassword" placeholder="Senha">
+            <input type="email" id="loginEmail" placeholder="Email" value="admin@olhaai.com">
+            <input type="password" id="loginPassword" placeholder="Senha" value="admin123">
             <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
-            <p style="margin-top: 15px; font-size: 12px;">Admin: admin@olhaai.com / admin123</p>
         </div>
     </div>
 
@@ -489,48 +137,12 @@
             <input type="text" id="regName" placeholder="Nome">
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Senha">
-            <select id="regType">
-                <option value="user">Usuário</option>
-                <option value="creator">Criador</option>
-            </select>
             <button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
             <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
         </div>
     </div>
 
-    <!-- MODAL UPLOAD VÍDEO -->
-    <div class="modal hidden" id="uploadModal">
-        <div class="login-box" style="max-width: 500px;">
-            <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>Publicar Vídeo</h2>
-            <input type="text" id="videoTitle" placeholder="Título do vídeo">
-            <input type="text" id="videoUrl" placeholder="Link do YouTube ou Google Drive">
-            <textarea id="videoDesc" rows="3" placeholder="Descrição..." style="width:100%; padding:12px; border-radius:10px; border:none;"></textarea>
-            <button class="btn-primary" onclick="publicarVideo()">Publicar</button>
-            <button class="btn-secondary" onclick="fecharUpload()">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- MODAL VÍDEO PLAYER -->
-    <div id="videoPlayerModal" class="video-modal hidden">
-        <div class="video-container">
-            <div class="video-header">
-                <h3 id="modalVideoTitle">Título</h3>
-                <button class="close-video" onclick="closeVideoModal()">✕</button>
-            </div>
-            <div class="video-wrapper">
-                <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="video-info-modal">
-                <p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p>
-                <p><i class="fas fa-eye"></i> <span id="modalViews"></span> views</p>
-                <p><i class="fas fa-align-left"></i> <span id="modalDescription"></span></p>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // ============ FIREBASE ============
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -543,337 +155,7 @@
         const db = firebase.firestore();
         
         let usuarioAtual = null;
-        let botoesCriados = 0;
-        let cardsCriados = 0;
         
-        // ============ FUNÇÕES DA IA ============
-        
-        function adicionarMensagem(texto, tipo = 'ia') {
-            const container = document.getElementById('mensagensChat');
-            if (!container) return;
-            const div = document.createElement('div');
-            div.className = `mensagem ${tipo}`;
-            if (tipo === 'ia') {
-                div.innerHTML = `<div class="avatar"><i class="fas fa-crown"></i></div><div class="bolha">${texto.replace(/\n/g, '<br>')}</div>`;
-            } else {
-                div.innerHTML = `<div class="bolha">${texto}</div>`;
-            }
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
-        
-        function mostrarDigitando() {
-            const container = document.getElementById('mensagensChat');
-            if (!container) return;
-            const div = document.createElement('div');
-            div.className = 'mensagem ia';
-            div.id = 'digitando';
-            div.innerHTML = `<div class="avatar"><i class="fas fa-crown"></i></div><div class="bolha"><div class="digitando"><span></span><span></span><span></span></div></div>`;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
-        
-        function removerDigitando() {
-            const el = document.getElementById('digitando');
-            if (el) el.remove();
-        }
-        
-        function mudarCor(cor) {
-            const cores = {
-                azul: { p: "#3498db", s: "#2980b9", f1: "#0f0c29", f2: "#1a1a2e" },
-                verde: { p: "#27ae60", s: "#2ecc71", f1: "#0a2a1a", f2: "#1a3a2a" },
-                roxo: { p: "#9b59b6", s: "#8e44ad", f1: "#1a0a2a", f2: "#2a1a3a" },
-                rosa: { p: "#e84393", s: "#fd79a8", f1: "#2a0a1a", f2: "#3a1a2a" },
-                vermelho: { p: "#e74c3c", s: "#c0392b", f1: "#2a0a0a", f2: "#3a1a1a" },
-                escuro: { p: "#2c3e50", s: "#34495e", f1: "#000000", f2: "#1a1a2e" }
-            };
-            const c = cores[cor] || cores.azul;
-            document.body.style.background = `linear-gradient(135deg, ${c.f1} 0%, #302b63 50%, ${c.f2} 100%)`;
-            document.querySelector('.header').style.borderBottomColor = c.p;
-            document.querySelector('.logo i').style.color = c.p;
-            document.querySelector('.logo span').style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
-            adicionarMensagem(`🎨 **Cor alterada para ${cor.toUpperCase()}!**`);
-        }
-        
-        function criarBotao() {
-            botoesCriados++;
-            const container = document.getElementById('botoesContainer');
-            const btn = document.createElement('button');
-            btn.className = 'botao-criado';
-            btn.style.background = `linear-gradient(135deg, #9b59b6, #8e44ad)`;
-            btn.innerHTML = `<i class="fas fa-star"></i> Botão ${botoesCriados}`;
-            btn.onclick = () => alert(`✨ Botão ${botoesCriados} clicado!`);
-            container.appendChild(btn);
-            adicionarMensagem(`✅ **BOTÃO CRIADO!** Total: ${botoesCriados}`);
-        }
-        
-        function removerBotao() {
-            const botoes = document.querySelectorAll('.botao-criado');
-            if (botoes.length === 0) {
-                adicionarMensagem(`❌ Nenhum botão para remover!`);
-                return;
-            }
-            botoes[botoes.length - 1].remove();
-            botoesCriados--;
-            adicionarMensagem(`🗑️ **BOTÃO REMOVIDO!** Restam: ${botoesCriados}`);
-        }
-        
-        function removerTodosBotoes() {
-            document.querySelectorAll('.botao-criado').forEach(btn => btn.remove());
-            botoesCriados = 0;
-            adicionarMensagem(`🗑️ **TODOS OS BOTÕES REMOVIDOS!**`);
-        }
-        
-        function criarCard() {
-            cardsCriados++;
-            const container = document.getElementById('cardsContainer');
-            const card = document.createElement('div');
-            card.className = 'card-criado';
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3><i class="fas fa-file-alt"></i> Card ${cardsCriados}</h3>
-                    <button class="btn-danger" style="padding: 5px 15px;" onclick="this.parentElement.parentElement.remove(); cardsCriados--;">✕ Remover</button>
-                </div>
-                <p>Criado pela IA Suprema!</p>
-                <small>✨ ${new Date().toLocaleTimeString()}</small>
-            `;
-            container.appendChild(card);
-            adicionarMensagem(`✅ **CARD CRIADO!** Total: ${cardsCriados}`);
-        }
-        
-        function removerCard() {
-            const cards = document.querySelectorAll('.card-criado');
-            if (cards.length === 0) {
-                adicionarMensagem(`❌ Nenhum card para remover!`);
-                return;
-            }
-            cards[cards.length - 1].remove();
-            cardsCriados--;
-            adicionarMensagem(`🗑️ **CARD REMOVIDO!** Restam: ${cardsCriados}`);
-        }
-        
-        function removerTodosCards() {
-            document.querySelectorAll('.card-criado').forEach(card => card.remove());
-            cardsCriados = 0;
-            adicionarMensagem(`🗑️ **TODOS OS CARDS REMOVIDOS!**`);
-        }
-        
-        function mudarTitulo(novoTitulo) {
-            document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
-            document.title = novoTitulo;
-            adicionarMensagem(`📝 **TÍTULO ALTERADO!** Agora: ${novoTitulo.toUpperCase()}`);
-        }
-        
-        function mudarRodape(novoTexto) {
-            document.getElementById('footer').innerHTML = `<p>${novoTexto}</p>`;
-            adicionarMensagem(`📝 **RODAPÉ ALTERADO!**`);
-        }
-        
-        function resetarTudo() {
-            document.querySelectorAll('.botao-criado').forEach(btn => btn.remove());
-            document.querySelectorAll('.card-criado').forEach(card => card.remove());
-            botoesCriados = 0;
-            cardsCriados = 0;
-            document.body.style.background = "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)";
-            document.querySelector('.header').style.borderBottomColor = "#ff4757";
-            document.querySelector('.logo i').style.color = "#ff4757";
-            document.querySelector('.logo span').style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
-            document.querySelector('.logo span').textContent = "IA SUPREMA";
-            document.getElementById('footer').innerHTML = '<p>✨ IA Suprema - Modifica Tudo no Site ✨</p>';
-            adicionarMensagem(`🔄 **SITE RESETADO COMPLETAMENTE!**`);
-        }
-        
-        async function processarComando() {
-            const input = document.getElementById('iaInput');
-            let comando = input.value.trim().toLowerCase();
-            if (!comando) return;
-            
-            adicionarMensagem(comando, 'usuario');
-            input.value = '';
-            mostrarDigitando();
-            
-            setTimeout(() => {
-                removerDigitando();
-                
-                if (comando === 'azul') mudarCor('azul');
-                else if (comando === 'verde') mudarCor('verde');
-                else if (comando === 'roxo') mudarCor('roxo');
-                else if (comando === 'rosa') mudarCor('rosa');
-                else if (comando === 'vermelho') mudarCor('vermelho');
-                else if (comando === 'escuro') mudarCor('escuro');
-                else if (comando === 'criar botao') criarBotao();
-                else if (comando === 'tirar botao') removerBotao();
-                else if (comando === 'remover todos botoes') removerTodosBotoes();
-                else if (comando === 'criar card') criarCard();
-                else if (comando === 'tirar card') removerCard();
-                else if (comando === 'remover todos cards') removerTodosCards();
-                else if (comando.startsWith('titulo')) {
-                    let novo = comando.replace('titulo', '').trim();
-                    if (novo) mudarTitulo(novo);
-                    else adicionarMensagem(`❌ Digite: "titulo MEU NOME"`);
-                }
-                else if (comando.startsWith('rodape')) {
-                    let novo = comando.replace('rodape', '').trim();
-                    if (novo) mudarRodape(novo);
-                    else adicionarMensagem(`❌ Digite: "rodape MEU TEXTO"`);
-                }
-                else if (comando === 'resetar tudo') resetarTudo();
-                else if (comando === 'ajuda') {
-                    adicionarMensagem(`📋 **COMANDOS:**\n\nazul, verde, roxo, rosa, vermelho, escuro\ncriar botao, tirar botao, remover todos botoes\ncriar card, tirar card, remover todos cards\ntitulo NOME, rodape TEXTO\nresetar tudo`);
-                }
-                else {
-                    adicionarMensagem(`❌ **Comando não reconhecido!** Digite "ajuda" para ver os comandos.`);
-                }
-            }, 500);
-        }
-        
-        function executarComando(cmd) {
-            document.getElementById('iaInput').value = cmd;
-            processarComando();
-        }
-        
-        function mostrarIA() {
-            const painel = document.getElementById('iaPainel');
-            if (painel) painel.style.display = 'block';
-        }
-        
-        // ============ COMENTÁRIOS MUNDIAIS ============
-        async function carregarComentariosMundiais() {
-            try {
-                const snapshot = await db.collection('comentarios_mundiais').orderBy('data', 'desc').get();
-                const comentarios = [];
-                snapshot.forEach(doc => comentarios.push({ id: doc.id, ...doc.data() }));
-                const container = document.getElementById('worldCommentsList');
-                if (comentarios.length === 0) { 
-                    container.innerHTML = '<div class="no-world-comments">🌍 Seja o primeiro a comentar!</div>'; 
-                    return; 
-                }
-                container.innerHTML = comentarios.map(com => `
-                    <div class="world-comment-item">
-                        <div class="world-comment-header">
-                            <span class="world-comment-author"><i class="fas fa-globe"></i> ${escapeHtml(com.autor || 'Anônimo')}</span>
-                            <span class="world-comment-date">${new Date(com.data).toLocaleString('pt-BR')}</span>
-                            ${(usuarioAtual && usuarioAtual.type === 'admin') ? `<button class="delete-world-comment" onclick="excluirComentarioMundial('${com.id}')"><i class="fas fa-trash"></i></button>` : ''}
-                        </div>
-                        <div class="world-comment-text">🌍 ${escapeHtml(com.texto)}</div>
-                    </div>
-                `).join('');
-            } catch (error) { console.error(error); }
-        }
-        
-        async function enviarComentarioMundial() {
-            const texto = document.getElementById('worldCommentInput').value.trim();
-            let nome = document.getElementById('worldCommentName').value.trim();
-            if (!texto) { alert("Digite uma mensagem!"); return; }
-            if (nome === "") nome = "Anônimo";
-            const comentario = { autor: nome, texto: texto, data: new Date().toISOString() };
-            try {
-                await db.collection('comentarios_mundiais').add(comentario);
-                document.getElementById('worldCommentInput').value = '';
-                document.getElementById('worldCommentName').value = '';
-                await carregarComentariosMundiais();
-                alert("🌍 Mensagem publicada!");
-            } catch (error) { alert("Erro: " + error.message); }
-        }
-        
-        async function excluirComentarioMundial(comentarioId) {
-            if (confirm("Excluir esta mensagem?")) {
-                await db.collection('comentarios_mundiais').doc(comentarioId).delete();
-                await carregarComentariosMundiais();
-            }
-        }
-        
-        // ============ VÍDEOS ============
-        async function carregarVideos() {
-            try {
-                const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
-                const videos = [];
-                snapshot.forEach(doc => videos.push({ docId: doc.id, ...doc.data() }));
-                const grid = document.getElementById('videosGrid');
-                if (videos.length === 0) { 
-                    grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-play-circle" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Seja o primeiro a publicar!</p></div>';
-                    return; 
-                }
-                grid.innerHTML = videos.map(video => `
-                    <div class="video-card" onclick="abrirVideoModal('${video.docId}')">
-                        <div class="video-thumbnail" style="background: linear-gradient(135deg, #ff4757, #ff6b81);">
-                            <i class="fas fa-play-circle" style="font-size: 48px;"></i>
-                        </div>
-                        <div class="video-info">
-                            <div class="video-title">${escapeHtml(video.title)}</div>
-                            <div class="video-meta"><i class="fas fa-user"></i> ${escapeHtml(video.author)} | <i class="fas fa-eye"></i> ${video.views || 0} views</div>
-                            ${(usuarioAtual && usuarioAtual.type === 'admin') ? `<button class="delete-video-btn" onclick="event.stopPropagation(); excluirVideo('${video.docId}')"><i class="fas fa-trash"></i> Excluir</button>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) { console.error(error); }
-        }
-        
-        async function publicarVideo() {
-            const titulo = document.getElementById('videoTitle').value;
-            let link = document.getElementById('videoUrl').value;
-            const descricao = document.getElementById('videoDesc').value;
-            if (!titulo || !link) { alert("Preencha título e link!"); return; }
-            
-            let embedUrl = link;
-            if (link.includes('youtube.com/watch?v=')) {
-                let videoId = link.split('v=')[1].split('&')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            } else if (link.includes('youtu.be/')) {
-                let videoId = link.split('youtu.be/')[1].split('?')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            }
-            
-            const video = { title: titulo, url: embedUrl, description: descricao || 'Sem descrição', author: usuarioAtual?.name || 'Admin', authorEmail: usuarioAtual?.email || 'admin@olhaai.com', date: new Date().toISOString(), views: 0 };
-            try {
-                await db.collection('videos').add(video);
-                alert('✅ Vídeo publicado!');
-                document.getElementById('videoTitle').value = '';
-                document.getElementById('videoUrl').value = '';
-                document.getElementById('videoDesc').value = '';
-                fecharUpload();
-                carregarVideos();
-            } catch (error) { alert('Erro: ' + error.message); }
-        }
-        
-        async function excluirVideo(docId) {
-            if (confirm("Excluir este vídeo?")) {
-                await db.collection('videos').doc(docId).delete();
-                carregarVideos();
-            }
-        }
-        
-        async function abrirVideoModal(docId) {
-            try {
-                const videoRef = db.collection('videos').doc(docId);
-                const video = await videoRef.get();
-                if (!video.exists) return;
-                const data = video.data();
-                const views = (data.views || 0) + 1;
-                await videoRef.update({ views });
-                document.getElementById('modalVideoTitle').textContent = data.title;
-                document.getElementById('modalAuthor').textContent = data.author;
-                document.getElementById('modalViews').textContent = views;
-                document.getElementById('modalDescription').textContent = data.description;
-                document.getElementById('videoIframe').src = data.url;
-                document.getElementById('videoPlayerModal').classList.remove('hidden');
-            } catch (error) { alert('Erro ao carregar vídeo'); }
-        }
-        
-        function closeVideoModal() {
-            document.getElementById('videoPlayerModal').classList.add('hidden');
-            document.getElementById('videoIframe').src = '';
-        }
-        
-        function mostrarUploadVideo() {
-            document.getElementById('uploadModal').classList.remove('hidden');
-        }
-        
-        function fecharUpload() {
-            document.getElementById('uploadModal').classList.add('hidden');
-        }
-        
-        // ============ LOGIN E CADASTRO ============
         function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
         function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
         function mostrarCadastro() { document.getElementById('registerModal').classList.remove('hidden'); }
@@ -900,22 +182,19 @@
                     localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
                     alert(`👑 Bem-vindo, ${usuarioAtual.name}!`);
                     
-                    // Esconder botões de login/cadastro
                     document.getElementById('btnEntrar').style.display = 'none';
                     document.getElementById('btnCadastrar').style.display = 'none';
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
                     
-                    // Mostrar botões de admin
-                    if (usuarioAtual.type === 'admin') {
-                        document.getElementById('uploadVideoBtn').style.display = 'inline-flex';
-                        mostrarIA();
-                    }
-                    
                     fecharLogin();
-                    carregarVideos();
-                    carregarComentariosMundiais();
+                    document.querySelector('.container').innerHTML = `
+                        <h1><i class="fas fa-robot"></i> IA Suprema</h1>
+                        <p>✅ Login realizado com sucesso!</p>
+                        <p>Agora você tem acesso completo à IA!</p>
+                        <button class="btn-primary" onclick="alert('IA pronta! Digite "azul" para testar')">🎨 Testar IA</button>
+                    `;
                 } else {
-                    alert('❌ Email ou senha incorretos!');
+                    alert('❌ Email ou senha incorretos! Use admin@olhaai.com / admin123');
                 }
             } catch (error) { alert('Erro: ' + error.message); }
         }
@@ -924,12 +203,11 @@
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
-            const type = document.getElementById('regType').value;
             if (!name || !email || !password) { alert('Preencha todos os campos!'); return; }
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
                 if (userDoc.exists) { alert('Email já cadastrado!'); return; }
-                await db.collection('usuarios').doc(email).set({ email, password, name, type });
+                await db.collection('usuarios').doc(email).set({ email, password, name, type: 'user' });
                 alert('✅ Cadastro realizado! Faça login.');
                 fecharCadastro();
                 mostrarLogin();
@@ -939,35 +217,34 @@
         function logout() {
             usuarioAtual = null;
             localStorage.removeItem('usuario');
-            
             document.getElementById('btnEntrar').style.display = 'inline-flex';
             document.getElementById('btnCadastrar').style.display = 'inline-flex';
             document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('uploadVideoBtn').style.display = 'none';
-            document.getElementById('iaPainel').style.display = 'none';
-            
-            carregarVideos();
-            carregarComentariosMundiais();
+            document.querySelector('.container').innerHTML = `
+                <h1><i class="fas fa-robot"></i> IA Suprema</h1>
+                <p>Clique em <strong>"Entrar"</strong> para acessar a IA que modifica o site!</p>
+                <p style="margin-top: 20px; opacity: 0.7;">Admin: admin@olhaai.com / admin123</p>
+            `;
             alert('👋 Logout realizado!');
         }
-        
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
         
         async function init() {
             await criarAdmin();
             const salvo = localStorage.getItem('usuario');
             if (salvo) {
                 usuarioAtual = JSON.parse(salvo);
-                if (usuarioAtual.type === 'admin') {
+                if (usuarioAtual.email === 'admin@olhaai.com') {
                     document.getElementById('btnEntrar').style.display = 'none';
                     document.getElementById('btnCadastrar').style.display = 'none';
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    document.getElementById('uploadVideoBtn').style.display = 'inline-flex';
-                    mostrarIA();
+                    document.querySelector('.container').innerHTML = `
+                        <h1><i class="fas fa-robot"></i> IA Suprema</h1>
+                        <p>✅ Você já está logado como ${usuarioAtual.name}!</p>
+                        <p>Agora você tem acesso completo à IA!</p>
+                        <button class="btn-primary" onclick="alert('IA pronta! Digite "azul" para testar')">🎨 Testar IA</button>
+                    `;
                 }
             }
-            await carregarVideos();
-            await carregarComentariosMundiais();
         }
         init();
     </script>
