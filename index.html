@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Olha Aí - IA Hiper Inteligente</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olha Aí - IA Completa</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -11,11 +11,10 @@
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white;
             min-height: 100vh;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
         .header {
             background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
@@ -54,8 +53,7 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
-        .btn-success { background: #27ae60; color: white; }
-        .btn-ia { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+        .btn-remover { background: #e74c3c; color: white; }
         .main-buttons {
             display: flex;
             justify-content: center;
@@ -72,7 +70,7 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .main-btn:hover { transform: translateY(-3px); }
-        .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 30px; }
         
         .ia-painel {
             background: rgba(0,0,0,0.6);
@@ -80,34 +78,15 @@
             padding: 25px;
             margin-bottom: 30px;
             border: 2px solid #9b59b6;
-            backdrop-filter: blur(10px);
         }
-        .ia-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .ia-titulo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .ia-status {
-            background: #27ae60;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        .chat-container {
+        .chat {
             background: rgba(0,0,0,0.3);
             border-radius: 15px;
             padding: 20px;
             margin-top: 20px;
         }
         .mensagens {
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
             margin-bottom: 20px;
             padding: 10px;
@@ -116,49 +95,44 @@
             margin-bottom: 15px;
             display: flex;
             gap: 10px;
-            animation: fadeIn 0.3s ease;
         }
         .mensagem.usuario { justify-content: flex-end; }
         .mensagem.ia { justify-content: flex-start; }
         .bolha {
-            max-width: 75%;
+            max-width: 70%;
             padding: 12px 18px;
             border-radius: 20px;
-            word-wrap: break-word;
         }
         .usuario .bolha { background: linear-gradient(135deg, #ff4757, #ff6b81); border-bottom-right-radius: 5px; }
         .ia .bolha { background: rgba(255,255,255,0.12); border-bottom-left-radius: 5px; border-left: 3px solid #9b59b6; }
-        .avatar-ia { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #9b59b6, #8e44ad); display: flex; align-items: center; justify-content: center; }
-        .input-ia {
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #9b59b6; display: flex; align-items: center; justify-content: center; }
+        .input-area {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
             flex-wrap: wrap;
         }
-        .input-ia input {
+        .input-area input {
             flex: 1;
-            padding: 12px 18px;
+            padding: 12px;
             border: none;
             border-radius: 25px;
             background: rgba(255,255,255,0.9);
-            font-size: 15px;
         }
-        .comandos-rapidos {
+        .comandos {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             margin-top: 15px;
         }
-        .cmd-rapido {
+        .cmd {
             background: rgba(155,89,182,0.3);
             border: 1px solid #9b59b6;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .cmd-rapido:hover { background: #9b59b6; transform: scale(1.05); }
+        .cmd:hover { background: #9b59b6; }
         
         .videos-grid {
             display: grid;
@@ -168,20 +142,16 @@
         }
         .card {
             background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 20px;
             text-align: center;
-            transition: all 0.3s;
-            cursor: pointer;
         }
-        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
         .footer {
             margin-top: 60px;
             padding: 30px;
             background: rgba(0,0,0,0.8);
-            border-radius: 20px;
             text-align: center;
+            border-radius: 20px;
         }
         .modal {
             position: fixed;
@@ -224,22 +194,13 @@
             0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
             30% { opacity: 1; transform: translateY(-5px); }
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .input-ia { flex-direction: column; }
-            .ia-header { flex-direction: column; gap: 10px; text-align: center; }
-        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="header">
         <div class="logo">
-            <i class="fas fa-brain"></i>
+            <i class="fas fa-eye"></i>
             <span>OLHA AÍ</span>
         </div>
         <div class="nav-buttons">
@@ -251,73 +212,56 @@
 
     <div class="container">
         <div class="main-buttons">
-            <button class="main-btn btn-ia" id="iaBtn" onclick="mostrarIA()" style="display:none;"><i class="fas fa-robot"></i> 🧠 IA Hiper Inteligente</button>
+            <button class="main-btn btn-primary" id="iaBtn" onclick="mostrarIA()" style="display:none;"><i class="fas fa-robot"></i> 🤖 IA Modificadora</button>
         </div>
 
-        <!-- PAINEL DA IA INTELIGENTE -->
         <div id="iaPainel" class="ia-painel" style="display: none;">
-            <div class="ia-header">
-                <div class="ia-titulo">
-                    <i class="fas fa-brain" style="font-size: 28px; color: #9b59b6;"></i>
-                    <h2>IA Hiper Inteligente</h2>
-                </div>
-                <div class="ia-status">
-                    <i class="fas fa-circle" style="font-size: 10px;"></i> Online - Modo Aprendizagem Ativa
-                </div>
-            </div>
-            <p><i class="fas fa-lightbulb"></i> <strong>Eu sou uma IA que APRENDE e MODIFICA seu site!</strong> Posso criar botões, cards, mudar cores, editar textos, e muito mais. Fale comigo em português!</p>
-            <div class="chat-container">
+            <h2><i class="fas fa-robot"></i> 🤖 IA Modificadora</h2>
+            <p>Comandos: <strong>azul, verde, roxo, rosa, vermelho, escuro, criar botao, remover botao, criar card, remover card, titulo, resetar</strong></p>
+            <div class="chat">
                 <div class="mensagens" id="mensagensChat">
                     <div class="mensagem ia">
-                        <div class="avatar-ia"><i class="fas fa-robot"></i></div>
-                        <div class="bolha">🧠 <strong>Olá! Eu sou a IA Hiper Inteligente do Olha Aí!</strong><br><br>
-                        <strong>✨ O que eu posso fazer:</strong><br>
-                        • 🎨 <strong>Cores:</strong> "mude para azul", "fundo roxo", "tema escuro"<br>
-                        • 🔘 <strong>Botões:</strong> "crie um botão", "adicione botão vermelho"<br>
-                        • 📦 <strong>Cards:</strong> "crie um card de vídeo", "adicione conteúdo"<br>
-                        • 📝 <strong>Textos:</strong> "mude o título para Olha AI", "edite o rodapé"<br>
-                        • 🗑️ <strong>Limpeza:</strong> "limpe os botões", "resetar site"<br>
-                        • 💡 <strong>Criação:</strong> "crie uma seção de contato", "adicione um menu"<br><br>
-                        <strong>👉 O que você quer que eu modifique hoje?</strong></div>
+                        <div class="avatar"><i class="fas fa-robot"></i></div>
+                        <div class="bolha">🤖 Olá! Comandos disponíveis:<br><br>
+                        🎨 <strong>cores:</strong> azul, verde, roxo, rosa, vermelho, escuro<br>
+                        🔘 <strong>botões:</strong> "criar botao", "remover botao"<br>
+                        📦 <strong>cards:</strong> "criar card", "remover card"<br>
+                        📝 <strong>título:</strong> "titulo MEU SITE"<br>
+                        🔄 <strong>reset:</strong> "resetar"<br><br>
+                        <strong>👉 Experimente: "criar botao" ou "azul"</strong></div>
                     </div>
                 </div>
-                <div class="input-ia">
-                    <input type="text" id="iaInput" placeholder="Ex: mude a cor para azul, crie um botão, adicione um card..." onkeypress="if(event.key==='Enter') processarComandoIA()">
-                    <button class="btn-primary" onclick="processarComandoIA()"><i class="fas fa-paper-plane"></i> Executar</button>
+                <div class="input-area">
+                    <input type="text" id="iaInput" placeholder="Ex: azul, criar botao, remover botao, titulo MEU SITE..." onkeypress="if(event.key==='Enter') processar()">
+                    <button class="btn-primary" onclick="processar()"><i class="fas fa-paper-plane"></i> Executar</button>
                 </div>
-                <div class="comandos-rapidos">
-                    <span class="cmd-rapido" onclick="comandoRapido('mude a cor para azul')">🔵 AZUL</span>
-                    <span class="cmd-rapido" onclick="comandoRapido('mude a cor para verde')">🟢 VERDE</span>
-                    <span class="cmd-rapido" onclick="comandoRapido('mude a cor para roxo')">🟣 ROXO</span>
-                    <span class="cmd-rapido" onclick="comandoRapido('crie um botão')">🔘 CRIAR BOTÃO</span>
-                    <span class="cmd-rapido" onclick="comandoRapido('crie um card')">📦 CRIAR CARD</span>
-                    <span class="cmd-rapido" onclick="comandoRapido('mude o título para OLHA AI INTELIGENTE')">📝 TÍTULO</span>
-                    <span class="cmd-rapido" onclick="comandoRapido('resetar site')">🔄 RESETAR</span>
-                    <span class="cmd-rapido" onclick="comandoRapido('o que você pode fazer')">❓ AJUDA</span>
+                <div class="comandos">
+                    <span class="cmd" onclick="comando('azul')">🔵 AZUL</span>
+                    <span class="cmd" onclick="comando('verde')">🟢 VERDE</span>
+                    <span class="cmd" onclick="comando('roxo')">🟣 ROXO</span>
+                    <span class="cmd" onclick="comando('criar botao')">🔘 CRIAR BOTÃO</span>
+                    <span class="cmd" onclick="comando('remover botao')">🗑️ REMOVER BOTÃO</span>
+                    <span class="cmd" onclick="comando('criar card')">📦 CRIAR CARD</span>
+                    <span class="cmd" onclick="comando('remover card')">🗑️ REMOVER CARD</span>
+                    <span class="cmd" onclick="comando('resetar')">🔄 RESETAR</span>
                 </div>
             </div>
         </div>
 
-        <!-- CONTEÚDO DO SITE -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2><i class="fas fa-video"></i> Conteúdo</h2>
-            <div id="stats" style="background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 12px;">📊 Online</div>
-        </div>
+        <h2><i class="fas fa-video"></i> Conteúdo</h2>
         <div class="videos-grid" id="conteudoGrid">
             <div class="card">
-                <i class="fas fa-brain" style="font-size: 48px; margin-bottom: 15px;"></i>
-                <h3>IA Hiper Inteligente</h3>
-                <p>Clique no botão acima e comece a conversar!</p>
-                <small>✨ Peça para eu modificar o site</small>
+                <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
+                <h3>Bem-vindo!</h3>
+                <p>Faça login e use a IA</p>
             </div>
         </div>
     </div>
 
     <div class="footer" id="footer">
-        <p>© 2024 Olha Aí - IA Hiper Inteligente</p>
+        <p>© 2024 Olha Aí - IA Modificadora</p>
     </div>
 
-    <!-- MODAL LOGIN -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-user-circle" style="font-size: 48px; color: #ff4757;"></i>
@@ -330,21 +274,15 @@
     </div>
 
     <script>
-        let usuarioLogado = false;
-        let historicoComandos = [];
-        let elementosCriados = { botoes: 0, cards: 0 };
-        
-        // ============ FUNÇÕES INTELIGENTES DE MODIFICAÇÃO ============
+        let botoesCriados = 0;
+        let cardsCriados = 0;
         
         function adicionarMensagem(texto, tipo = 'ia') {
             const container = document.getElementById('mensagensChat');
             const div = document.createElement('div');
             div.className = `mensagem ${tipo}`;
             if (tipo === 'ia') {
-                div.innerHTML = `
-                    <div class="avatar-ia"><i class="fas fa-robot"></i></div>
-                    <div class="bolha">${texto.replace(/\n/g, '<br>')}</div>
-                `;
+                div.innerHTML = `<div class="avatar"><i class="fas fa-robot"></i></div><div class="bolha">${texto}</div>`;
             } else {
                 div.innerHTML = `<div class="bolha">${texto}</div>`;
             }
@@ -356,106 +294,110 @@
             const container = document.getElementById('mensagensChat');
             const div = document.createElement('div');
             div.className = 'mensagem ia';
-            div.id = 'digitandoMsg';
-            div.innerHTML = `<div class="avatar-ia"><i class="fas fa-robot"></i></div><div class="bolha"><div class="digitando"><span></span><span></span><span></span></div></div>`;
+            div.id = 'digitando';
+            div.innerHTML = `<div class="avatar"><i class="fas fa-robot"></i></div><div class="bolha"><div class="digitando"><span></span><span></span><span></span></div></div>`;
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
         }
         
         function removerDigitando() {
-            const msg = document.getElementById('digitandoMsg');
-            if (msg) msg.remove();
+            const el = document.getElementById('digitando');
+            if (el) el.remove();
         }
         
-        // Mudar cores inteligente
-        function mudarCorSite(cor) {
+        // CORES
+        function mudarCor(cor) {
             const cores = {
-                azul: { p: "#3498db", s: "#2980b9", f1: "#0f0c29", f2: "#1a1a2e", nome: "AZUL" },
-                verde: { p: "#27ae60", s: "#2ecc71", f1: "#0a2a1a", f2: "#1a3a2a", nome: "VERDE" },
-                roxo: { p: "#9b59b6", s: "#8e44ad", f1: "#1a0a2a", f2: "#2a1a3a", nome: "ROXO" },
-                rosa: { p: "#e84393", s: "#fd79a8", f1: "#2a0a1a", f2: "#3a1a2a", nome: "ROSA" },
-                vermelho: { p: "#e74c3c", s: "#c0392b", f1: "#2a0a0a", f2: "#3a1a1a", nome: "VERMELHO" },
-                laranja: { p: "#e67e22", s: "#f39c12", f1: "#2a1a0a", f2: "#3a2a1a", nome: "LARANJA" },
-                escuro: { p: "#2c3e50", s: "#34495e", f1: "#000000", f2: "#1a1a2e", nome: "ESCURO" },
-                claro: { p: "#ecf0f1", s: "#bdc3c7", f1: "#ffffff", f2: "#ecf0f1", nome: "CLARO" }
+                azul: { p: "#3498db", s: "#2980b9", f1: "#0f0c29", f2: "#1a1a2e" },
+                verde: { p: "#27ae60", s: "#2ecc71", f1: "#0a2a1a", f2: "#1a3a2a" },
+                roxo: { p: "#9b59b6", s: "#8e44ad", f1: "#1a0a2a", f2: "#2a1a3a" },
+                rosa: { p: "#e84393", s: "#fd79a8", f1: "#2a0a1a", f2: "#3a1a2a" },
+                vermelho: { p: "#e74c3c", s: "#c0392b", f1: "#2a0a0a", f2: "#3a1a1a" },
+                escuro: { p: "#2c3e50", s: "#34495e", f1: "#000000", f2: "#1a1a2e" }
             };
-            
             const c = cores[cor] || cores.azul;
-            
             document.body.style.background = `linear-gradient(135deg, ${c.f1} 0%, #302b63 50%, ${c.f2} 100%)`;
             document.querySelector('.header').style.borderBottomColor = c.p;
             document.querySelector('.logo i').style.color = c.p;
             document.querySelector('.logo span').style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
-            document.querySelector('.logo span').style.webkitBackgroundClip = 'text';
-            
-            const botoes = document.querySelectorAll('.btn-primary, .btn-ia');
-            botoes.forEach(btn => {
-                if (btn.classList.contains('btn-primary') || btn.classList.contains('btn-ia')) {
-                    if (!btn.id.includes('ia')) {
-                        btn.style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
-                    }
-                }
-            });
-            
-            adicionarMensagem(`✅ **Cor alterada para ${c.nOME || c.nome}!** O site está com um visual ${c.nOME || c.nome} lindo! 🎨`);
-            return true;
+            adicionarMensagem(`✅ **Cor alterada para ${cor.toUpperCase()}!**`);
         }
         
-        // Criar botão inteligente
-        function criarBotaoInteligente(texto = null, cor = 'roxo') {
+        // CRIAR BOTÃO
+        function criarBotao() {
+            botoesCriados++;
             const container = document.querySelector('.main-buttons');
-            const novoBotao = document.createElement('button');
-            elementosCriados.botoes++;
-            const nomeBotao = texto || `Botão ${elementosCriados.botoes}`;
-            novoBotao.className = `main-btn btn-primary botao-criado`;
-            novoBotao.style.background = `linear-gradient(135deg, #9b59b6, #8e44ad)`;
-            novoBotao.innerHTML = `<i class="fas fa-star"></i> ${nomeBotao}`;
-            novoBotao.onclick = () => {
-                adicionarMensagem(`🔘 Você clicou em "${nomeBotao}"!`, 'ia');
-                alert(`✨ Você clicou no botão "${nomeBotao}"!`);
-            };
-            container.appendChild(novoBotao);
-            adicionarMensagem(`✅ **Botão criado com sucesso!**\n\n🔘 Nome: ${nomeBotao}\n📊 Total de botões: ${elementosCriados.botoes}\n\nClique no botão para testar!`);
-            return true;
+            const btn = document.createElement('button');
+            btn.className = 'main-btn btn-primary botao-criado';
+            btn.setAttribute('data-id', botoesCriados);
+            btn.innerHTML = `<i class="fas fa-star"></i> Botão ${botoesCriados}`;
+            btn.onclick = () => alert(`Botão ${botoesCriados} clicado!`);
+            container.appendChild(btn);
+            adicionarMensagem(`✅ **Botão criado!** Total: ${botoesCriados}`);
         }
         
-        // Criar card inteligente
-        function criarCardInteligente(titulo = null, descricao = null) {
+        // REMOVER BOTÃO
+        function removerBotao() {
+            const botoes = document.querySelectorAll('.botao-criado');
+            if (botoes.length === 0) {
+                adicionarMensagem(`❌ **Nenhum botão para remover!** Crie um botão primeiro com "criar botao"`);
+                return;
+            }
+            const ultimoBotao = botoes[botoes.length - 1];
+            ultimoBotao.remove();
+            botoesCriados--;
+            adicionarMensagem(`🗑️ **Botão removido!** Restam ${botoesCriados} botões.`);
+        }
+        
+        // CRIAR CARD
+        function criarCard() {
+            cardsCriados++;
             const grid = document.getElementById('conteudoGrid');
-            const novoCard = document.createElement('div');
-            elementosCriados.cards++;
-            const nomeCard = titulo || `Card ${elementosCriados.cards}`;
-            const descCard = descricao || `Este card foi criado pela IA Hiper Inteligente!`;
-            novoCard.className = 'card card-criado';
-            novoCard.style.animation = 'fadeIn 0.3s ease';
-            novoCard.innerHTML = `
+            const card = document.createElement('div');
+            card.className = 'card card-criado';
+            card.setAttribute('data-id', cardsCriados);
+            card.innerHTML = `
                 <i class="fas fa-plus-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                <h3>${nomeCard}</h3>
-                <p>${descCard}</p>
-                <button class="btn-danger" style="margin-top: 15px; padding: 5px 15px; font-size: 12px;" onclick="this.parentElement.remove(); adicionarMensagem('🗑️ Card removido!', 'ia');">Remover</button>
+                <h3>Card ${cardsCriados}</h3>
+                <p>Criado pela IA!</p>
+                <button class="btn-remover" style="margin-top: 15px; padding: 5px 15px;" onclick="this.parentElement.remove(); cardsCriados--; adicionarMensagem('🗑️ Card removido! Restam ' + cardsCriados + ' cards', 'ia');">Remover</button>
             `;
-            grid.appendChild(novoCard);
-            adicionarMensagem(`✅ **Card criado com sucesso!**\n\n📦 Título: ${nomeCard}\n📝 Descrição: ${descCard}\n📊 Total de cards: ${elementosCriados.cards}`);
-            return true;
+            grid.appendChild(card);
+            adicionarMensagem(`✅ **Card criado!** Total: ${cardsCriados}`);
         }
         
-        // Mudar título
-        function mudarTituloSite(novoTitulo) {
+        // REMOVER CARD
+        function removerCard() {
+            const cards = document.querySelectorAll('.card-criado');
+            if (cards.length === 0) {
+                adicionarMensagem(`❌ **Nenhum card para remover!** Crie um card primeiro com "criar card"`);
+                return;
+            }
+            const ultimoCard = cards[cards.length - 1];
+            ultimoCard.remove();
+            cardsCriados--;
+            adicionarMensagem(`🗑️ **Card removido!** Restam ${cardsCriados} cards.`);
+        }
+        
+        // TÍTULO
+        function mudarTitulo(novoTitulo) {
             document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
             document.title = novoTitulo;
-            adicionarMensagem(`✅ **Título alterado!**\n\nAgora o site se chama: **${novoTitulo.toUpperCase()}**\n\nGostou da mudança?`);
-            return true;
+            adicionarMensagem(`✅ **Título alterado para ${novoTitulo.toUpperCase()}!**`);
         }
         
-        // Mudar rodapé
-        function mudarRodape(novoTexto) {
-            document.getElementById('footer').innerHTML = `<p>${novoTexto}</p>`;
-            adicionarMensagem(`✅ **Rodapé alterado!**\n\n📝 Novo texto: "${novoTexto}"`);
-            return true;
-        }
-        
-        // Resetar site
-        function resetarSiteInteligente() {
+        // RESETAR
+        function resetar() {
+            // Remover botões
+            const botoes = document.querySelectorAll('.botao-criado');
+            botoes.forEach(btn => btn.remove());
+            botoesCriados = 0;
+            
+            // Remover cards
+            const cards = document.querySelectorAll('.card-criado');
+            cards.forEach(card => card.remove());
+            cardsCriados = 0;
+            
             // Resetar cores
             document.body.style.background = "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)";
             document.querySelector('.header').style.borderBottomColor = "#ff4757";
@@ -464,183 +406,93 @@
             
             // Resetar título
             document.querySelector('.logo span').textContent = "OLHA AÍ";
-            document.title = "Olha Aí - IA Hiper Inteligente";
+            document.title = "Olha Aí - IA Completa";
             
             // Resetar rodapé
-            document.getElementById('footer').innerHTML = '<p>© 2024 Olha Aí - IA Hiper Inteligente</p>';
+            document.getElementById('footer').innerHTML = '<p>© 2024 Olha Aí - IA Modificadora</p>';
             
-            // Remover botões criados
-            const botoes = document.querySelectorAll('.botao-criado');
-            botoes.forEach(btn => btn.remove());
-            
-            // Remover cards criados
-            const cards = document.querySelectorAll('.card-criado');
-            cards.forEach(card => card.remove());
-            
-            // Garantir card original
+            // Garantir card inicial
             const grid = document.getElementById('conteudoGrid');
             if (grid.children.length === 0) {
                 grid.innerHTML = `
                     <div class="card">
-                        <i class="fas fa-brain" style="font-size: 48px; margin-bottom: 15px;"></i>
-                        <h3>IA Hiper Inteligente</h3>
-                        <p>Site resetado! Peça para eu modificar novamente!</p>
-                        <small>✨ Digite "mude a cor para azul"</small>
+                        <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
+                        <h3>Bem-vindo!</h3>
+                        <p>Site resetado! Use a IA novamente</p>
                     </div>
                 `;
             }
             
-            elementosCriados = { botoes: 0, cards: 0 };
-            adicionarMensagem(`✅ **SITE RESETADO COM SUCESSO!**\n\n🧹 Todas as modificações foram removidas.\n🔘 Botões criados: 0\n📦 Cards criados: 0\n\nO site voltou ao estado original!`);
-            return true;
+            adicionarMensagem(`✅ **SITE RESETADO!**\n\n🔘 Botões: 0\n📦 Cards: 0\n🎨 Cores: padrão\n📝 Título: OLHA AÍ\n\nTudo limpo!`);
         }
         
-        // Criar seção
-        function criarSecao(titulo) {
-            const container = document.querySelector('.container');
-            const novaSecao = document.createElement('div');
-            novaSecao.className = 'ia-painel';
-            novaSecao.style.marginTop = '20px';
-            novaSecao.innerHTML = `
-                <h3><i class="fas fa-plus-circle"></i> ${titulo}</h3>
-                <p>Esta seção foi criada pela IA a seu pedido!</p>
-                <button class="btn-danger" style="margin-top: 15px;" onclick="this.parentElement.remove()">Remover Seção</button>
-            `;
-            container.insertBefore(novaSecao, document.getElementById('conteudoGrid').parentNode);
-            adicionarMensagem(`✅ **Nova seção criada!**\n\n📌 Título: "${titulo}"\n\nA seção foi adicionada ao site!`);
-            return true;
-        }
-        
-        // ============ IA INTELIGENTE ============
-        
-        function processarComandoIA() {
+        // PROCESSAR COMANDO
+        function processar() {
             const input = document.getElementById('iaInput');
-            let comando = input.value.trim();
+            let comando = input.value.trim().toLowerCase();
             if (!comando) return;
             
             adicionarMensagem(comando, 'usuario');
             input.value = '';
             mostrarDigitando();
             
-            // Salvar histórico
-            historicoComandos.push(comando);
-            if (historicoComandos.length > 20) historicoComandos.shift();
-            
             setTimeout(() => {
                 removerDigitando();
-                const cmd = comando.toLowerCase();
-                let executado = false;
                 
                 // CORES
-                if (cmd.includes('azul')) { mudarCorSite('azul'); executado = true; }
-                else if (cmd.includes('verde')) { mudarCorSite('verde'); executado = true; }
-                else if (cmd.includes('roxo')) { mudarCorSite('roxo'); executado = true; }
-                else if (cmd.includes('rosa')) { mudarCorSite('rosa'); executado = true; }
-                else if (cmd.includes('vermelho')) { mudarCorSite('vermelho'); executado = true; }
-                else if (cmd.includes('laranja')) { mudarCorSite('laranja'); executado = true; }
-                else if (cmd.includes('escuro') || (cmd.includes('preto'))) { mudarCorSite('escuro'); executado = true; }
-                else if (cmd.includes('claro')) { mudarCorSite('claro'); executado = true; }
+                if (comando === 'azul') mudarCor('azul');
+                else if (comando === 'verde') mudarCor('verde');
+                else if (comando === 'roxo') mudarCor('roxo');
+                else if (comando === 'rosa') mudarCor('rosa');
+                else if (comando === 'vermelho') mudarCor('vermelho');
+                else if (comando === 'escuro') mudarCor('escuro');
                 
                 // BOTÕES
-                else if (cmd.includes('botão') || cmd.includes('botao')) {
-                    let texto = null;
-                    const match = cmd.match(/chamado\s+["']?([^"']+)["']?/i);
-                    if (match) texto = match[1];
-                    criarBotaoInteligente(texto);
-                    executado = true;
-                }
+                else if (comando === 'criar botao' || comando === 'criar botão') criarBotao();
+                else if (comando === 'remover botao' || comando === 'remover botão' || comando === 'tirar botao' || comando === 'apagar botao') removerBotao();
                 
                 // CARDS
-                else if (cmd.includes('card')) {
-                    let titulo = null, desc = null;
-                    const matchTitulo = cmd.match(/título\s+["']?([^"']+)["']?/i);
-                    if (matchTitulo) titulo = matchTitulo[1];
-                    criarCardInteligente(titulo, desc);
-                    executado = true;
-                }
+                else if (comando === 'criar card') criarCard();
+                else if (comando === 'remover card' || comando === 'tirar card' || comando === 'apagar card') removerCard();
                 
                 // TÍTULO
-                else if (cmd.includes('título') || cmd.includes('titulo')) {
-                    let novoTitulo = comando.replace(/mude o título para|título|titulo/gi, '').trim();
-                    if (novoTitulo) mudarTituloSite(novoTitulo);
-                    else adicionarMensagem(`❌ **Especifique um título!**\n\nExemplo: "mude o título para MEU SITE"`);
-                    executado = true;
-                }
-                
-                // RODAPÉ
-                else if (cmd.includes('rodapé') || cmd.includes('rodape') || cmd.includes('footer')) {
-                    let novoTexto = comando.replace(/mude o rodapé para|rodapé|rodape/gi, '').trim();
-                    if (novoTexto) mudarRodape(novoTexto);
-                    else adicionarMensagem(`❌ **Especifique um texto para o rodapé!**\n\nExemplo: "mude o rodapé para Copyright 2024"`);
-                    executado = true;
-                }
-                
-                // SEÇÃO
-                else if (cmd.includes('seção') || cmd.includes('secao')) {
-                    let titulo = comando.replace(/crie uma seção|seção|secao/gi, '').trim();
-                    if (titulo) criarSecao(titulo);
-                    else adicionarMensagem(`❌ **Especifique um título para a seção!**`);
-                    executado = true;
+                else if (comando.startsWith('titulo')) {
+                    let novoTitulo = comando.replace('titulo', '').trim();
+                    if (novoTitulo) mudarTitulo(novoTitulo);
+                    else adicionarMensagem(`❌ **Digite: "titulo MEU SITE"**`);
                 }
                 
                 // RESETAR
-                else if (cmd.includes('reset') || cmd.includes('limpar')) {
-                    resetarSiteInteligente();
-                    executado = true;
-                }
-                
-                // ESTATÍSTICAS
-                else if (cmd.includes('estatísticas') || cmd.includes('stats') || cmd.includes('relatório')) {
-                    adicionarMensagem(`📊 **RELATÓRIO DO SITE**\n\n🔘 Botões criados: ${elementosCriados.botoes}\n📦 Cards criados: ${elementosCriados.cards}\n💬 Comandos executados: ${historicoComandos.length}\n🎨 Site ativo e funcionando!\n\n✨ Quer criar mais alguma coisa?`);
-                    executado = true;
-                }
+                else if (comando === 'resetar' || comando === 'reset') resetar();
                 
                 // AJUDA
-                else if (cmd.includes('ajuda') || cmd.includes('o que você pode fazer') || cmd.includes('comandos')) {
-                    adicionarMensagem(`🧠 **COMANDOS DISPONÍVEIS**\n\n` +
-                        `🎨 **Cores:**\n• "mude a cor para azul/verde/roxo/rosa/vermelho/laranja/escuro"\n\n` +
-                        `🔘 **Botões:**\n• "crie um botão"\n• "crie um botão chamado Meu Botão"\n\n` +
-                        `📦 **Cards:**\n• "crie um card"\n• "crie um card com título Vídeo Novo"\n\n` +
-                        `📝 **Textos:**\n• "mude o título para Novo Nome"\n• "mude o rodapé para Texto Novo"\n\n` +
-                        `📊 **Informações:**\n• "estatísticas" - mostra dados do site\n• "o que você pode fazer" - lista comandos\n\n` +
-                        `🔄 **Manutenção:**\n• "resetar site" - limpa todas modificações\n\n` +
-                        `**👉 O que você quer fazer agora?**`);
-                    executado = true;
+                else if (comando === 'ajuda' || comando === 'comandos') {
+                    adicionarMensagem(`📋 **COMANDOS DISPONÍVEIS:**\n\n` +
+                        `🎨 **Cores:** azul, verde, roxo, rosa, vermelho, escuro\n` +
+                        `🔘 **Botões:** "criar botao", "remover botao"\n` +
+                        `📦 **Cards:** "criar card", "remover card"\n` +
+                        `📝 **Título:** "titulo MEU SITE"\n` +
+                        `🔄 **Reset:** "resetar"\n\n` +
+                        `👉 Experimente: "criar botao"`);
                 }
                 
-                // RESPOSTA GENIAL
-                else if (!executado) {
-                    adicionarMensagem(`🧠 **Entendi sua solicitação!**\n\nAnalisei seu comando: "${comando}"\n\n` +
-                        `💡 **Sugestões do que posso fazer:**\n` +
-                        `• "mude a cor para azul" - alterar tema do site\n` +
-                        `• "crie um botão" - adicionar novo botão\n` +
-                        `• "crie um card" - adicionar conteúdo\n` +
-                        `• "mude o título para [nome]" - mudar nome do site\n` +
-                        `• "resetar site" - limpar modificações\n` +
-                        `• "ajuda" - ver todos os comandos\n\n` +
-                        `✨ **Deseja que eu execute algum desses comandos para você?**`);
+                else {
+                    adicionarMensagem(`❌ **Comando não reconhecido!**\n\nComandos:\n• azul, verde, roxo, rosa, vermelho, escuro\n• criar botao / remover botao\n• criar card / remover card\n• titulo [NOME]\n• resetar\n\nDigite "ajuda" para detalhes.`);
                 }
-                
-                // Atualizar stats
-                document.getElementById('stats').innerHTML = `📊 Botões: ${elementosCriados.botoes} | Cards: ${elementosCriados.cards}`;
-            }, 800);
+            }, 500);
         }
         
-        function comandoRapido(cmd) {
+        function comando(cmd) {
             document.getElementById('iaInput').value = cmd;
-            processarComandoIA();
+            processar();
         }
         
         function mostrarIA() {
             const painel = document.getElementById('iaPainel');
             painel.style.display = painel.style.display === 'none' ? 'block' : 'none';
-            if (painel.style.display === 'block') {
-                adicionarMensagem(`🧠 **IA Hiper Inteligente ativada!**\n\nEstou pronta para modificar seu site. O que você gostaria de fazer hoje?\n\n` +
-                    `✨ **Sugestões:** "mude a cor para azul", "crie um botão", "crie um card", "mude o título"`);
-            }
         }
         
-        // ============ LOGIN ============
+        // LOGIN
         function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
         function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
         
@@ -648,9 +500,8 @@
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginPassword').value;
             if (email === 'admin@olhaai.com' && senha === 'admin123') {
-                usuarioLogado = true;
                 localStorage.setItem('usuario', 'admin');
-                alert('✅ Login realizado! Agora você tem acesso à IA Hiper Inteligente.');
+                alert('✅ Login realizado!');
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
@@ -659,12 +510,11 @@
                 fecharLogin();
                 mostrarIA();
             } else {
-                alert('❌ Email ou senha incorretos! Use admin@olhaai.com / admin123');
+                alert('❌ Use admin@olhaai.com / admin123');
             }
         }
         
         function logout() {
-            usuarioLogado = false;
             localStorage.removeItem('usuario');
             document.querySelectorAll('.nav-buttons button').forEach(btn => {
                 if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
@@ -674,7 +524,6 @@
             document.getElementById('iaPainel').style.display = 'none';
         }
         
-        // Inicialização
         if (localStorage.getItem('usuario') === 'admin') {
             document.querySelectorAll('.nav-buttons button').forEach(btn => {
                 if (btn.id !== 'logoutBtn') btn.style.display = 'none';
