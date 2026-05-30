@@ -29,11 +29,12 @@
             align-items: center;
             gap: 8px;
         }
-        .logo i { color: #ff4757; font-size: 32px; }
+        .logo i { color: #ff4757; font-size: 32px; transition: all 0.3s; }
         .logo span { 
             background: linear-gradient(135deg, #ff4757, #ff6b81);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: all 0.3s;
         }
         .nav-buttons { display: flex; gap: 12px; }
         button {
@@ -187,8 +188,6 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="header">
@@ -197,8 +196,8 @@
             <span>IA SUPREMA</span>
         </div>
         <div class="nav-buttons">
-            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> ENTRAR</button>
-            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> CADASTRAR</button>
+            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> 🔑 ENTRAR</button>
+            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> 📝 CADASTRAR</button>
             <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> SAIR</button>
         </div>
     </div>
@@ -245,46 +244,42 @@
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>ÁREA DO ADMIN</h2>
-            <input type="email" id="loginEmail" placeholder="Email" value="admin@olhaai.com">
-            <input type="password" id="loginPassword" placeholder="Senha" value="admin123">
+            <h2>LOGIN ADMIN</h2>
+            <input type="text" id="loginEmail" placeholder="Usuário" value="admin">
+            <input type="password" id="loginPassword" placeholder="Senha" value="123">
             <button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
-            <p style="margin-top: 15px; font-size: 12px;">Admin: admin@olhaai.com / admin123</p>
+            <p style="margin-top: 15px; font-size: 12px;">Admin: admin / 123</p>
         </div>
     </div>
 
     <div class="modal hidden" id="registerModal">
         <div class="login-box">
             <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
-            <h2>Cadastro</h2>
+            <h2>CADASTRO</h2>
             <input type="text" id="regName" placeholder="Nome">
-            <input type="email" id="regEmail" placeholder="Email">
+            <input type="text" id="regEmail" placeholder="Usuário">
             <input type="password" id="regPassword" placeholder="Senha">
-            <button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
+            <button class="btn-primary" onclick="fazerCadastro()">CADASTRAR</button>
             <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
         </div>
     </div>
 
     <script>
-        // ============ FIREBASE - INICIALIZAÇÃO PRIMEIRO ============
-        const firebaseConfig = {
-            apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
-            authDomain: "wolftube-56e62.firebaseapp.com",
-            projectId: "wolftube-56e62",
-            storageBucket: "wolftube-56e62.firebasestorage.app",
-            messagingSenderId: "251733558803",
-            appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
-        };
+        // ============ SEM FIREBASE - LOGIN LOCAL ============
         
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
-        // Variáveis globais
         let usuarioAtual = null;
         let botoesCriados = 0;
         let cardsCriados = 0;
+        
+        // Carregar usuários salvos
+        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        
+        // Garantir que admin existe
+        if (!usuarios.find(u => u.email === 'admin')) {
+            usuarios.push({ email: 'admin', password: '123', name: 'Administrador', type: 'admin' });
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        }
         
         // ============ FUNÇÕES DA IA ============
         
@@ -461,58 +456,37 @@
             processarComando();
         }
         
-        // ============ LOGIN ============
+        // ============ LOGIN SEM FIREBASE ============
         
         function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
         function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
         function mostrarCadastro() { document.getElementById('registerModal').classList.remove('hidden'); }
         function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
         
-        async function criarAdmin() {
-            try {
-                const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
-                const adminDoc = await adminRef.get();
-                if (!adminDoc.exists) {
-                    await adminRef.set({ email: 'admin@olhaai.com', password: 'admin123', name: 'Administrador', type: 'admin' });
-                    console.log("✅ Admin criado!");
-                }
-            } catch (error) {
-                console.log("Erro ao criar admin:", error);
-            }
-        }
-        
-        async function fazerLogin() {
+        function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginPassword').value;
             
-            if (!email || !senha) {
-                alert("❌ Preencha email e senha!");
-                return;
-            }
+            const user = usuarios.find(u => u.email === email && u.password === senha);
             
-            try {
-                const userDoc = await db.collection('usuarios').doc(email).get();
-                if (userDoc.exists && userDoc.data().password === senha) {
-                    usuarioAtual = userDoc.data();
-                    localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
-                    
-                    alert(`✅ Login realizado! Bem-vindo, ${usuarioAtual.name}!`);
-                    
-                    document.getElementById('btnEntrar').style.display = 'none';
-                    document.getElementById('btnCadastrar').style.display = 'none';
-                    document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    document.getElementById('iaPainel').style.display = 'block';
-                    
-                    fecharLogin();
-                } else {
-                    alert("❌ Email ou senha incorretos!\n\nAdmin: admin@olhaai.com / admin123");
-                }
-            } catch (error) {
-                alert("❌ Erro ao fazer login: " + error.message);
+            if (user) {
+                usuarioAtual = user;
+                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
+                
+                alert(`✅ Login realizado! Bem-vindo, ${user.name}!`);
+                
+                document.getElementById('btnEntrar').style.display = 'none';
+                document.getElementById('btnCadastrar').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'inline-flex';
+                document.getElementById('iaPainel').style.display = 'block';
+                
+                fecharLogin();
+            } else {
+                alert("❌ Usuário ou senha incorretos!\n\nAdmin: admin / 123");
             }
         }
         
-        async function fazerCadastro() {
+        function fazerCadastro() {
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
@@ -522,24 +496,22 @@
                 return;
             }
             
-            try {
-                const userDoc = await db.collection('usuarios').doc(email).get();
-                if (userDoc.exists) {
-                    alert("❌ Email já cadastrado!");
-                    return;
-                }
-                await db.collection('usuarios').doc(email).set({ email, password, name, type: 'user' });
-                alert("✅ Cadastro realizado! Faça login.");
-                fecharCadastro();
-                mostrarLogin();
-            } catch (error) {
-                alert("❌ Erro ao cadastrar: " + error.message);
+            if (usuarios.find(u => u.email === email)) {
+                alert("❌ Usuário já existe!");
+                return;
             }
+            
+            usuarios.push({ email, password, name, type: 'user' });
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            
+            alert("✅ Cadastro realizado! Faça login.");
+            fecharCadastro();
+            mostrarLogin();
         }
         
         function logout() {
             usuarioAtual = null;
-            localStorage.removeItem('usuario');
+            localStorage.removeItem('usuarioLogado');
             document.getElementById('btnEntrar').style.display = 'inline-flex';
             document.getElementById('btnCadastrar').style.display = 'inline-flex';
             document.getElementById('logoutBtn').style.display = 'none';
@@ -547,24 +519,19 @@
             alert("👋 Logout realizado!");
         }
         
-        async function init() {
-            await criarAdmin();
-            const salvo = localStorage.getItem('usuario');
-            if (salvo) {
-                try {
-                    usuarioAtual = JSON.parse(salvo);
-                    if (usuarioAtual.type === 'admin') {
-                        document.getElementById('btnEntrar').style.display = 'none';
-                        document.getElementById('btnCadastrar').style.display = 'none';
-                        document.getElementById('logoutBtn').style.display = 'inline-flex';
-                        document.getElementById('iaPainel').style.display = 'block';
-                    }
-                } catch(e) {}
-            }
+        // Verificar login salvo
+        const salvo = localStorage.getItem('usuarioLogado');
+        if (salvo) {
+            try {
+                usuarioAtual = JSON.parse(salvo);
+                if (usuarioAtual.type === 'admin') {
+                    document.getElementById('btnEntrar').style.display = 'none';
+                    document.getElementById('btnCadastrar').style.display = 'none';
+                    document.getElementById('logoutBtn').style.display = 'inline-flex';
+                    document.getElementById('iaPainel').style.display = 'block';
+                }
+            } catch(e) {}
         }
-        
-        // Iniciar tudo
-        init();
     </script>
 </body>
 </html>
