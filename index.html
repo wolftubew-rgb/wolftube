@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>IA Suprema - Plataforma Completa</title>
+    <title>IA Suprema - Vídeos da Galeria</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -53,6 +53,7 @@
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
         .btn-success { background: #27ae60; color: white; }
+        .btn-upload { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
         .container { max-width: 1200px; margin: 0 auto; padding: 30px; }
         
         .ia-painel {
@@ -237,10 +238,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-thumbnail .play-icon {
+            position: absolute;
+            font-size: 48px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .video-info { padding: 15px; }
-        .video-title { font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #ff4757; }
-        .video-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 8px; display: flex; gap: 15px; }
+        .video-title { font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #ff4757; word-break: break-word; }
+        .video-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 8px; display: flex; gap: 15px; flex-wrap: wrap; }
         .delete-video-btn {
             margin-top: 10px;
             width: 100%;
@@ -284,18 +298,34 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%;
             background: #000;
         }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .video-wrapper video {
             width: 100%;
-            height: 100%;
-            border: none;
+            max-height: 60vh;
+            outline: none;
         }
         .video-info-modal { padding: 20px; }
+        
+        .upload-area {
+            background: rgba(0,0,0,0.5);
+            border: 2px dashed #9b59b6;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background: rgba(155,89,182,0.2);
+            border-color: #ff4757;
+        }
+        .upload-area i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #9b59b6;
+        }
         
         .footer {
             margin-top: 30px;
@@ -345,15 +375,6 @@
             border-radius: 50%;
             animation: blink 1.4s infinite;
             margin: 0 2px;
-        }
-        .show-password {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            cursor: pointer;
-            margin-top: 5px;
         }
         @keyframes blink {
             0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
@@ -431,7 +452,7 @@
 
         <div class="videos-header">
             <h2><i class="fas fa-video"></i> Vídeos</h2>
-            <button class="btn-success" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</button>
+            <button class="btn-upload" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</button>
         </div>
         <div class="videos-grid" id="videosGrid"></div>
     </div>
@@ -440,7 +461,7 @@
         <p>✨ IA Suprema - Plataforma Completa ✨</p>
     </div>
 
-    <!-- MODAL LOGIN COM SENHA ESCONDIDA -->
+    <!-- MODAL LOGIN -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
@@ -449,7 +470,7 @@
             <input type="password" id="loginPass" placeholder="Senha" autocomplete="off">
             <button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
-            <p style="margin-top: 15px; font-size: 12px; opacity: 0.6;">Demo: admin / ***</p>
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.6;">Demo: admin / 123</p>
         </div>
     </div>
 
@@ -465,15 +486,28 @@
         </div>
     </div>
 
+    <!-- MODAL UPLOAD VÍDEO DA GALERIA -->
     <div class="modal hidden" id="uploadModal">
         <div class="login-box" style="max-width: 500px;">
             <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #ff4757;"></i>
             <h2>PUBLICAR VÍDEO</h2>
-            <input type="text" id="videoTitle" placeholder="Título do vídeo">
-            <input type="text" id="videoUrl" placeholder="ID do YouTube (ex: dQw4w9WgXcQ)">
-            <textarea id="videoDesc" rows="3" placeholder="Descrição..." style="width:100%; padding:12px; border-radius:10px; border:none;"></textarea>
-            <button class="btn-primary" onclick="publicarVideoLocal()">PUBLICAR</button>
-            <button class="btn-secondary" onclick="fecharUpload()">Cancelar</button>
+            
+            <div class="upload-area" onclick="document.getElementById('videoFileInput').click()">
+                <i class="fas fa-film"></i>
+                <p><strong>📱 Clique para escolher um vídeo da galeria</strong></p>
+                <p style="font-size: 12px; margin-top: 10px;">mp4, mov, avi, mkv - até 100MB</p>
+            </div>
+            <input type="file" id="videoFileInput" accept="video/*" style="display: none;" onchange="previewVideo(this)">
+            
+            <div id="videoPreviewArea" style="display: none; margin: 15px 0;">
+                <video id="videoPreview" controls style="width: 100%; border-radius: 10px; max-height: 200px;"></video>
+            </div>
+            
+            <input type="text" id="videoTitle" placeholder="Título do vídeo" style="width: 100%; margin: 10px 0;">
+            <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..." style="width:100%; padding:12px; border-radius:10px; border:none;"></textarea>
+            
+            <button class="btn-success" onclick="publicarVideoLocal()" style="width: 100%; margin-top: 10px;"><i class="fas fa-check"></i> PUBLICAR</button>
+            <button class="btn-secondary" onclick="fecharUpload()" style="width: 100%; margin-top: 10px;">Cancelar</button>
         </div>
     </div>
 
@@ -484,7 +518,7 @@
                 <button class="close-video" onclick="closeVideoModal()">✕</button>
             </div>
             <div class="video-wrapper">
-                <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
+                <video id="videoPlayer" controls autoplay style="width: 100%;"></video>
             </div>
             <div class="video-info-modal">
                 <p><i class="fas fa-user"></i> <span id="modalAuthor"></span></p>
@@ -499,6 +533,8 @@
         let logado = false;
         let botoesCriados = 0;
         let usuarioAtual = null;
+        let videoSelecionado = null;
+        let videoFileName = "";
         
         let comentariosLocais = JSON.parse(localStorage.getItem('comentarios_mundiais')) || [
             { autor: "🌍 Sistema", texto: "Bem-vindo aos Comentários Mundiais! Deixe sua mensagem!", data: new Date().toISOString() },
@@ -506,9 +542,8 @@
         ];
         
         let videosLocais = JSON.parse(localStorage.getItem('videos_site')) || [
-            { id: "1", title: "🎬 Vídeo Exemplo 1", url: "dQw4w9WgXcQ", description: "Este é um vídeo de exemplo para mostrar o funcionamento!", author: "Admin", views: 150, date: new Date().toISOString() },
-            { id: "2", title: "🎬 Vídeo Exemplo 2", url: "9bZkp7q19f0", description: "Outro vídeo incrível para você assistir!", author: "Admin", views: 89, date: new Date().toISOString() },
-            { id: "3", title: "🎬 Tutorial - Como usar a IA", url: "8jPQjjsBbIc", description: "Aprenda a usar todos os comandos da IA Suprema!", author: "Admin", views: 45, date: new Date().toISOString() }
+            { id: "1", title: "🎬 Vídeo Exemplo 1", url: "https://www.w3schools.com/html/mov_bbb.mp4", type: "url", author: "Admin", views: 150, date: new Date().toISOString() },
+            { id: "2", title: "🎬 Vídeo Exemplo 2", url: "https://www.w3schools.com/html/movie.mp4", type: "url", author: "Admin", views: 89, date: new Date().toISOString() }
         ];
         
         let usuarios = JSON.parse(localStorage.getItem('usuarios_site')) || [
@@ -519,6 +554,24 @@
             localStorage.setItem('comentarios_mundiais', JSON.stringify(comentariosLocais));
             localStorage.setItem('videos_site', JSON.stringify(videosLocais));
             localStorage.setItem('usuarios_site', JSON.stringify(usuarios));
+        }
+        
+        // Preview do vídeo selecionado
+        function previewVideo(input) {
+            const file = input.files[0];
+            if (file) {
+                videoSelecionado = file;
+                videoFileName = file.name;
+                const videoURL = URL.createObjectURL(file);
+                const preview = document.getElementById('videoPreview');
+                const previewArea = document.getElementById('videoPreviewArea');
+                preview.src = videoURL;
+                previewArea.style.display = 'block';
+                
+                // Sugerir título baseado no nome do arquivo
+                let tituloSugerido = file.name.replace(/\.[^/.]+$/, "").substring(0, 50);
+                document.getElementById('videoTitle').value = tituloSugerido;
+            }
         }
         
         // ============ FUNÇÕES DA IA ============
@@ -692,12 +745,14 @@
         function carregarVideos() {
             const grid = document.getElementById('videosGrid');
             if (videosLocais.length === 0) {
-                grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-play-circle" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Seja o primeiro a publicar!</p></div>';
+                grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-play-circle" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Seja o primeiro a publicar um vídeo da galeria!</p></div>';
                 return;
             }
             grid.innerHTML = videosLocais.map(video => `
                 <div class="video-card" onclick="abrirVideo('${video.id}')">
-                    <div class="video-thumbnail"><i class="fas fa-play-circle" style="font-size: 48px;"></i></div>
+                    <div class="video-thumbnail">
+                        <i class="fas fa-play-circle play-icon"></i>
+                    </div>
                     <div class="video-info">
                         <div class="video-title">${escapeHtml(video.title)}</div>
                         <div class="video-meta"><span><i class="fas fa-user"></i> ${escapeHtml(video.author)}</span><span><i class="fas fa-eye"></i> ${video.views} views</span></div>
@@ -709,30 +764,46 @@
         
         function publicarVideoLocal() {
             const titulo = document.getElementById('videoTitle').value;
-            const url = document.getElementById('videoUrl').value;
             const descricao = document.getElementById('videoDesc').value;
-            if (!titulo || !url) { alert("Preencha título e ID do vídeo!"); return; }
             
+            if (!titulo) { alert("Digite um título para o vídeo!"); return; }
+            if (!videoSelecionado) { alert("Selecione um vídeo da galeria!"); return; }
+            
+            // Criar URL do vídeo selecionado
+            const videoURL = URL.createObjectURL(videoSelecionado);
             const novoId = Date.now().toString();
+            
             videosLocais.push({
                 id: novoId,
                 title: titulo,
-                url: url,
+                url: videoURL,
+                type: "file",
                 description: descricao || 'Sem descrição',
                 author: usuarioAtual?.name || 'Admin',
                 views: 0,
+                fileName: videoSelecionado.name,
                 date: new Date().toISOString()
             });
+            
             salvarDados();
             carregarVideos();
+            
+            // Limpar formulário
             document.getElementById('videoTitle').value = '';
-            document.getElementById('videoUrl').value = '';
             document.getElementById('videoDesc').value = '';
+            document.getElementById('videoPreviewArea').style.display = 'none';
+            document.getElementById('videoFileInput').value = '';
+            videoSelecionado = null;
+            
             fecharUpload();
-            alert('✅ Vídeo publicado!');
+            alert('✅ Vídeo publicado com sucesso!');
         }
         
         function excluirVideo(id) {
+            const video = videosLocais.find(v => v.id === id);
+            if (video && video.type === 'file' && video.url && video.url.startsWith('blob:')) {
+                URL.revokeObjectURL(video.url);
+            }
             videosLocais = videosLocais.filter(v => v.id !== id);
             salvarDados();
             carregarVideos();
@@ -744,21 +815,36 @@
                 video.views++;
                 salvarDados();
                 carregarVideos();
+                
                 document.getElementById('modalVideoTitle').textContent = video.title;
                 document.getElementById('modalAuthor').textContent = video.author;
                 document.getElementById('modalViews').textContent = video.views;
-                document.getElementById('modalDescription').textContent = video.description;
-                document.getElementById('videoIframe').src = `https://www.youtube.com/embed/${video.url}`;
+                document.getElementById('modalDescription').textContent = video.description || 'Sem descrição';
+                
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.src = video.url;
+                videoPlayer.load();
+                
                 document.getElementById('videoPlayerModal').classList.remove('hidden');
             }
         }
         
         function closeVideoModal() {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.pause();
+            videoPlayer.src = '';
             document.getElementById('videoPlayerModal').classList.add('hidden');
-            document.getElementById('videoIframe').src = '';
         }
         
-        function mostrarUploadVideo() { document.getElementById('uploadModal').classList.remove('hidden'); }
+        function mostrarUploadVideo() { 
+            document.getElementById('uploadModal').classList.remove('hidden'); 
+            document.getElementById('videoPreviewArea').style.display = 'none';
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoDesc').value = '';
+            document.getElementById('videoFileInput').value = '';
+            videoSelecionado = null;
+        }
+        
         function fecharUpload() { document.getElementById('uploadModal').classList.add('hidden'); }
         
         // ============ LOGIN ============
