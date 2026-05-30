@@ -451,14 +451,14 @@
         </div>
 
         <div class="videos-header">
-            <h2><i class="fas fa-video"></i> Vídeos</h2>
-            <button class="btn-upload" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</button>
+            <h2><i class="fas fa-video"></i> Vídeos da Galeria</h2>
+            <button class="btn-upload" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Vídeo</button>
         </div>
         <div class="videos-grid" id="videosGrid"></div>
     </div>
 
     <div class="footer" id="footer">
-        <p>✨ IA Suprema - Plataforma Completa ✨</p>
+        <p>✨ IA Suprema - Selecione vídeos direto da sua galeria ✨</p>
     </div>
 
     <!-- MODAL LOGIN -->
@@ -470,7 +470,7 @@
             <input type="password" id="loginPass" placeholder="Senha" autocomplete="off">
             <button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
-            <p style="margin-top: 15px; font-size: 12px; opacity: 0.6;">Demo: admin / 123</p>
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.6;">Admin: admin / 123</p>
         </div>
     </div>
 
@@ -486,21 +486,22 @@
         </div>
     </div>
 
-    <!-- MODAL UPLOAD VÍDEO DA GALERIA -->
+    <!-- MODAL SELECIONAR VÍDEO DA GALERIA -->
     <div class="modal hidden" id="uploadModal">
         <div class="login-box" style="max-width: 500px;">
-            <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>PUBLICAR VÍDEO</h2>
+            <i class="fas fa-film" style="font-size: 48px; color: #ff4757;"></i>
+            <h2>SELECIONAR VÍDEO</h2>
             
             <div class="upload-area" onclick="document.getElementById('videoFileInput').click()">
-                <i class="fas fa-film"></i>
+                <i class="fas fa-video"></i>
                 <p><strong>📱 Clique para escolher um vídeo da galeria</strong></p>
-                <p style="font-size: 12px; margin-top: 10px;">mp4, mov, avi, mkv - até 100MB</p>
+                <p style="font-size: 12px; margin-top: 10px;">🎬 MP4, MOV, AVI, MKV<br>📊 Até 100MB</p>
             </div>
             <input type="file" id="videoFileInput" accept="video/*" style="display: none;" onchange="previewVideo(this)">
             
             <div id="videoPreviewArea" style="display: none; margin: 15px 0;">
                 <video id="videoPreview" controls style="width: 100%; border-radius: 10px; max-height: 200px;"></video>
+                <p style="font-size: 12px; margin-top: 5px;" id="videoInfo"></p>
             </div>
             
             <input type="text" id="videoTitle" placeholder="Título do vídeo" style="width: 100%; margin: 10px 0;">
@@ -534,17 +535,13 @@
         let botoesCriados = 0;
         let usuarioAtual = null;
         let videoSelecionado = null;
-        let videoFileName = "";
         
         let comentariosLocais = JSON.parse(localStorage.getItem('comentarios_mundiais')) || [
-            { autor: "🌍 Sistema", texto: "Bem-vindo aos Comentários Mundiais! Deixe sua mensagem!", data: new Date().toISOString() },
-            { autor: "🤖 IA Suprema", texto: "Eu sou a IA! Posso modificar o site! Digite 'azul' para testar!", data: new Date().toISOString() }
+            { autor: "🌍 Sistema", texto: "Bem-vindo! Selecione vídeos da sua galeria!", data: new Date().toISOString() },
+            { autor: "🤖 IA Suprema", texto: "Clique em 'Selecionar Vídeo' e escolha um vídeo do seu celular!", data: new Date().toISOString() }
         ];
         
-        let videosLocais = JSON.parse(localStorage.getItem('videos_site')) || [
-            { id: "1", title: "🎬 Vídeo Exemplo 1", url: "https://www.w3schools.com/html/mov_bbb.mp4", type: "url", author: "Admin", views: 150, date: new Date().toISOString() },
-            { id: "2", title: "🎬 Vídeo Exemplo 2", url: "https://www.w3schools.com/html/movie.mp4", type: "url", author: "Admin", views: 89, date: new Date().toISOString() }
-        ];
+        let videosLocais = JSON.parse(localStorage.getItem('videos_site')) || [];
         
         let usuarios = JSON.parse(localStorage.getItem('usuarios_site')) || [
             { user: 'admin', password: '123', name: 'Administrador', type: 'admin' }
@@ -561,12 +558,17 @@
             const file = input.files[0];
             if (file) {
                 videoSelecionado = file;
-                videoFileName = file.name;
                 const videoURL = URL.createObjectURL(file);
                 const preview = document.getElementById('videoPreview');
                 const previewArea = document.getElementById('videoPreviewArea');
+                const videoInfo = document.getElementById('videoInfo');
+                
                 preview.src = videoURL;
                 previewArea.style.display = 'block';
+                
+                // Mostrar informações do vídeo
+                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+                videoInfo.innerHTML = `📹 ${file.name}<br>📊 ${fileSize} MB`;
                 
                 // Sugerir título baseado no nome do arquivo
                 let tituloSugerido = file.name.replace(/\.[^/.]+$/, "").substring(0, 50);
@@ -657,7 +659,7 @@
             document.querySelector('.header').style.borderBottomColor = "#ff4757";
             document.querySelector('.logo i').style.color = "#ff4757";
             document.getElementById('siteTitulo').textContent = "IA SUPREMA";
-            document.getElementById('footer').innerHTML = '<p>✨ IA Suprema - Plataforma Completa ✨</p>';
+            document.getElementById('footer').innerHTML = '<p>✨ IA Suprema - Selecione vídeos direto da sua galeria ✨</p>';
             adicionarMensagem(`🔄 SITE RESETADO COMPLETAMENTE!`);
         }
         
@@ -741,11 +743,11 @@
             carregarComentarios();
         }
         
-        // ============ VÍDEOS ============
+        // ============ VÍDEOS DA GALERIA ============
         function carregarVideos() {
             const grid = document.getElementById('videosGrid');
             if (videosLocais.length === 0) {
-                grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-play-circle" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Seja o primeiro a publicar um vídeo da galeria!</p></div>';
+                grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-video" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Clique em "Selecionar Vídeo" e escolha um vídeo da sua galeria!</p></div>';
                 return;
             }
             grid.innerHTML = videosLocais.map(video => `
@@ -782,6 +784,7 @@
                 author: usuarioAtual?.name || 'Admin',
                 views: 0,
                 fileName: videoSelecionado.name,
+                fileSize: (videoSelecionado.size / (1024 * 1024)).toFixed(2),
                 date: new Date().toISOString()
             });
             
@@ -796,7 +799,7 @@
             videoSelecionado = null;
             
             fecharUpload();
-            alert('✅ Vídeo publicado com sucesso!');
+            alert('✅ Vídeo publicado com sucesso! Ele aparecerá na lista.');
         }
         
         function excluirVideo(id) {
@@ -875,7 +878,7 @@
                 carregarComentarios();
                 carregarVideos();
             } else {
-                alert("❌ Usuário ou senha incorretos!");
+                alert("❌ Usuário ou senha incorretos!\n\nAdmin: admin / 123");
             }
         }
         
@@ -927,3 +930,4 @@
     </script>
 </body>
 </html>
+
