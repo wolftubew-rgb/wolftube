@@ -136,7 +136,6 @@
             color: white;
         }
         
-        /* Comentários Mundiais */
         .world-comments {
             background: linear-gradient(135deg, rgba(142,68,173,0.2), rgba(155,89,182,0.15));
             border: 2px solid #9b59b6;
@@ -208,7 +207,6 @@
         .delete-world-comment { background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; margin-left: auto; padding: 5px; }
         .delete-world-comment:hover { color: #ff4757; }
         
-        /* Vídeos */
         .videos-header {
             display: flex;
             justify-content: space-between;
@@ -242,7 +240,7 @@
         }
         .video-info { padding: 15px; }
         .video-title { font-weight: bold; margin-bottom: 5px; font-size: 16px; color: #ff4757; }
-        .video-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 8px; }
+        .video-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 8px; display: flex; gap: 15px; }
         .delete-video-btn {
             margin-top: 10px;
             width: 100%;
@@ -360,8 +358,6 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="header">
@@ -411,30 +407,23 @@
             </div>
         </div>
 
-        <!-- COMENTÁRIOS MUNDIAIS -->
+        <!-- COMENTÁRIOS MUNDIAIS LOCAIS -->
         <div class="world-comments">
             <h3><i class="fas fa-globe-americas"></i> 🌍 COMENTÁRIOS MUNDIAIS</h3>
             <div class="world-comments-form">
                 <input type="text" id="worldCommentName" class="world-comments-name" placeholder="Seu nome">
                 <input type="text" id="worldCommentInput" class="world-comments-input" placeholder="Escreva sua mensagem mundial...">
-                <button class="btn-send-world" onclick="enviarComentarioMundial()"><i class="fas fa-paper-plane"></i> Publicar</button>
+                <button class="btn-send-world" onclick="enviarComentarioLocal()"><i class="fas fa-paper-plane"></i> Publicar</button>
             </div>
-            <div class="world-comments-list" id="worldCommentsList">
-                <div class="no-world-comments">🌍 Carregando mensagens...</div>
-            </div>
+            <div class="world-comments-list" id="worldCommentsList"></div>
         </div>
 
-        <!-- VÍDEOS -->
+        <!-- VÍDEOS LOCAIS -->
         <div class="videos-header">
             <h2><i class="fas fa-video"></i> Vídeos</h2>
             <button class="btn-success" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</button>
         </div>
-        <div class="videos-grid" id="videosGrid">
-            <div class="video-card" style="text-align: center; padding: 40px;">
-                <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                <h3>Carregando vídeos...</h3>
-            </div>
-        </div>
+        <div class="videos-grid" id="videosGrid"></div>
     </div>
 
     <div class="footer" id="footer">
@@ -471,9 +460,9 @@
             <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #ff4757;"></i>
             <h2>PUBLICAR VÍDEO</h2>
             <input type="text" id="videoTitle" placeholder="Título do vídeo">
-            <input type="text" id="videoUrl" placeholder="Link do YouTube (ex: https://youtu.be/VIDEO_ID)">
+            <input type="text" id="videoUrl" placeholder="ID do YouTube (ex: dQw4w9WgXcQ)">
             <textarea id="videoDesc" rows="3" placeholder="Descrição..." style="width:100%; padding:12px; border-radius:10px; border:none;"></textarea>
-            <button class="btn-primary" onclick="publicarVideo()">PUBLICAR</button>
+            <button class="btn-primary" onclick="publicarVideoLocal()">PUBLICAR</button>
             <button class="btn-secondary" onclick="fecharUpload()">Cancelar</button>
         </div>
     </div>
@@ -496,42 +485,33 @@
     </div>
 
     <script>
-        // ============ FIREBASE ============
-        const firebaseConfig = {
-            apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
-            authDomain: "wolftube-56e62.firebaseapp.com",
-            projectId: "wolftube-56e62",
-            storageBucket: "wolftube-56e62.firebasestorage.app",
-            messagingSenderId: "251733558803",
-            appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
-        // ============ VARIÁVEIS ============
+        // ============ DADOS LOCAIS ============
         let logado = false;
         let botoesCriados = 0;
         let usuarioAtual = null;
         
-        // ============ USUÁRIOS LOCAIS ============
-        let usuarios = [];
-        const usuariosSalvos = localStorage.getItem('usuarios_site');
-        if (usuariosSalvos) {
-            usuarios = JSON.parse(usuariosSalvos);
-        } else {
-            usuarios = [{ user: 'admin', password: '123', name: 'Administrador', type: 'admin' }];
-            localStorage.setItem('usuarios_site', JSON.stringify(usuarios));
-        }
+        // Comentários locais
+        let comentariosLocais = JSON.parse(localStorage.getItem('comentarios_mundiais')) || [
+            { autor: "🌍 Sistema", texto: "Bem-vindo aos Comentários Mundiais! Deixe sua mensagem!", data: new Date().toISOString() },
+            { autor: "🤖 IA Suprema", texto: "Eu sou a IA! Posso modificar o site! Digite 'azul' para testar!", data: new Date().toISOString() }
+        ];
         
-        // Verificar login salvo
-        const loginSalvo = localStorage.getItem('logado_site');
-        if (loginSalvo === 'true') {
-            logado = true;
-            document.getElementById('btnEntrar').style.display = 'none';
-            document.getElementById('btnCadastrar').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'inline-flex';
-            document.getElementById('iaPainel').style.display = 'block';
-            document.getElementById('uploadVideoBtn').style.display = 'inline-flex';
+        // Vídeos locais
+        let videosLocais = JSON.parse(localStorage.getItem('videos_site')) || [
+            { id: "1", title: "🎬 Vídeo Exemplo 1", url: "dQw4w9WgXcQ", description: "Este é um vídeo de exemplo para mostrar o funcionamento!", author: "Admin", views: 150, date: new Date().toISOString() },
+            { id: "2", title: "🎬 Vídeo Exemplo 2", url: "9bZkp7q19f0", description: "Outro vídeo incrível para você assistir!", author: "Admin", views: 89, date: new Date().toISOString() },
+            { id: "3", title: "🎬 Tutorial - Como usar a IA", url: "8jPQjjsBbIc", description: "Aprenda a usar todos os comandos da IA Suprema!", author: "Admin", views: 45, date: new Date().toISOString() }
+        ];
+        
+        // Usuários
+        let usuarios = JSON.parse(localStorage.getItem('usuarios_site')) || [
+            { user: 'admin', password: '123', name: 'Administrador', type: 'admin' }
+        ];
+        
+        function salvarDados() {
+            localStorage.setItem('comentarios_mundiais', JSON.stringify(comentariosLocais));
+            localStorage.setItem('videos_site', JSON.stringify(videosLocais));
+            localStorage.setItem('usuarios_site', JSON.stringify(usuarios));
         }
         
         // ============ FUNÇÕES DA IA ============
@@ -663,125 +643,107 @@
             processarComando();
         }
         
-        // ============ COMENTÁRIOS MUNDIAIS ============
-        async function carregarComentariosMundiais() {
-            try {
-                const snapshot = await db.collection('comentarios_mundiais').orderBy('data', 'desc').get();
-                const comentarios = [];
-                snapshot.forEach(doc => comentarios.push({ id: doc.id, ...doc.data() }));
-                const container = document.getElementById('worldCommentsList');
-                if (comentarios.length === 0) { 
-                    container.innerHTML = '<div class="no-world-comments">🌍 Seja o primeiro a comentar!</div>'; 
-                    return; 
-                }
-                container.innerHTML = comentarios.map(com => `
-                    <div class="world-comment-item">
-                        <div class="world-comment-header">
-                            <span class="world-comment-author"><i class="fas fa-globe"></i> ${escapeHtml(com.autor || 'Anônimo')}</span>
-                            <span class="world-comment-date">${new Date(com.data).toLocaleString('pt-BR')}</span>
-                            ${(usuarioAtual && usuarioAtual.type === 'admin') ? `<button class="delete-world-comment" onclick="excluirComentarioMundial('${com.id}')"><i class="fas fa-trash"></i></button>` : ''}
-                        </div>
-                        <div class="world-comment-text">🌍 ${escapeHtml(com.texto)}</div>
+        // ============ COMENTÁRIOS LOCAIS ============
+        function carregarComentarios() {
+            const container = document.getElementById('worldCommentsList');
+            if (comentariosLocais.length === 0) {
+                container.innerHTML = '<div class="no-world-comments">🌍 Seja o primeiro a comentar!</div>';
+                return;
+            }
+            container.innerHTML = comentariosLocais.slice().reverse().map((com, index) => `
+                <div class="world-comment-item">
+                    <div class="world-comment-header">
+                        <span class="world-comment-author"><i class="fas fa-globe"></i> ${escapeHtml(com.autor)}</span>
+                        <span class="world-comment-date">${new Date(com.data).toLocaleString('pt-BR')}</span>
+                        ${(usuarioAtual && usuarioAtual.type === 'admin') ? `<button class="delete-world-comment" onclick="excluirComentario(${comentariosLocais.length - 1 - index})"><i class="fas fa-trash"></i></button>` : ''}
                     </div>
-                `).join('');
-            } catch (error) { console.error(error); }
+                    <div class="world-comment-text">🌍 ${escapeHtml(com.texto)}</div>
+                </div>
+            `).join('');
         }
         
-        async function enviarComentarioMundial() {
+        function enviarComentarioLocal() {
             const texto = document.getElementById('worldCommentInput').value.trim();
             let nome = document.getElementById('worldCommentName').value.trim();
             if (!texto) { alert("Digite uma mensagem!"); return; }
             if (nome === "") nome = "Anônimo";
-            const comentario = { autor: nome, texto: texto, data: new Date().toISOString() };
-            try {
-                await db.collection('comentarios_mundiais').add(comentario);
-                document.getElementById('worldCommentInput').value = '';
-                document.getElementById('worldCommentName').value = '';
-                await carregarComentariosMundiais();
-                alert("🌍 Mensagem publicada!");
-            } catch (error) { alert("Erro: " + error.message); }
+            comentariosLocais.push({ autor: nome, texto: texto, data: new Date().toISOString() });
+            salvarDados();
+            carregarComentarios();
+            document.getElementById('worldCommentInput').value = '';
+            document.getElementById('worldCommentName').value = '';
+            alert("🌍 Mensagem publicada!");
         }
         
-        async function excluirComentarioMundial(comentarioId) {
-            if (confirm("Excluir esta mensagem?")) {
-                await db.collection('comentarios_mundiais').doc(comentarioId).delete();
-                await carregarComentariosMundiais();
+        function excluirComentario(index) {
+            comentariosLocais.splice(index, 1);
+            salvarDados();
+            carregarComentarios();
+        }
+        
+        // ============ VÍDEOS LOCAIS ============
+        function carregarVideos() {
+            const grid = document.getElementById('videosGrid');
+            if (videosLocais.length === 0) {
+                grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-play-circle" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Seja o primeiro a publicar!</p></div>';
+                return;
             }
-        }
-        
-        // ============ VÍDEOS ============
-        async function carregarVideos() {
-            try {
-                const snapshot = await db.collection('videos').orderBy('date', 'desc').get();
-                const videos = [];
-                snapshot.forEach(doc => videos.push({ docId: doc.id, ...doc.data() }));
-                const grid = document.getElementById('videosGrid');
-                if (videos.length === 0) { 
-                    grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-play-circle" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Seja o primeiro a publicar!</p></div>';
-                    return; 
-                }
-                grid.innerHTML = videos.map(video => `
-                    <div class="video-card" onclick="abrirVideoModal('${video.docId}')">
-                        <div class="video-thumbnail"><i class="fas fa-play-circle" style="font-size: 48px;"></i></div>
-                        <div class="video-info">
-                            <div class="video-title">${escapeHtml(video.title)}</div>
-                            <div class="video-meta"><i class="fas fa-user"></i> ${escapeHtml(video.author)} | <i class="fas fa-eye"></i> ${video.views || 0} views</div>
-                            ${(usuarioAtual && usuarioAtual.type === 'admin') ? `<button class="delete-video-btn" onclick="event.stopPropagation(); excluirVideo('${video.docId}')"><i class="fas fa-trash"></i> Excluir</button>` : ''}
-                        </div>
+            grid.innerHTML = videosLocais.map(video => `
+                <div class="video-card" onclick="abrirVideo('${video.id}')">
+                    <div class="video-thumbnail"><i class="fas fa-play-circle" style="font-size: 48px;"></i></div>
+                    <div class="video-info">
+                        <div class="video-title">${escapeHtml(video.title)}</div>
+                        <div class="video-meta"><span><i class="fas fa-user"></i> ${escapeHtml(video.author)}</span><span><i class="fas fa-eye"></i> ${video.views} views</span></div>
+                        ${(usuarioAtual && usuarioAtual.type === 'admin') ? `<button class="delete-video-btn" onclick="event.stopPropagation(); excluirVideo('${video.id}')"><i class="fas fa-trash"></i> Excluir</button>` : ''}
                     </div>
-                `).join('');
-            } catch (error) { console.error(error); }
+                </div>
+            `).join('');
         }
         
-        async function publicarVideo() {
+        function publicarVideoLocal() {
             const titulo = document.getElementById('videoTitle').value;
-            let link = document.getElementById('videoUrl').value;
+            const url = document.getElementById('videoUrl').value;
             const descricao = document.getElementById('videoDesc').value;
-            if (!titulo || !link) { alert("Preencha título e link!"); return; }
+            if (!titulo || !url) { alert("Preencha título e ID do vídeo!"); return; }
             
-            let embedUrl = link;
-            if (link.includes('youtu.be/')) {
-                let videoId = link.split('youtu.be/')[1].split('?')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            } else if (link.includes('youtube.com/watch?v=')) {
-                let videoId = link.split('v=')[1].split('&')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            }
-            
-            const video = { title: titulo, url: embedUrl, description: descricao || 'Sem descrição', author: 'Admin', authorEmail: 'admin@admin.com', date: new Date().toISOString(), views: 0 };
-            try {
-                await db.collection('videos').add(video);
-                alert('✅ Vídeo publicado!');
-                document.getElementById('videoTitle').value = '';
-                document.getElementById('videoUrl').value = '';
-                document.getElementById('videoDesc').value = '';
-                fecharUpload();
-                carregarVideos();
-            } catch (error) { alert('Erro: ' + error.message); }
+            const novoId = Date.now().toString();
+            videosLocais.push({
+                id: novoId,
+                title: titulo,
+                url: url,
+                description: descricao || 'Sem descrição',
+                author: usuarioAtual?.name || 'Admin',
+                views: 0,
+                date: new Date().toISOString()
+            });
+            salvarDados();
+            carregarVideos();
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoDesc').value = '';
+            fecharUpload();
+            alert('✅ Vídeo publicado!');
         }
         
-        async function excluirVideo(docId) {
-            if (confirm("Excluir este vídeo?")) {
-                await db.collection('videos').doc(docId).delete();
-                carregarVideos();
-            }
+        function excluirVideo(id) {
+            videosLocais = videosLocais.filter(v => v.id !== id);
+            salvarDados();
+            carregarVideos();
         }
         
-        async function abrirVideoModal(docId) {
-            try {
-                const videoRef = db.collection('videos').doc(docId);
-                const video = await videoRef.get();
-                if (!video.exists) return;
-                const data = video.data();
-                const views = (data.views || 0) + 1;
-                await videoRef.update({ views });
-                document.getElementById('modalVideoTitle').textContent = data.title;
-                document.getElementById('modalAuthor').textContent = data.author;
-                document.getElementById('modalViews').textContent = views;
-                document.getElementById('modalDescription').textContent = data.description;
-                document.getElementById('videoIframe').src = data.url;
+        function abrirVideo(id) {
+            const video = videosLocais.find(v => v.id === id);
+            if (video) {
+                video.views++;
+                salvarDados();
+                carregarVideos();
+                document.getElementById('modalVideoTitle').textContent = video.title;
+                document.getElementById('modalAuthor').textContent = video.author;
+                document.getElementById('modalViews').textContent = video.views;
+                document.getElementById('modalDescription').textContent = video.description;
+                document.getElementById('videoIframe').src = `https://www.youtube.com/embed/${video.url}`;
                 document.getElementById('videoPlayerModal').classList.remove('hidden');
-            } catch (error) { alert('Erro ao carregar vídeo'); }
+            }
         }
         
         function closeVideoModal() {
@@ -817,6 +779,8 @@
                     document.getElementById('uploadVideoBtn').style.display = 'inline-flex';
                 }
                 fecharLogin();
+                carregarComentarios();
+                carregarVideos();
             } else {
                 alert("❌ Usuário ou senha incorretos!\n\nAdmin: admin / 123");
             }
@@ -829,7 +793,7 @@
             if (!name || !user || !pass) { alert("❌ Preencha todos os campos!"); return; }
             if (usuarios.find(u => u.user === user)) { alert("❌ Usuário já existe!"); return; }
             usuarios.push({ user, password: pass, name, type: 'user' });
-            localStorage.setItem('usuarios_site', JSON.stringify(usuarios));
+            salvarDados();
             alert("✅ Cadastro realizado! Faça login.");
             fecharCadastro();
             mostrarLogin();
@@ -845,6 +809,8 @@
             document.getElementById('logoutBtn').style.display = 'none';
             document.getElementById('iaPainel').style.display = 'none';
             document.getElementById('uploadVideoBtn').style.display = 'none';
+            carregarComentarios();
+            carregarVideos();
             alert("👋 Logout realizado!");
         }
         
@@ -856,11 +822,15 @@
             usuarioAtual = JSON.parse(usuarioSalvo);
             if (usuarioAtual.type === 'admin') {
                 document.getElementById('uploadVideoBtn').style.display = 'inline-flex';
+                document.getElementById('iaPainel').style.display = 'block';
+                document.getElementById('btnEntrar').style.display = 'none';
+                document.getElementById('btnCadastrar').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'inline-flex';
             }
         }
         
+        carregarComentarios();
         carregarVideos();
-        carregarComentariosMundiais();
     </script>
 </body>
 </html>
