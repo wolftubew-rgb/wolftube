@@ -301,7 +301,7 @@
 
     <script>
         // ============ CHAVE API DEEPSEEK - JÁ CONFIGURADA ============
-        const MINHA_CHAVE_DEEPSEEK = "sk-5f298fdf03734cf7a153607ce1ecf1e4";
+        const MINHA_CHAVE_DEEPSEEK = "sk-fadefe12b0424ecbb1e2008aa27fa332";
         // ============================================================
         
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
@@ -381,7 +381,7 @@ Resposta:`;
                 adicionarMensagemIA(resposta, 'bot');
             } catch (error) {
                 removerDigitandoIA();
-                adicionarMensagemIA(`❌ Erro: ${error.message}\n\nSua chave pode ter sido desativada. Tente criar uma nova chave no DeepSeek.`, 'bot');
+                adicionarMensagemIA(`❌ Erro: ${error.message}`, 'bot');
             }
         }
         
