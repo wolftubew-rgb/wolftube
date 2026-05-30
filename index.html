@@ -330,6 +330,11 @@
             margin: 10px 0;
             border: none;
             border-radius: 10px;
+            font-size: 16px;
+        }
+        .login-box input[type="password"] {
+            letter-spacing: 3px;
+            font-family: monospace;
         }
         .hidden { display: none; }
         .digitando span {
@@ -340,6 +345,15 @@
             border-radius: 50%;
             animation: blink 1.4s infinite;
             margin: 0 2px;
+        }
+        .show-password {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 5px;
         }
         @keyframes blink {
             0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
@@ -373,10 +387,8 @@
     </div>
 
     <div class="container">
-        <!-- BOTÕES DA IA -->
         <div class="botoes-container" id="botoesContainer"></div>
 
-        <!-- PAINEL DA IA -->
         <div id="iaPainel" style="display: none;">
             <div class="ia-painel">
                 <h2><i class="fas fa-brain"></i> 🤖 IA SUPREMA</h2>
@@ -407,7 +419,6 @@
             </div>
         </div>
 
-        <!-- COMENTÁRIOS MUNDIAIS LOCAIS -->
         <div class="world-comments">
             <h3><i class="fas fa-globe-americas"></i> 🌍 COMENTÁRIOS MUNDIAIS</h3>
             <div class="world-comments-form">
@@ -418,7 +429,6 @@
             <div class="world-comments-list" id="worldCommentsList"></div>
         </div>
 
-        <!-- VÍDEOS LOCAIS -->
         <div class="videos-header">
             <h2><i class="fas fa-video"></i> Vídeos</h2>
             <button class="btn-success" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</button>
@@ -430,16 +440,16 @@
         <p>✨ IA Suprema - Plataforma Completa ✨</p>
     </div>
 
-    <!-- MODAIS -->
+    <!-- MODAL LOGIN COM SENHA ESCONDIDA -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
             <h2>LOGIN</h2>
-            <input type="text" id="loginUser" placeholder="Usuário" value="admin">
-            <input type="password" id="loginPass" placeholder="Senha" value="123">
+            <input type="text" id="loginUser" placeholder="Usuário">
+            <input type="password" id="loginPass" placeholder="Senha" autocomplete="off">
             <button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
-            <p style="margin-top: 15px; font-size: 12px;">Admin: admin / 123</p>
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.6;">Demo: admin / ***</p>
         </div>
     </div>
 
@@ -449,7 +459,7 @@
             <h2>CADASTRO</h2>
             <input type="text" id="regName" placeholder="Nome">
             <input type="text" id="regUser" placeholder="Usuário">
-            <input type="password" id="regPass" placeholder="Senha">
+            <input type="password" id="regPass" placeholder="Senha" autocomplete="off">
             <button class="btn-primary" onclick="fazerCadastro()">CADASTRAR</button>
             <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
         </div>
@@ -490,20 +500,17 @@
         let botoesCriados = 0;
         let usuarioAtual = null;
         
-        // Comentários locais
         let comentariosLocais = JSON.parse(localStorage.getItem('comentarios_mundiais')) || [
             { autor: "🌍 Sistema", texto: "Bem-vindo aos Comentários Mundiais! Deixe sua mensagem!", data: new Date().toISOString() },
             { autor: "🤖 IA Suprema", texto: "Eu sou a IA! Posso modificar o site! Digite 'azul' para testar!", data: new Date().toISOString() }
         ];
         
-        // Vídeos locais
         let videosLocais = JSON.parse(localStorage.getItem('videos_site')) || [
             { id: "1", title: "🎬 Vídeo Exemplo 1", url: "dQw4w9WgXcQ", description: "Este é um vídeo de exemplo para mostrar o funcionamento!", author: "Admin", views: 150, date: new Date().toISOString() },
             { id: "2", title: "🎬 Vídeo Exemplo 2", url: "9bZkp7q19f0", description: "Outro vídeo incrível para você assistir!", author: "Admin", views: 89, date: new Date().toISOString() },
             { id: "3", title: "🎬 Tutorial - Como usar a IA", url: "8jPQjjsBbIc", description: "Aprenda a usar todos os comandos da IA Suprema!", author: "Admin", views: 45, date: new Date().toISOString() }
         ];
         
-        // Usuários
         let usuarios = JSON.parse(localStorage.getItem('usuarios_site')) || [
             { user: 'admin', password: '123', name: 'Administrador', type: 'admin' }
         ];
@@ -643,7 +650,7 @@
             processarComando();
         }
         
-        // ============ COMENTÁRIOS LOCAIS ============
+        // ============ COMENTÁRIOS ============
         function carregarComentarios() {
             const container = document.getElementById('worldCommentsList');
             if (comentariosLocais.length === 0) {
@@ -681,7 +688,7 @@
             carregarComentarios();
         }
         
-        // ============ VÍDEOS LOCAIS ============
+        // ============ VÍDEOS ============
         function carregarVideos() {
             const grid = document.getElementById('videosGrid');
             if (videosLocais.length === 0) {
@@ -782,7 +789,7 @@
                 carregarComentarios();
                 carregarVideos();
             } else {
-                alert("❌ Usuário ou senha incorretos!\n\nAdmin: admin / 123");
+                alert("❌ Usuário ou senha incorretos!");
             }
         }
         
