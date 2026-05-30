@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Suprema - Login</title>
+    <title>IA Suprema - Admin</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -11,6 +11,7 @@
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
         .header {
             background: rgba(0, 0, 0, 0.95);
@@ -34,10 +35,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-        }
+        .nav-buttons { display: flex; gap: 12px; }
         button {
             padding: 10px 20px;
             border: none;
@@ -53,12 +51,98 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
-            text-align: center;
+        .btn-admin { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 30px; }
+        
+        .ia-painel {
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid #9b59b6;
+            margin-bottom: 30px;
+        }
+        .chat {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .mensagens {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .mensagem {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .mensagem.usuario { justify-content: flex-end; }
+        .mensagem.ia { justify-content: flex-start; }
+        .bolha {
+            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 20px;
+        }
+        .usuario .bolha { background: linear-gradient(135deg, #ff4757, #ff6b81); border-bottom-right-radius: 5px; }
+        .ia .bolha { background: rgba(255,255,255,0.12); border-bottom-left-radius: 5px; border-left: 3px solid #9b59b6; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #9b59b6; display: flex; align-items: center; justify-content: center; }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.9);
+            font-size: 14px;
+        }
+        .comandos-rapidos {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .cmd {
+            background: rgba(155,89,182,0.3);
+            border: 1px solid #9b59b6;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .cmd:hover { background: #9b59b6; }
+        
+        .botoes-container, .cards-container {
+            margin: 20px 0;
+        }
+        .botao-criado {
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            border: none;
+            color: white;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .card-criado {
             background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding: 30px;
+            background: rgba(0,0,0,0.8);
+            text-align: center;
             border-radius: 20px;
         }
         .modal {
@@ -89,15 +173,23 @@
             border-radius: 10px;
         }
         .hidden { display: none; }
-        .info {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 10px;
-            font-size: 14px;
+        .digitando span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 1.4s infinite;
+            margin: 0 2px;
+        }
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-5px); }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="header">
@@ -106,58 +198,82 @@
             <span>IA SUPREMA</span>
         </div>
         <div class="nav-buttons">
-            <!-- BOTÃO DE LOGIN - BEM VISÍVEL -->
-            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()">
-                <i class="fas fa-sign-in-alt"></i> 🔑 ENTRAR
-            </button>
-            <!-- BOTÃO DE CADASTRO -->
-            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()">
-                <i class="fas fa-user-plus"></i> 📝 CADASTRAR
-            </button>
-            <!-- BOTÃO DE SAIR -->
-            <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;">
-                <i class="fas fa-sign-out-alt"></i> SAIR
-            </button>
+            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> ENTRAR</button>
+            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> CADASTRAR</button>
+            <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> SAIR</button>
         </div>
     </div>
 
-    <div class="container" id="mainContainer">
-        <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-        <p>Clique no botão <strong style="color: #ff4757;">🔑 ENTRAR</strong> no canto superior direito!</p>
-        <div class="info">
-            <strong>📋 Credenciais de teste:</strong><br>
-            Email: <code>admin@olhaai.com</code><br>
-            Senha: <code>admin123</code>
+    <div class="container">
+        <!-- BOTÕES DA IA -->
+        <div class="botoes-container" id="botoesContainer"></div>
+
+        <!-- PAINEL DA IA -->
+        <div class="ia-painel" id="iaPainel" style="display: none;">
+            <h2><i class="fas fa-brain"></i> 🤖 IA SUPREMA - ADMIN</h2>
+            <div class="chat">
+                <div class="mensagens" id="mensagensChat">
+                    <div class="mensagem ia">
+                        <div class="avatar"><i class="fas fa-crown"></i></div>
+                        <div class="bolha">👑 <strong>Bem-vindo, ADMIN!</strong><br><br>
+                        <strong>✨ COMANDOS DISPONÍVEIS:</strong><br><br>
+                        🎨 <strong>CORES:</strong> "azul", "verde", "roxo", "rosa", "vermelho", "escuro"<br>
+                        🔘 <strong>BOTÕES:</strong> "criar botao", "tirar botao", "remover todos botoes"<br>
+                        📦 <strong>CARDS:</strong> "criar card", "tirar card", "remover todos cards"<br>
+                        📝 <strong>TEXTO:</strong> "titulo NOVO NOME", "rodape NOVO TEXTO"<br>
+                        🔄 <strong>RESET:</strong> "resetar tudo"<br><br>
+                        <strong>👉 Digite: "criar botao" ou "azul"</strong></div>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="iaInput" placeholder="Digite seu comando aqui..." onkeypress="if(event.key==='Enter') processarComando()">
+                    <button class="btn-primary" onclick="processarComando()"><i class="fas fa-paper-plane"></i> Executar</button>
+                </div>
+                <div class="comandos-rapidos">
+                    <span class="cmd" onclick="executarComando('azul')">🔵 AZUL</span>
+                    <span class="cmd" onclick="executarComando('verde')">🟢 VERDE</span>
+                    <span class="cmd" onclick="executarComando('roxo')">🟣 ROXO</span>
+                    <span class="cmd" onclick="executarComando('criar botao')">🔘 CRIAR BOTÃO</span>
+                    <span class="cmd" onclick="executarComando('criar card')">📦 CRIAR CARD</span>
+                    <span class="cmd" onclick="executarComando('resetar tudo')">🔄 RESETAR</span>
+                </div>
+            </div>
         </div>
+
+        <!-- CARDS -->
+        <div class="cards-container" id="cardsContainer"></div>
     </div>
 
-    <!-- MODAL LOGIN -->
+    <div class="footer" id="footer">
+        <p>✨ IA Suprema - Modifica Tudo no Site ✨</p>
+    </div>
+
+    <!-- MODAIS -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>LOGIN</h2>
+            <h2>ÁREA DO ADMIN</h2>
             <input type="email" id="loginEmail" placeholder="Email" value="admin@olhaai.com">
             <input type="password" id="loginPassword" placeholder="Senha" value="admin123">
-            <button class="btn-primary" onclick="fazerLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+            <button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
+            <p style="margin-top: 15px; font-size: 12px;">Admin: admin@olhaai.com / admin123</p>
         </div>
     </div>
 
-    <!-- MODAL CADASTRO -->
     <div class="modal hidden" id="registerModal">
         <div class="login-box">
             <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
-            <h2>CADASTRO</h2>
+            <h2>Cadastro</h2>
             <input type="text" id="regName" placeholder="Nome">
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Senha">
-            <button class="btn-primary" onclick="fazerCadastro()"><i class="fas fa-check"></i> Cadastrar</button>
+            <button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
             <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
         </div>
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -166,188 +282,276 @@
             messagingSenderId: "251733558803",
             appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
         };
-        
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
         let usuarioAtual = null;
+        let botoesCriados = 0;
+        let cardsCriados = 0;
         
-        // Mostrar/esconder modais
-        function mostrarLogin() { 
-            document.getElementById('loginModal').classList.remove('hidden'); 
-        }
-        function fecharLogin() { 
-            document.getElementById('loginModal').classList.add('hidden'); 
-        }
-        function mostrarCadastro() { 
-            document.getElementById('registerModal').classList.remove('hidden'); 
-        }
-        function fecharCadastro() { 
-            document.getElementById('registerModal').classList.add('hidden'); 
+        // ============ FUNÇÕES DA IA ============
+        
+        function adicionarMensagem(texto, tipo = 'ia') {
+            const container = document.getElementById('mensagensChat');
+            const div = document.createElement('div');
+            div.className = `mensagem ${tipo}`;
+            if (tipo === 'ia') {
+                div.innerHTML = `<div class="avatar"><i class="fas fa-crown"></i></div><div class="bolha">${texto}</div>`;
+            } else {
+                div.innerHTML = `<div class="bolha">${texto}</div>`;
+            }
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
         }
         
-        // Criar admin automaticamente
-        async function criarAdmin() {
-            try {
-                const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
-                const adminDoc = await adminRef.get();
-                if (!adminDoc.exists) {
-                    await adminRef.set({ 
-                        email: 'admin@olhaai.com', 
-                        password: 'admin123', 
-                        name: 'Administrador', 
-                        type: 'admin' 
-                    });
-                    console.log("✅ Admin criado com sucesso!");
+        function mostrarDigitando() {
+            const container = document.getElementById('mensagensChat');
+            const div = document.createElement('div');
+            div.className = 'mensagem ia';
+            div.id = 'digitando';
+            div.innerHTML = `<div class="avatar"><i class="fas fa-crown"></i></div><div class="bolha"><div class="digitando"><span></span><span></span><span></span></div></div>`;
+            container.appendChild(div);
+        }
+        
+        function removerDigitando() {
+            const el = document.getElementById('digitando');
+            if (el) el.remove();
+        }
+        
+        function mudarCor(cor) {
+            const cores = {
+                azul: '#3498db', verde: '#27ae60', roxo: '#9b59b6',
+                rosa: '#e84393', vermelho: '#e74c3c', escuro: '#2c3e50'
+            };
+            const corEscolhida = cores[cor] || '#3498db';
+            document.body.style.background = `linear-gradient(135deg, ${corEscolhida}44 0%, #302b63 50%, ${corEscolhida}88 100%)`;
+            document.querySelector('.header').style.borderBottomColor = corEscolhida;
+            document.querySelector('.logo i').style.color = corEscolhida;
+            adicionarMensagem(`🎨 Cor alterada para ${cor.toUpperCase()}!`);
+        }
+        
+        function criarBotao() {
+            botoesCriados++;
+            const container = document.getElementById('botoesContainer');
+            const btn = document.createElement('button');
+            btn.className = 'botao-criado';
+            btn.innerHTML = `🔘 Botão ${botoesCriados}`;
+            btn.onclick = () => alert(`Botão ${botoesCriados} clicado!`);
+            container.appendChild(btn);
+            adicionarMensagem(`✅ Botão ${botoesCriados} criado! Total: ${botoesCriados}`);
+        }
+        
+        function removerBotao() {
+            const botoes = document.querySelectorAll('.botao-criado');
+            if (botoes.length === 0) {
+                adicionarMensagem(`❌ Nenhum botão para remover!`);
+                return;
+            }
+            botoes[botoes.length - 1].remove();
+            botoesCriados--;
+            adicionarMensagem(`🗑️ Botão removido! Restam: ${botoesCriados}`);
+        }
+        
+        function removerTodosBotoes() {
+            document.querySelectorAll('.botao-criado').forEach(btn => btn.remove());
+            botoesCriados = 0;
+            adicionarMensagem(`🗑️ Todos os ${botoesCriados} botões removidos!`);
+        }
+        
+        function criarCard() {
+            cardsCriados++;
+            const container = document.getElementById('cardsContainer');
+            const card = document.createElement('div');
+            card.className = 'card-criado';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between;">
+                    <h3>📦 Card ${cardsCriados}</h3>
+                    <button class="btn-danger" style="padding: 5px 15px;" onclick="this.parentElement.parentElement.remove(); cardsCriados--;">✕</button>
+                </div>
+                <p>Criado pela IA Suprema!</p>
+                <small>${new Date().toLocaleTimeString()}</small>
+            `;
+            container.appendChild(card);
+            adicionarMensagem(`✅ Card ${cardsCriados} criado! Total: ${cardsCriados}`);
+        }
+        
+        function removerCard() {
+            const cards = document.querySelectorAll('.card-criado');
+            if (cards.length === 0) {
+                adicionarMensagem(`❌ Nenhum card para remover!`);
+                return;
+            }
+            cards[cards.length - 1].remove();
+            cardsCriados--;
+            adicionarMensagem(`🗑️ Card removido! Restam: ${cardsCriados}`);
+        }
+        
+        function removerTodosCards() {
+            document.querySelectorAll('.card-criado').forEach(card => card.remove());
+            cardsCriados = 0;
+            adicionarMensagem(`🗑️ Todos os cards removidos!`);
+        }
+        
+        function mudarTitulo(novoTitulo) {
+            document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
+            document.title = novoTitulo;
+            adicionarMensagem(`📝 Título alterado para: ${novoTitulo.toUpperCase()}`);
+        }
+        
+        function mudarRodape(novoTexto) {
+            document.getElementById('footer').innerHTML = `<p>${novoTexto}</p>`;
+            adicionarMensagem(`📝 Rodapé alterado!`);
+        }
+        
+        function resetarTudo() {
+            document.querySelectorAll('.botao-criado').forEach(btn => btn.remove());
+            document.querySelectorAll('.card-criado').forEach(card => card.remove());
+            botoesCriados = 0;
+            cardsCriados = 0;
+            document.body.style.background = "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)";
+            document.querySelector('.header').style.borderBottomColor = "#ff4757";
+            document.querySelector('.logo i').style.color = "#ff4757";
+            document.querySelector('.logo span').textContent = "IA SUPREMA";
+            document.getElementById('footer').innerHTML = '<p>✨ IA Suprema - Modifica Tudo no Site ✨</p>';
+            adicionarMensagem(`🔄 SITE RESETADO COMPLETAMENTE!`);
+        }
+        
+        async function processarComando() {
+            const input = document.getElementById('iaInput');
+            let comando = input.value.trim().toLowerCase();
+            if (!comando) return;
+            
+            adicionarMensagem(comando, 'usuario');
+            input.value = '';
+            mostrarDigitando();
+            
+            setTimeout(() => {
+                removerDigitando();
+                
+                if (comando === 'azul') mudarCor('azul');
+                else if (comando === 'verde') mudarCor('verde');
+                else if (comando === 'roxo') mudarCor('roxo');
+                else if (comando === 'rosa') mudarCor('rosa');
+                else if (comando === 'vermelho') mudarCor('vermelho');
+                else if (comando === 'escuro') mudarCor('escuro');
+                else if (comando === 'criar botao') criarBotao();
+                else if (comando === 'tirar botao') removerBotao();
+                else if (comando === 'remover todos botoes') removerTodosBotoes();
+                else if (comando === 'criar card') criarCard();
+                else if (comando === 'tirar card') removerCard();
+                else if (comando === 'remover todos cards') removerTodosCards();
+                else if (comando.startsWith('titulo')) {
+                    let novo = comando.replace('titulo', '').trim();
+                    if (novo) mudarTitulo(novo);
+                    else adicionarMensagem(`❌ Digite: "titulo MEU NOME"`);
                 }
-            } catch (error) {
-                console.log("Erro ao criar admin:", error);
+                else if (comando.startsWith('rodape')) {
+                    let novo = comando.replace('rodape', '').trim();
+                    if (novo) mudarRodape(novo);
+                    else adicionarMensagem(`❌ Digite: "rodape TEXTO"`);
+                }
+                else if (comando === 'resetar tudo') resetarTudo();
+                else {
+                    adicionarMensagem(`❌ Comando não reconhecido! Digite "azul" ou "criar botao"`);
+                }
+            }, 500);
+        }
+        
+        function executarComando(cmd) {
+            document.getElementById('iaInput').value = cmd;
+            processarComando();
+        }
+        
+        // ============ LOGIN ============
+        
+        function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
+        function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
+        function mostrarCadastro() { document.getElementById('registerModal').classList.remove('hidden'); }
+        function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
+        
+        async function criarAdmin() {
+            const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
+            const adminDoc = await adminRef.get();
+            if (!adminDoc.exists) {
+                await adminRef.set({ email: 'admin@olhaai.com', password: 'admin123', name: 'Administrador', type: 'admin' });
+                console.log("✅ Admin criado!");
             }
         }
         
-        // Fazer login
         async function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginPassword').value;
             
-            if (!email || !senha) {
-                alert("❌ Preencha email e senha!");
-                return;
-            }
-            
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
-                
                 if (userDoc.exists && userDoc.data().password === senha) {
                     usuarioAtual = userDoc.data();
                     localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
                     
                     alert(`✅ Login realizado! Bem-vindo, ${usuarioAtual.name}!`);
                     
-                    // Esconder botões de login/cadastro
                     document.getElementById('btnEntrar').style.display = 'none';
                     document.getElementById('btnCadastrar').style.display = 'none';
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    
-                    // Atualizar conteúdo
-                    document.getElementById('mainContainer').innerHTML = `
-                        <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-                        <p>✅ <strong>${usuarioAtual.name}</strong>, você está logado!</p>
-                        <p>Agora você tem acesso total à IA que modifica o site!</p>
-                        <div class="info">
-                            <strong>🎮 COMANDOS DA IA:</strong><br>
-                            • Digite "azul" - muda a cor do site<br>
-                            • Digite "verde" - muda para verde<br>
-                            • Digite "roxo" - muda para roxo<br>
-                            • Digite "criar botao" - cria um botão novo<br>
-                            • Digite "resetar tudo" - limpa tudo
-                        </div>
-                        <button class="btn-primary" onclick="testarIA()" style="margin-top: 20px;">🎨 Testar IA (mudar para azul)</button>
-                    `;
+                    document.getElementById('iaPainel').style.display = 'block';
                     
                     fecharLogin();
                 } else {
-                    alert("❌ Email ou senha incorretos!\n\nUse: admin@olhaai.com / admin123");
+                    alert("❌ Email ou senha incorretos!\n\nAdmin: admin@olhaai.com / admin123");
                 }
             } catch (error) {
-                alert("❌ Erro ao fazer login: " + error.message);
+                alert("Erro: " + error.message);
             }
         }
         
-        // Fazer cadastro
         async function fazerCadastro() {
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
             
             if (!name || !email || !password) {
-                alert("❌ Preencha todos os campos!");
+                alert("Preencha todos os campos!");
                 return;
             }
             
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
                 if (userDoc.exists) {
-                    alert("❌ Email já cadastrado!");
+                    alert("Email já cadastrado!");
                     return;
                 }
-                
-                await db.collection('usuarios').doc(email).set({ 
-                    email, 
-                    password, 
-                    name, 
-                    type: 'user' 
-                });
-                
-                alert("✅ Cadastro realizado com sucesso! Faça login.");
+                await db.collection('usuarios').doc(email).set({ email, password, name, type: 'user' });
+                alert("✅ Cadastro realizado! Faça login.");
                 fecharCadastro();
                 mostrarLogin();
             } catch (error) {
-                alert("❌ Erro ao cadastrar: " + error.message);
+                alert("Erro: " + error.message);
             }
         }
         
-        // Logout
         function logout() {
             usuarioAtual = null;
             localStorage.removeItem('usuario');
-            
             document.getElementById('btnEntrar').style.display = 'inline-flex';
             document.getElementById('btnCadastrar').style.display = 'inline-flex';
             document.getElementById('logoutBtn').style.display = 'none';
-            
-            document.getElementById('mainContainer').innerHTML = `
-                <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-                <p>Clique no botão <strong style="color: #ff4757;">🔑 ENTRAR</strong> no canto superior direito!</p>
-                <div class="info">
-                    <strong>📋 Credenciais de teste:</strong><br>
-                    Email: <code>admin@olhaai.com</code><br>
-                    Senha: <code>admin123</code>
-                </div>
-            `;
-            
-            alert("👋 Logout realizado com sucesso!");
+            document.getElementById('iaPainel').style.display = 'none';
+            alert("👋 Logout realizado!");
         }
         
-        // Testar IA
-        function testarIA() {
-            document.body.style.background = "linear-gradient(135deg, #3498db 0%, #2980b9 50%, #1a1a2e 100%)";
-            alert("🎨 Cor alterada para AZUL pela IA!");
-        }
-        
-        // Verificar login salvo ao iniciar
         async function init() {
             await criarAdmin();
-            
             const salvo = localStorage.getItem('usuario');
             if (salvo) {
-                try {
-                    usuarioAtual = JSON.parse(salvo);
-                    if (usuarioAtual.email === 'admin@olhaai.com') {
-                        document.getElementById('btnEntrar').style.display = 'none';
-                        document.getElementById('btnCadastrar').style.display = 'none';
-                        document.getElementById('logoutBtn').style.display = 'inline-flex';
-                        
-                        document.getElementById('mainContainer').innerHTML = `
-                            <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-                            <p>✅ <strong>${usuarioAtual.name}</strong>, você está logado!</p>
-                            <p>Agora você tem acesso total à IA que modifica o site!</p>
-                            <div class="info">
-                                <strong>🎮 COMANDOS DA IA:</strong><br>
-                                • Digite "azul" - muda a cor do site<br>
-                                • Digite "verde" - muda para verde<br>
-                                • Digite "roxo" - muda para roxo<br>
-                                • Digite "criar botao" - cria um botão novo<br>
-                                • Digite "resetar tudo" - limpa tudo
-                            </div>
-                            <button class="btn-primary" onclick="testarIA()" style="margin-top: 20px;">🎨 Testar IA (mudar para azul)</button>
-                        `;
-                    }
-                } catch(e) {}
+                usuarioAtual = JSON.parse(salvo);
+                if (usuarioAtual.type === 'admin') {
+                    document.getElementById('btnEntrar').style.display = 'none';
+                    document.getElementById('btnCadastrar').style.display = 'none';
+                    document.getElementById('logoutBtn').style.display = 'inline-flex';
+                    document.getElementById('iaPainel').style.display = 'block';
+                }
             }
         }
-        
         init();
     </script>
 </body>
