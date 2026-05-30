@@ -34,7 +34,10 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .nav-buttons { display: flex; gap: 12px; }
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
         button {
             padding: 10px 20px;
             border: none;
@@ -44,7 +47,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s;
         }
+        button:hover { transform: translateY(-2px); }
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
@@ -84,10 +89,15 @@
             border-radius: 10px;
         }
         .hidden { display: none; }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            font-size: 14px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="header">
@@ -96,35 +106,39 @@
             <span>IA SUPREMA</span>
         </div>
         <div class="nav-buttons">
-            <!-- BOTÃO DE LOGIN - AQUI! -->
+            <!-- BOTÃO DE LOGIN - BEM VISÍVEL -->
             <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()">
-                <i class="fas fa-sign-in-alt"></i> Entrar
+                <i class="fas fa-sign-in-alt"></i> 🔑 ENTRAR
             </button>
-            <!-- BOTÃO DE CADASTRO - AQUI! -->
+            <!-- BOTÃO DE CADASTRO -->
             <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()">
-                <i class="fas fa-user-plus"></i> Cadastrar
+                <i class="fas fa-user-plus"></i> 📝 CADASTRAR
             </button>
-            <!-- BOTÃO DE SAIR - AQUI! (escondido até logar) -->
+            <!-- BOTÃO DE SAIR -->
             <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;">
-                <i class="fas fa-sign-out-alt"></i> Sair
+                <i class="fas fa-sign-out-alt"></i> SAIR
             </button>
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-        <p>Clique em <strong>"Entrar"</strong> para acessar a IA que modifica o site!</p>
-        <p style="margin-top: 20px; opacity: 0.7;">Admin: admin@olhaai.com / admin123</p>
+        <p>Clique no botão <strong style="color: #ff4757;">🔑 ENTRAR</strong> no canto superior direito!</p>
+        <div class="info">
+            <strong>📋 Credenciais de teste:</strong><br>
+            Email: <code>admin@olhaai.com</code><br>
+            Senha: <code>admin123</code>
+        </div>
     </div>
 
     <!-- MODAL LOGIN -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>Login</h2>
+            <h2>LOGIN</h2>
             <input type="email" id="loginEmail" placeholder="Email" value="admin@olhaai.com">
             <input type="password" id="loginPassword" placeholder="Senha" value="admin123">
-            <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
+            <button class="btn-primary" onclick="fazerLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
         </div>
     </div>
@@ -133,16 +147,17 @@
     <div class="modal hidden" id="registerModal">
         <div class="login-box">
             <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
-            <h2>Cadastro</h2>
+            <h2>CADASTRO</h2>
             <input type="text" id="regName" placeholder="Nome">
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Senha">
-            <button class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
+            <button class="btn-primary" onclick="fazerCadastro()"><i class="fas fa-check"></i> Cadastrar</button>
             <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
         </div>
     </div>
 
     <script>
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -151,101 +166,188 @@
             messagingSenderId: "251733558803",
             appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
         };
+        
+        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
         let usuarioAtual = null;
         
-        function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
-        function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
-        function mostrarCadastro() { document.getElementById('registerModal').classList.remove('hidden'); }
-        function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
+        // Mostrar/esconder modais
+        function mostrarLogin() { 
+            document.getElementById('loginModal').classList.remove('hidden'); 
+        }
+        function fecharLogin() { 
+            document.getElementById('loginModal').classList.add('hidden'); 
+        }
+        function mostrarCadastro() { 
+            document.getElementById('registerModal').classList.remove('hidden'); 
+        }
+        function fecharCadastro() { 
+            document.getElementById('registerModal').classList.add('hidden'); 
+        }
         
+        // Criar admin automaticamente
         async function criarAdmin() {
-            const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
-            const adminDoc = await adminRef.get();
-            if (!adminDoc.exists) {
-                await adminRef.set({ email: 'admin@olhaai.com', password: 'admin123', name: 'Administrador', type: 'admin' });
-                console.log("✅ Admin criado!");
+            try {
+                const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
+                const adminDoc = await adminRef.get();
+                if (!adminDoc.exists) {
+                    await adminRef.set({ 
+                        email: 'admin@olhaai.com', 
+                        password: 'admin123', 
+                        name: 'Administrador', 
+                        type: 'admin' 
+                    });
+                    console.log("✅ Admin criado com sucesso!");
+                }
+            } catch (error) {
+                console.log("Erro ao criar admin:", error);
             }
         }
         
+        // Fazer login
         async function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginPassword').value;
-            if (!email || !senha) { alert("Preencha email e senha!"); return; }
+            
+            if (!email || !senha) {
+                alert("❌ Preencha email e senha!");
+                return;
+            }
             
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
+                
                 if (userDoc.exists && userDoc.data().password === senha) {
                     usuarioAtual = userDoc.data();
                     localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
-                    alert(`👑 Bem-vindo, ${usuarioAtual.name}!`);
                     
+                    alert(`✅ Login realizado! Bem-vindo, ${usuarioAtual.name}!`);
+                    
+                    // Esconder botões de login/cadastro
                     document.getElementById('btnEntrar').style.display = 'none';
                     document.getElementById('btnCadastrar').style.display = 'none';
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
                     
-                    fecharLogin();
-                    document.querySelector('.container').innerHTML = `
+                    // Atualizar conteúdo
+                    document.getElementById('mainContainer').innerHTML = `
                         <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-                        <p>✅ Login realizado com sucesso!</p>
-                        <p>Agora você tem acesso completo à IA!</p>
-                        <button class="btn-primary" onclick="alert('IA pronta! Digite "azul" para testar')">🎨 Testar IA</button>
+                        <p>✅ <strong>${usuarioAtual.name}</strong>, você está logado!</p>
+                        <p>Agora você tem acesso total à IA que modifica o site!</p>
+                        <div class="info">
+                            <strong>🎮 COMANDOS DA IA:</strong><br>
+                            • Digite "azul" - muda a cor do site<br>
+                            • Digite "verde" - muda para verde<br>
+                            • Digite "roxo" - muda para roxo<br>
+                            • Digite "criar botao" - cria um botão novo<br>
+                            • Digite "resetar tudo" - limpa tudo
+                        </div>
+                        <button class="btn-primary" onclick="testarIA()" style="margin-top: 20px;">🎨 Testar IA (mudar para azul)</button>
                     `;
+                    
+                    fecharLogin();
                 } else {
-                    alert('❌ Email ou senha incorretos! Use admin@olhaai.com / admin123');
+                    alert("❌ Email ou senha incorretos!\n\nUse: admin@olhaai.com / admin123");
                 }
-            } catch (error) { alert('Erro: ' + error.message); }
+            } catch (error) {
+                alert("❌ Erro ao fazer login: " + error.message);
+            }
         }
         
+        // Fazer cadastro
         async function fazerCadastro() {
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
-            if (!name || !email || !password) { alert('Preencha todos os campos!'); return; }
+            
+            if (!name || !email || !password) {
+                alert("❌ Preencha todos os campos!");
+                return;
+            }
+            
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
-                if (userDoc.exists) { alert('Email já cadastrado!'); return; }
-                await db.collection('usuarios').doc(email).set({ email, password, name, type: 'user' });
-                alert('✅ Cadastro realizado! Faça login.');
+                if (userDoc.exists) {
+                    alert("❌ Email já cadastrado!");
+                    return;
+                }
+                
+                await db.collection('usuarios').doc(email).set({ 
+                    email, 
+                    password, 
+                    name, 
+                    type: 'user' 
+                });
+                
+                alert("✅ Cadastro realizado com sucesso! Faça login.");
                 fecharCadastro();
                 mostrarLogin();
-            } catch (error) { alert('Erro: ' + error.message); }
+            } catch (error) {
+                alert("❌ Erro ao cadastrar: " + error.message);
+            }
         }
         
+        // Logout
         function logout() {
             usuarioAtual = null;
             localStorage.removeItem('usuario');
+            
             document.getElementById('btnEntrar').style.display = 'inline-flex';
             document.getElementById('btnCadastrar').style.display = 'inline-flex';
             document.getElementById('logoutBtn').style.display = 'none';
-            document.querySelector('.container').innerHTML = `
+            
+            document.getElementById('mainContainer').innerHTML = `
                 <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-                <p>Clique em <strong>"Entrar"</strong> para acessar a IA que modifica o site!</p>
-                <p style="margin-top: 20px; opacity: 0.7;">Admin: admin@olhaai.com / admin123</p>
+                <p>Clique no botão <strong style="color: #ff4757;">🔑 ENTRAR</strong> no canto superior direito!</p>
+                <div class="info">
+                    <strong>📋 Credenciais de teste:</strong><br>
+                    Email: <code>admin@olhaai.com</code><br>
+                    Senha: <code>admin123</code>
+                </div>
             `;
-            alert('👋 Logout realizado!');
+            
+            alert("👋 Logout realizado com sucesso!");
         }
         
+        // Testar IA
+        function testarIA() {
+            document.body.style.background = "linear-gradient(135deg, #3498db 0%, #2980b9 50%, #1a1a2e 100%)";
+            alert("🎨 Cor alterada para AZUL pela IA!");
+        }
+        
+        // Verificar login salvo ao iniciar
         async function init() {
             await criarAdmin();
+            
             const salvo = localStorage.getItem('usuario');
             if (salvo) {
-                usuarioAtual = JSON.parse(salvo);
-                if (usuarioAtual.email === 'admin@olhaai.com') {
-                    document.getElementById('btnEntrar').style.display = 'none';
-                    document.getElementById('btnCadastrar').style.display = 'none';
-                    document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    document.querySelector('.container').innerHTML = `
-                        <h1><i class="fas fa-robot"></i> IA Suprema</h1>
-                        <p>✅ Você já está logado como ${usuarioAtual.name}!</p>
-                        <p>Agora você tem acesso completo à IA!</p>
-                        <button class="btn-primary" onclick="alert('IA pronta! Digite "azul" para testar')">🎨 Testar IA</button>
-                    `;
-                }
+                try {
+                    usuarioAtual = JSON.parse(salvo);
+                    if (usuarioAtual.email === 'admin@olhaai.com') {
+                        document.getElementById('btnEntrar').style.display = 'none';
+                        document.getElementById('btnCadastrar').style.display = 'none';
+                        document.getElementById('logoutBtn').style.display = 'inline-flex';
+                        
+                        document.getElementById('mainContainer').innerHTML = `
+                            <h1><i class="fas fa-robot"></i> IA Suprema</h1>
+                            <p>✅ <strong>${usuarioAtual.name}</strong>, você está logado!</p>
+                            <p>Agora você tem acesso total à IA que modifica o site!</p>
+                            <div class="info">
+                                <strong>🎮 COMANDOS DA IA:</strong><br>
+                                • Digite "azul" - muda a cor do site<br>
+                                • Digite "verde" - muda para verde<br>
+                                • Digite "roxo" - muda para roxo<br>
+                                • Digite "criar botao" - cria um botão novo<br>
+                                • Digite "resetar tudo" - limpa tudo
+                            </div>
+                            <button class="btn-primary" onclick="testarIA()" style="margin-top: 20px;">🎨 Testar IA (mudar para azul)</button>
+                        `;
+                    }
+                } catch(e) {}
             }
         }
+        
         init();
     </script>
 </body>
