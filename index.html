@@ -51,7 +51,6 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
-        .btn-admin { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
         .container { max-width: 1000px; margin: 0 auto; padding: 30px; }
         
         .ia-painel {
@@ -205,10 +204,7 @@
     </div>
 
     <div class="container">
-        <!-- BOTÕES DA IA -->
         <div class="botoes-container" id="botoesContainer"></div>
-
-        <!-- PAINEL DA IA -->
         <div class="ia-painel" id="iaPainel" style="display: none;">
             <h2><i class="fas fa-brain"></i> 🤖 IA SUPREMA - ADMIN</h2>
             <div class="chat">
@@ -239,8 +235,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- CARDS -->
         <div class="cards-container" id="cardsContainer"></div>
     </div>
 
@@ -248,7 +242,6 @@
         <p>✨ IA Suprema - Modifica Tudo no Site ✨</p>
     </div>
 
-    <!-- MODAIS -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
@@ -274,6 +267,7 @@
     </div>
 
     <script>
+        // ============ FIREBASE - INICIALIZAÇÃO PRIMEIRO ============
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -282,9 +276,12 @@
             messagingSenderId: "251733558803",
             appId: "1:251733558803:web:e0be0827bafa6d8b6421e6"
         };
+        
+        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
+        // Variáveis globais
         let usuarioAtual = null;
         let botoesCriados = 0;
         let cardsCriados = 0;
@@ -293,6 +290,7 @@
         
         function adicionarMensagem(texto, tipo = 'ia') {
             const container = document.getElementById('mensagensChat');
+            if (!container) return;
             const div = document.createElement('div');
             div.className = `mensagem ${tipo}`;
             if (tipo === 'ia') {
@@ -306,6 +304,7 @@
         
         function mostrarDigitando() {
             const container = document.getElementById('mensagensChat');
+            if (!container) return;
             const div = document.createElement('div');
             div.className = 'mensagem ia';
             div.id = 'digitando';
@@ -355,7 +354,7 @@
         function removerTodosBotoes() {
             document.querySelectorAll('.botao-criado').forEach(btn => btn.remove());
             botoesCriados = 0;
-            adicionarMensagem(`🗑️ Todos os ${botoesCriados} botões removidos!`);
+            adicionarMensagem(`🗑️ Todos os botões removidos!`);
         }
         
         function criarCard() {
@@ -470,17 +469,26 @@
         function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
         
         async function criarAdmin() {
-            const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
-            const adminDoc = await adminRef.get();
-            if (!adminDoc.exists) {
-                await adminRef.set({ email: 'admin@olhaai.com', password: 'admin123', name: 'Administrador', type: 'admin' });
-                console.log("✅ Admin criado!");
+            try {
+                const adminRef = db.collection('usuarios').doc('admin@olhaai.com');
+                const adminDoc = await adminRef.get();
+                if (!adminDoc.exists) {
+                    await adminRef.set({ email: 'admin@olhaai.com', password: 'admin123', name: 'Administrador', type: 'admin' });
+                    console.log("✅ Admin criado!");
+                }
+            } catch (error) {
+                console.log("Erro ao criar admin:", error);
             }
         }
         
         async function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginPassword').value;
+            
+            if (!email || !senha) {
+                alert("❌ Preencha email e senha!");
+                return;
+            }
             
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
@@ -500,7 +508,7 @@
                     alert("❌ Email ou senha incorretos!\n\nAdmin: admin@olhaai.com / admin123");
                 }
             } catch (error) {
-                alert("Erro: " + error.message);
+                alert("❌ Erro ao fazer login: " + error.message);
             }
         }
         
@@ -510,14 +518,14 @@
             const password = document.getElementById('regPassword').value;
             
             if (!name || !email || !password) {
-                alert("Preencha todos os campos!");
+                alert("❌ Preencha todos os campos!");
                 return;
             }
             
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
                 if (userDoc.exists) {
-                    alert("Email já cadastrado!");
+                    alert("❌ Email já cadastrado!");
                     return;
                 }
                 await db.collection('usuarios').doc(email).set({ email, password, name, type: 'user' });
@@ -525,7 +533,7 @@
                 fecharCadastro();
                 mostrarLogin();
             } catch (error) {
-                alert("Erro: " + error.message);
+                alert("❌ Erro ao cadastrar: " + error.message);
             }
         }
         
@@ -543,15 +551,19 @@
             await criarAdmin();
             const salvo = localStorage.getItem('usuario');
             if (salvo) {
-                usuarioAtual = JSON.parse(salvo);
-                if (usuarioAtual.type === 'admin') {
-                    document.getElementById('btnEntrar').style.display = 'none';
-                    document.getElementById('btnCadastrar').style.display = 'none';
-                    document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    document.getElementById('iaPainel').style.display = 'block';
-                }
+                try {
+                    usuarioAtual = JSON.parse(salvo);
+                    if (usuarioAtual.type === 'admin') {
+                        document.getElementById('btnEntrar').style.display = 'none';
+                        document.getElementById('btnCadastrar').style.display = 'none';
+                        document.getElementById('logoutBtn').style.display = 'inline-flex';
+                        document.getElementById('iaPainel').style.display = 'block';
+                    }
+                } catch(e) {}
             }
         }
+        
+        // Iniciar tudo
         init();
     </script>
 </body>
