@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Olha Aí - Plataforma de Vídeos com IA Modificadora</title>
-    <meta name="description" content="Olha Aí - Plataforma de vídeos online com IA que modifica o site">
+    <title>Olha Aí - Plataforma de Vídeos</title>
+    <meta name="description" content="Olha Aí - Plataforma de vídeos online">
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -69,7 +69,6 @@
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
         .btn-success { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
-        .btn-warning { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
         .btn-groq { background: linear-gradient(135deg, #f012be, #8e44ad); color: white; }
         .main-buttons {
             display: flex;
@@ -200,19 +199,6 @@
             border-radius: 10px;
             font-family: monospace;
         }
-        .theme-editor {
-            background: rgba(0,0,0,0.5);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .color-picker {
-            width: 60px;
-            height: 40px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .videos-grid { grid-template-columns: 1fr; }
@@ -236,61 +222,48 @@
             <button class="main-btn btn-admin" id="adminBtn" onclick="mostrarAdmin()" style="display:none;"><i class="fas fa-shield-alt"></i> Painel Admin</button>
             <button class="main-btn btn-upload" id="uploadBtn" onclick="mostrarUpload()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Publicar Vídeo</button>
             <button class="main-btn btn-donate" onclick="mostrarDoacao()"><i class="fas fa-heart"></i> Apoiar</button>
-            <button class="main-btn btn-ai" id="aiBtn" onclick="mostrarIA()" style="display:none;"><i class="fas fa-robot"></i> IA Modificadora</button>
+            <button class="main-btn btn-ai" id="aiBtn" onclick="mostrarIA()" style="display:none;"><i class="fas fa-robot"></i> IA Assistente</button>
         </div>
 
         <div id="adminSection" class="section">
             <h2><i class="fas fa-shield-alt"></i> Painel Admin</h2>
             <div class="admin-stats">
-                <div class="stat-card" onclick="iaAcao('estatisticas')"><div class="number" id="totalVideos">0</div><div>Vídeos</div></div>
-                <div class="stat-card" onclick="iaAcao('estatisticas')"><div class="number" id="totalViews">0</div><div>Views</div></div>
-                <div class="stat-card" onclick="iaAcao('estatisticas')"><div class="number" id="totalCriadores">0</div><div>Criadores</div></div>
-            </div>
-            <div class="theme-editor">
-                <h3><i class="fas fa-palette"></i> Personalização Rápida</h3>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                    <div><label>Cor Principal:</label><br><input type="color" id="primaryColor" value="#ff4757" class="color-picker" onchange="mudarCorPrimaria(this.value)"></div>
-                    <div><label>Cor Secundária:</label><br><input type="color" id="secondaryColor" value="#9b59b6" class="color-picker" onchange="mudarCorSecundaria(this.value)"></div>
-                    <div><label>Fundo:</label><br><input type="color" id="bgStart" value="#0f0c29" class="color-picker" onchange="mudarFundo(this.value, document.getElementById('bgEnd').value)"></div>
-                    <div><label>Fundo 2:</label><br><input type="color" id="bgEnd" value="#24243e" class="color-picker" onchange="mudarFundo(document.getElementById('bgStart').value, this.value)"></div>
-                    <div><button class="btn-primary" onclick="resetarCores()"><i class="fas fa-undo"></i> Resetar</button></div>
-                </div>
+                <div class="stat-card"><div class="number" id="totalVideos">0</div><div>Vídeos</div></div>
+                <div class="stat-card"><div class="number" id="totalViews">0</div><div>Views</div></div>
+                <div class="stat-card"><div class="number" id="totalCriadores">0</div><div>Criadores</div></div>
             </div>
             <button class="btn-delete-all" onclick="excluirTodosVideos()"><i class="fas fa-trash-alt"></i> EXCLUIR TODOS</button>
-            <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <div style="margin-top: 20px;">
                 <button class="btn-groq" onclick="configurarChaveGroq()"><i class="fas fa-key"></i> 🔑 Configurar Chave Groq</button>
-                <button class="btn-success" onclick="exportarDados()"><i class="fas fa-download"></i> Exportar Dados</button>
-                <button class="btn-warning" onclick="importarDados()"><i class="fas fa-upload"></i> Importar Backup</button>
             </div>
         </div>
 
         <div id="aiSection" class="section ai-section">
-            <h2><i class="fas fa-robot"></i> IA Modificadora - Olha Aí Bot</h2>
-            <p>💡 Esta IA pode MODIFICAR seu site! Peça para mudar cores, textos, layout e muito mais!</p>
+            <h2><i class="fas fa-robot"></i> IA Assistente - Olha Aí Bot</h2>
+            <p>💡 Diga o que quer modificar! Ex: "mude a cor para azul" ou "título para Meu Site"</p>
             <div class="ai-chat-container">
                 <div class="ai-messages" id="aiMessages">
                     <div class="ai-message bot">
                         <div class="ai-avatar"><i class="fas fa-robot"></i></div>
-                        <div class="message-bubble">🤖 Olá Admin! Sou a IA MODIFICADORA do Olha Aí!<br><br><strong>✨ Comandos que você pode usar:</strong><br><br>
-                        🎨 <strong>Cores:</strong> "mude a cor principal para azul" / "deixe o fundo rosa"<br>
-                        📝 <strong>Textos:</strong> "mude o título do site para OutroNome" / "mude a mensagem do rodapé"<br>
-                        🎬 <strong>Vídeos:</strong> "crie um vídeo de exemplo" / "liste os vídeos"<br>
-                        📊 <strong>Dados:</strong> "mostre estatísticas" / "exporte os dados"<br>
-                        🔧 <strong>Layout:</strong> "deixe o layout mais escuro" / "aumente as bordas"<br>
-                        💬 <strong>Comentários:</strong> "responda todos os comentários"<br><br>
-                        <strong>👉 Como posso modificar seu site hoje?</strong> 🚀</div>
+                        <div class="message-bubble">🤖 Olá! Comandos disponíveis:<br><br>
+                        🎨 "mude a cor para azul/verde/roxo/rosa/vermelho/laranja/escuro"<br>
+                        📝 "mude o título para [nome]"<br>
+                        📊 "estatísticas"<br>
+                        🎬 "adicione vídeo exemplo"<br><br>
+                        Configure a chave Groq no Painel Admin primeiro! 🔑</div>
                     </div>
                 </div>
                 <div class="ai-input-area">
-                    <input type="text" id="aiInput" placeholder="Digite o que quer modificar no site..." onkeypress="if(event.key==='Enter') perguntarIA()">
+                    <input type="text" id="aiInput" placeholder="Digite o que quer modificar..." onkeypress="if(event.key==='Enter') perguntarIA()">
                     <button class="btn-primary" onclick="perguntarIA()"><i class="fas fa-paper-plane"></i> Executar</button>
                 </div>
                 <div class="ai-commands">
-                    <span class="ai-command-btn" onclick="comandoRapido('mude a cor principal para azul')">🎨 Mudar Cor</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('mude o título do site')">📝 Mudar Título</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('deixe o fundo mais escuro')">🌑 Fundo Escuro</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('mostre estatísticas completas')">📊 Estatísticas</span>
-                    <span class="ai-command-btn" onclick="comandoRapido('adicione um vídeo de exemplo')">🎬 Vídeo Exemplo</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('mude a cor para azul')">🎨 Azul</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('mude a cor para verde')">🎨 Verde</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('mude a cor para roxo')">🎨 Roxo</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('mude a cor para rosa')">🎨 Rosa</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('mude o título para MEU SITE')">📝 Título</span>
+                    <span class="ai-command-btn" onclick="comandoRapido('estatísticas')">📊 Stats</span>
                 </div>
             </div>
         </div>
@@ -359,255 +332,10 @@
     <div id="apiConfigModal" class="modal hidden"><div class="api-config-modal"><i class="fas fa-key" style="font-size:48px;color:#f012be"></i><h2>🔑 Configurar API Groq</h2><p>Cole sua chave API do Groq abaixo:</p><input type="text" id="groqApiKey" placeholder="gsk_..." style="width:100%"><p style="font-size:12px;margin-top:10px;">Pegue sua chave grátis em: <a href="https://console.groq.com/keys" target="_blank" style="color:#f012be">console.groq.com/keys</a></p><button class="btn-primary" onclick="salvarChaveGroq()">💾 Salvar Chave</button><button class="btn-secondary" onclick="fecharModalChave()">Cancelar</button></div></div>
 
     <script>
-        // ============ CHAVE API - ARMAZENADA LOCALMENTE (SEGURA) ============
+        // ============ CHAVE API - ARMAZENADA LOCALMENTE ============
         let MINHA_CHAVE_GROQ = localStorage.getItem('groq_api_key') || null;
         
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
-        
-        // ============ FUNÇÕES DE MODIFICAÇÃO DO SITE ============
-        
-        function mudarCorPrimaria(cor) {
-            document.documentElement.style.setProperty('--primary-color', cor);
-            const botoes = document.querySelectorAll('.btn-primary, .main-btn, button');
-            botoes.forEach(btn => {
-                if (btn.classList.contains('btn-primary') || btn.classList.contains('main-btn')) {
-                    btn.style.background = `linear-gradient(135deg, ${cor}, ${cor}cc)`;
-                }
-            });
-            localStorage.setItem('primaryColor', cor);
-            adicionarMensagemIA(`✅ Cor principal alterada para ${cor}!`, 'bot');
-        }
-        
-        function mudarCorSecundaria(cor) {
-            const elementos = document.querySelectorAll('.ai-section, .world-comments');
-            elementos.forEach(el => {
-                el.style.borderColor = cor;
-            });
-            localStorage.setItem('secondaryColor', cor);
-            adicionarMensagemIA(`✅ Cor secundária alterada para ${cor}!`, 'bot');
-        }
-        
-        function mudarFundo(cor1, cor2) {
-            document.body.style.background = `linear-gradient(135deg, ${cor1} 0%, #302b63 50%, ${cor2} 100%)`;
-            localStorage.setItem('bgStart', cor1);
-            localStorage.setItem('bgEnd', cor2);
-            adicionarMensagemIA(`✅ Fundo alterado!`, 'bot');
-        }
-        
-        function resetarCores() {
-            document.body.style.background = "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)";
-            document.getElementById('primaryColor').value = "#ff4757";
-            document.getElementById('secondaryColor').value = "#9b59b6";
-            document.getElementById('bgStart').value = "#0f0c29";
-            document.getElementById('bgEnd').value = "#24243e";
-            localStorage.removeItem('primaryColor');
-            localStorage.removeItem('secondaryColor');
-            localStorage.removeItem('bgStart');
-            localStorage.removeItem('bgEnd');
-            location.reload();
-        }
-        
-        function mudarTituloSite(novoTitulo) {
-            document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
-            document.title = `${novoTitulo} - Plataforma de Vídeos com IA`;
-            localStorage.setItem('siteTitle', novoTitulo);
-            adicionarMensagemIA(`✅ Título do site alterado para "${novoTitulo}"!`, 'bot');
-        }
-        
-        function mudarMensagemRodape(novaMensagem) {
-            document.querySelector('.footer p').innerHTML = novaMensagem;
-            localStorage.setItem('footerMessage', novaMensagem);
-            adicionarMensagemIA(`✅ Mensagem do rodapé alterada!`, 'bot');
-        }
-        
-        async function adicionarVideoExemplo() {
-            const videoExemplo = {
-                title: "🎬 Vídeo Exemplo - Bem-vindo ao Olha Aí!",
-                url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-                description: "Este é um vídeo de exemplo criado pela IA. Bem-vindo à plataforma!",
-                author: "IA Modificadora",
-                authorEmail: "ia@olhaai.com",
-                date: new Date().toISOString(),
-                views: 0
-            };
-            try {
-                await db.collection('videos').add(videoExemplo);
-                adicionarMensagemIA(`✅ Vídeo exemplo adicionado com sucesso!`, 'bot');
-                carregarVideos();
-            } catch(e) {
-                adicionarMensagemIA(`❌ Erro ao adicionar vídeo: ${e.message}`, 'bot');
-            }
-        }
-        
-        async function exportarDados() {
-            const snapshot = await db.collection('videos').get();
-            const videos = [];
-            snapshot.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
-            const dataStr = JSON.stringify(videos, null, 2);
-            const blob = new Blob([dataStr], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `olhaai-backup-${new Date().toISOString()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            adicionarMensagemIA(`✅ Dados exportados com sucesso! ${videos.length} vídeos salvos.`, 'bot');
-        }
-        
-        function importarDados() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/json';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                const text = await file.text();
-                const dados = JSON.parse(text);
-                for (const video of dados) {
-                    delete video.id;
-                    await db.collection('videos').add(video);
-                }
-                adicionarMensagemIA(`✅ ${dados.length} vídeos importados com sucesso!`, 'bot');
-                carregarVideos();
-            };
-            input.click();
-        }
-        
-        function aumentarBordas() {
-            const cards = document.querySelectorAll('.video-card, .world-comment-item');
-            cards.forEach(card => {
-                card.style.borderWidth = '2px';
-                card.style.borderRadius = '20px';
-            });
-            adicionarMensagemIA(`✅ Bordas aumentadas!`, 'bot');
-        }
-        
-        async function responderTodosComentarios() {
-            const snapshot = await db.collection('comentarios_mundiais').get();
-            const comentarios = [];
-            snapshot.forEach(doc => comentarios.push({ id: doc.id, ...doc.data() }));
-            
-            for (const com of comentarios) {
-                const resposta = {
-                    autor: "IA Assistente",
-                    texto: `Obrigado pelo seu comentário, ${com.autor || 'visitante'}! 🌟 Agradecemos seu feedback!`,
-                    data: new Date().toISOString()
-                };
-                await db.collection('comentarios_mundiais').add(resposta);
-            }
-            adicionarMensagemIA(`✅ Respondidos ${comentarios.length} comentários automaticamente!`, 'bot');
-            carregarComentariosMundiais();
-        }
-        
-        // ============ IA MODIFICADORA ============
-        
-        async function iaAcao(acao) {
-            document.getElementById('aiInput').value = acao;
-            await perguntarIA();
-        }
-        
-        async function processarComandoIA(comando) {
-            const comandoLower = comando.toLowerCase();
-            
-            // Modificar cor principal
-            if (comandoLower.includes('cor principal') || comandoLower.includes('mudar cor')) {
-                let cor = "#ff4757";
-                if (comandoLower.includes('azul')) cor = "#3498db";
-                else if (comandoLower.includes('verde')) cor = "#2ecc71";
-                else if (comandoLower.includes('amarelo')) cor = "#f1c40f";
-                else if (comandoLower.includes('roxo')) cor = "#9b59b6";
-                else if (comandoLower.includes('rosa')) cor = "#e84393";
-                else if (comandoLower.includes('laranja')) cor = "#e67e22";
-                mudarCorPrimaria(cor);
-                document.getElementById('primaryColor').value = cor;
-                return true;
-            }
-            
-            // Modificar título
-            if (comandoLower.includes('título do site') || comandoLower.includes('mudar nome')) {
-                let novoTitulo = comando.match(/["']([^"']+)["']/);
-                if (!novoTitulo) {
-                    const palavras = comando.split(' ');
-                    novoTitulo = palavras[palavras.length - 1];
-                } else {
-                    novoTitulo = novoTitulo[1];
-                }
-                if (novoTitulo && novoTitulo !== 'site' && novoTitulo !== 'título') {
-                    mudarTituloSite(novoTitulo);
-                } else {
-                    mudarTituloSite("Olha Aí");
-                }
-                return true;
-            }
-            
-            // Fundo escuro/claro
-            if (comandoLower.includes('fundo mais escuro') || comandoLower.includes('escurecer')) {
-                mudarFundo("#000000", "#1a1a2e");
-                document.getElementById('bgStart').value = "#000000";
-                document.getElementById('bgEnd').value = "#1a1a2e";
-                return true;
-            }
-            
-            if (comandoLower.includes('fundo mais claro') || comandoLower.includes('clarear')) {
-                mudarFundo("#2c3e50", "#bdc3c7");
-                return true;
-            }
-            
-            // Vídeo exemplo
-            if (comandoLower.includes('vídeo de exemplo') || comandoLower.includes('adicionar vídeo exemplo')) {
-                await adicionarVideoExemplo();
-                return true;
-            }
-            
-            // Estatísticas
-            if (comandoLower.includes('estatísticas') || comandoLower.includes('relatório')) {
-                const snapshot = await db.collection('videos').get();
-                let totalViews = 0;
-                snapshot.forEach(doc => totalViews += doc.data().views || 0);
-                const comentariosSnap = await db.collection('comentarios_mundiais').get();
-                adicionarMensagemIA(`📊 **RELATÓRIO COMPLETO DO SITE**\n\n` +
-                    `🎬 Vídeos: ${snapshot.size}\n` +
-                    `👀 Visualizações: ${totalViews}\n` +
-                    `👥 Criadores: ${new Set(snapshot.docs.map(d => d.data().authorEmail)).size}\n` +
-                    `💬 Comentários: ${comentariosSnap.size}\n` +
-                    `📅 Atualizado: ${new Date().toLocaleString()}\n\n` +
-                    `✨ Quer mais detalhes sobre algum item?`, 'bot');
-                return true;
-            }
-            
-            // Exportar
-            if (comandoLower.includes('exportar') || comandoLower.includes('backup')) {
-                await exportarDados();
-                return true;
-            }
-            
-            // Responder comentários
-            if (comandoLower.includes('responder comentários') || comandoLower.includes('responder todos')) {
-                await responderTodosComentarios();
-                return true;
-            }
-            
-            // Bordas
-            if (comandoLower.includes('bordas') || comandoLower.includes('layout')) {
-                aumentarBordas();
-                return true;
-            }
-            
-            // Mensagem rodapé
-            if (comandoLower.includes('mensagem do rodapé') || comandoLower.includes('rodapé')) {
-                let msg = comando.match(/["']([^"']+)["']/);
-                if (msg) {
-                    mudarMensagemRodape(msg[1]);
-                } else {
-                    mudarMensagemRodape("© 2024 Olha Aí - Modificado pela IA! 🚀");
-                }
-                return true;
-            }
-            
-            return false;
-        }
-        
-        // ============ IA PRINCIPAL ============
         
         function copiarPix() { navigator.clipboard.writeText(CHAVE_PIX); alert("✅ Chave Pix copiada!"); }
         function copiarComValor(valor) { navigator.clipboard.writeText(`Doação - R$ ${valor}\nChave: ${CHAVE_PIX}`); alert(`✅ R$ ${valor}`); }
@@ -622,11 +350,10 @@
             if (chave && chave.startsWith('gsk_')) {
                 MINHA_CHAVE_GROQ = chave;
                 localStorage.setItem('groq_api_key', chave);
-                alert('✅ Chave API Groq salva com sucesso!');
+                alert('✅ Chave salva! Agora a IA funciona.');
                 fecharModalChave();
-                adicionarMensagemIA('✅ Chave configurada! Agora posso modificar seu site. O que deseja mudar? 🚀', 'bot');
             } else {
-                alert('❌ Chave inválida! A chave Groq começa com "gsk_"');
+                alert('❌ Chave inválida! Deve começar com gsk_');
             }
         }
         
@@ -660,21 +387,97 @@
             document.getElementById('donationSection').classList.remove('show'); 
         }
         
-        // ============ IA COM GROQ ============
+        // ============ FUNÇÃO QUE MUDA O SITE DE VERDADE ============
+        async function processarComandoIA(comando) {
+            const comandoLower = comando.toLowerCase();
+            
+            // CORES - MUDA IMEDIATAMENTE
+            if (comandoLower.includes('cor') || comandoLower.includes('azul') || comandoLower.includes('tema') || 
+                comandoLower.includes('verde') || comandoLower.includes('roxo') || comandoLower.includes('rosa') ||
+                comandoLower.includes('vermelho') || comandoLower.includes('laranja') || comandoLower.includes('escuro')) {
+                
+                let corPrimaria, corSecundaria, corFundo1, corFundo2, nomeCor;
+                
+                if (comandoLower.includes('azul')) {
+                    corPrimaria = "#3498db"; corSecundaria = "#2980b9"; corFundo1 = "#0f0c29"; corFundo2 = "#1a1a2e"; nomeCor = "AZUL";
+                } else if (comandoLower.includes('verde')) {
+                    corPrimaria = "#27ae60"; corSecundaria = "#2ecc71"; corFundo1 = "#0a2a1a"; corFundo2 = "#1a3a2a"; nomeCor = "VERDE";
+                } else if (comandoLower.includes('roxo')) {
+                    corPrimaria = "#9b59b6"; corSecundaria = "#8e44ad"; corFundo1 = "#1a0a2a"; corFundo2 = "#2a1a3a"; nomeCor = "ROXO";
+                } else if (comandoLower.includes('rosa')) {
+                    corPrimaria = "#e84393"; corSecundaria = "#fd79a8"; corFundo1 = "#2a0a1a"; corFundo2 = "#3a1a2a"; nomeCor = "ROSA";
+                } else if (comandoLower.includes('vermelho')) {
+                    corPrimaria = "#e74c3c"; corSecundaria = "#c0392b"; corFundo1 = "#2a0a0a"; corFundo2 = "#3a1a1a"; nomeCor = "VERMELHO";
+                } else if (comandoLower.includes('laranja')) {
+                    corPrimaria = "#e67e22"; corSecundaria = "#f39c12"; corFundo1 = "#2a1a0a"; corFundo2 = "#3a2a1a"; nomeCor = "LARANJA";
+                } else {
+                    corPrimaria = "#2c3e50"; corSecundaria = "#34495e"; corFundo1 = "#000000"; corFundo2 = "#1a1a2e"; nomeCor = "ESCURO";
+                }
+                
+                // APLICAR CORES
+                document.body.style.background = `linear-gradient(135deg, ${corFundo1} 0%, #302b63 50%, ${corFundo2} 100%)`;
+                document.querySelectorAll('.btn-primary, .main-btn.btn-primary, .btn-ai, .btn-send-world').forEach(btn => {
+                    btn.style.background = `linear-gradient(135deg, ${corPrimaria}, ${corSecundaria})`;
+                });
+                document.querySelector('.header').style.borderBottomColor = corPrimaria;
+                document.querySelector('.logo i').style.color = corPrimaria;
+                document.querySelector('.logo span').style.background = `linear-gradient(135deg, ${corPrimaria}, ${corSecundaria})`;
+                document.querySelector('.logo span').style.webkitBackgroundClip = 'text';
+                
+                adicionarMensagemIA(`✅ **SITE ALTERADO PARA ${nomeCor}!**`, 'bot');
+                return true;
+            }
+            
+            // TÍTULO
+            if (comandoLower.includes('título')) {
+                let novoTitulo = "OLHA AÍ";
+                const match = comando.match(/["']([^"']+)["']/);
+                if (match) {
+                    novoTitulo = match[1].toUpperCase();
+                } else {
+                    const palavras = comando.split(' ');
+                    for (let i = 0; i < palavras.length; i++) {
+                        if (palavras[i] === 'para' && palavras[i+1]) {
+                            novoTitulo = palavras.slice(i+1).join(' ').toUpperCase();
+                            break;
+                        }
+                    }
+                }
+                document.querySelector('.logo span').textContent = novoTitulo;
+                document.title = novoTitulo;
+                localStorage.setItem('siteTitle', novoTitulo);
+                adicionarMensagemIA(`✅ **TÍTULO ALTERADO PARA ${novoTitulo}!**`, 'bot');
+                return true;
+            }
+            
+            // ESTATÍSTICAS
+            if (comandoLower.includes('estatísticas') || comandoLower.includes('stats')) {
+                const snapshot = await db.collection('videos').get();
+                let totalViews = 0;
+                snapshot.forEach(doc => totalViews += doc.data().views || 0);
+                const comentariosSnap = await db.collection('comentarios_mundiais').get();
+                adicionarMensagemIA(`📊 **ESTATÍSTICAS**\n\n🎬 Vídeos: ${snapshot.size}\n👀 Views: ${totalViews}\n👥 Criadores: ${new Set(snapshot.docs.map(d => d.data().authorEmail)).size}\n💬 Comentários: ${comentariosSnap.size}`, 'bot');
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // ============ IA PRINCIPAL ============
         async function perguntarIA() {
             const input = document.getElementById('aiInput');
             const pergunta = input.value.trim();
             if (!pergunta) return;
             
-            // Primeiro, tenta processar como comando local
-            const processado = await processarComandoIA(pergunta);
-            if (processado) {
+            // TENTA EXECUTAR COMANDO LOCAL
+            const executado = await processarComandoIA(pergunta);
+            if (executado) {
                 input.value = '';
                 return;
             }
             
             if (!MINHA_CHAVE_GROQ) {
-                adicionarMensagemIA('⚠️ **Configure sua chave API Groq primeiro!**\n\n1. Vá no **Painel Admin**\n2. Clique em **"🔑 Configurar Chave API Groq"**\n3. Cole sua chave (começa com gsk_)\n\nDepois poderei modificar seu site! 🚀', 'bot');
+                adicionarMensagemIA('⚠️ Configure a chave Groq no Painel Admin primeiro!', 'bot');
                 return;
             }
             
@@ -683,25 +486,6 @@
             mostrarDigitandoIA();
             
             try {
-                const stats = await getEstatisticasSite();
-                const prompt = `Você é o assistente IA MODIFICADORA do site Olha Aí. Você pode MODIFICAR o site real!
-                
-COMANDOS QUE VOCÊ PODE EXECUTAR (responda com "ACAO: comando" se quiser executar):
-- mudar cor principal para [cor]
-- mudar título do site para [texto]
-- deixar fundo mais escuro
-- adicionar vídeo exemplo
-- exportar dados
-- responder todos comentários
-- mostrar estatísticas
-
-Dados atuais:
-${stats}
-
-Pergunta do admin: ${pergunta}
-
-Responda em português do Brasil, seja útil e explique o que você pode fazer para modificar o site.`;
-                
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
@@ -710,38 +494,20 @@ Responda em português do Brasil, seja útil e explique o que você pode fazer p
                     },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: prompt }],
-                        temperature: 0.7,
-                        max_tokens: 800
+                        messages: [{ role: "user", content: `Responda de forma bem curta e direta: ${pergunta}` }],
+                        temperature: 0.3,
+                        max_tokens: 200
                     })
                 });
                 
-                if (!response.ok) {
-                    const erro = await response.json();
-                    throw new Error(erro.error?.message || "Erro na API");
-                }
+                if (!response.ok) throw new Error("Erro");
                 const data = await response.json();
-                const resposta = data.choices[0].message.content;
-                
                 removerDigitandoIA();
-                adicionarMensagemIA(resposta, 'bot');
+                adicionarMensagemIA(data.choices[0].message.content, 'bot');
             } catch (error) {
                 removerDigitandoIA();
                 adicionarMensagemIA(`❌ Erro: ${error.message}`, 'bot');
             }
-        }
-        
-        async function getEstatisticasSite() {
-            try {
-                const snapshot = await db.collection('videos').get();
-                let totalViews = 0;
-                const criadores = new Set();
-                snapshot.forEach(doc => {
-                    totalViews += doc.data().views || 0;
-                    criadores.add(doc.data().authorEmail);
-                });
-                return `📊 Vídeos: ${snapshot.size} | Views: ${totalViews} | Criadores: ${criadores.size}`;
-            } catch(e) { return "Não foi possível carregar estatísticas"; }
         }
         
         function adicionarMensagemIA(texto, tipo) {
@@ -778,7 +544,7 @@ Responda em português do Brasil, seja útil e explique o que você pode fazer p
             perguntarIA();
         }
         
-        // ============ FIREBASE ============
+        // ============ FIREBASE E OUTRAS FUNÇÕES ============
         const firebaseConfig = {
             apiKey: "AIzaSyDakcmBAjmOQKQavFMpv1qWf4Xuqvhl0cY",
             authDomain: "wolftube-56e62.firebaseapp.com",
@@ -861,24 +627,12 @@ Responda em português do Brasil, seja útil e explique o que você pode fazer p
                     fecharLogin();
                     carregarVideos();
                     carregarComentariosMundiais();
-                    carregarCoresSalvas();
+                    
+                    // Carregar título salvo
+                    const tituloSalvo = localStorage.getItem('siteTitle');
+                    if (tituloSalvo) document.querySelector('.logo span').textContent = tituloSalvo;
                 } else { alert('Email ou senha incorretos!'); }
             } catch (error) { alert('Erro: ' + error.message); }
-        }
-        
-        function carregarCoresSalvas() {
-            const corPrimaria = localStorage.getItem('primaryColor');
-            const corSecundaria = localStorage.getItem('secondaryColor');
-            const bgStart = localStorage.getItem('bgStart');
-            const bgEnd = localStorage.getItem('bgEnd');
-            const titulo = localStorage.getItem('siteTitle');
-            const footerMsg = localStorage.getItem('footerMessage');
-            
-            if (corPrimaria) mudarCorPrimaria(corPrimaria);
-            if (corSecundaria) mudarCorSecundaria(corSecundaria);
-            if (bgStart && bgEnd) mudarFundo(bgStart, bgEnd);
-            if (titulo) document.querySelector('.logo span').textContent = titulo.toUpperCase();
-            if (footerMsg) document.querySelector('.footer p').innerHTML = footerMsg;
         }
         
         async function fazerCadastro() {
@@ -1093,7 +847,6 @@ Responda em português do Brasil, seja útil e explique o que você pode fazer p
                 }
                 document.querySelectorAll('.nav-buttons button').forEach(btn => { if (btn.id !== 'logoutBtn') btn.style.display = 'none'; });
                 document.getElementById('logoutBtn').style.display = 'inline-flex';
-                carregarCoresSalvas();
             }
             await carregarVideos();
             await carregarEstatisticas();
