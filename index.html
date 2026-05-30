@@ -391,8 +391,8 @@
             <span>IA SUPREMA</span>
         </div>
         <div class="nav-buttons">
-            <button class="btn-primary" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            <button class="btn-secondary" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> Cadastrar</button>
+            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> Cadastrar</button>
             <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> Sair</button>
         </div>
     </div>
@@ -401,7 +401,7 @@
         <!-- BOTÕES CRIADOS PELA IA -->
         <div class="botoes-container" id="botoesContainer"></div>
 
-        <!-- PAINEL DA IA -->
+        <!-- PAINEL DA IA - SÓ APARECE PARA ADMIN -->
         <div class="ia-painel" id="iaPainel" style="display: none;">
             <h2 style="text-align: center;"><i class="fas fa-brain"></i> IA QUE MODIFICA TUDO</h2>
             <p style="text-align: center; opacity: 0.8;">Digite qualquer comando e eu modifico o site instantaneamente!</p>
@@ -468,18 +468,20 @@
         <p>✨ IA Suprema - Modifica Tudo no Site ✨</p>
     </div>
 
-    <!-- MODAIS -->
+    <!-- MODAL LOGIN -->
     <div class="modal hidden" id="loginModal">
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>Login Admin</h2>
-            <input type="email" id="loginEmail" placeholder="Email" value="admin@olhaai.com">
-            <input type="password" id="loginPassword" placeholder="Senha" value="admin123">
+            <h2>Login</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Senha">
             <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
+            <p style="margin-top: 15px; font-size: 12px;">Admin: admin@olhaai.com / admin123</p>
         </div>
     </div>
 
+    <!-- MODAL CADASTRO -->
     <div class="modal hidden" id="registerModal">
         <div class="login-box">
             <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
@@ -496,6 +498,7 @@
         </div>
     </div>
 
+    <!-- MODAL UPLOAD VÍDEO -->
     <div class="modal hidden" id="uploadModal">
         <div class="login-box" style="max-width: 500px;">
             <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #ff4757;"></i>
@@ -508,6 +511,7 @@
         </div>
     </div>
 
+    <!-- MODAL VÍDEO PLAYER -->
     <div id="videoPlayerModal" class="video-modal hidden">
         <div class="video-container">
             <div class="video-header">
@@ -541,12 +545,12 @@
         let usuarioAtual = null;
         let botoesCriados = 0;
         let cardsCriados = 0;
-        let corAtual = "padrao";
         
         // ============ FUNÇÕES DA IA ============
         
         function adicionarMensagem(texto, tipo = 'ia') {
             const container = document.getElementById('mensagensChat');
+            if (!container) return;
             const div = document.createElement('div');
             div.className = `mensagem ${tipo}`;
             if (tipo === 'ia') {
@@ -560,6 +564,7 @@
         
         function mostrarDigitando() {
             const container = document.getElementById('mensagensChat');
+            if (!container) return;
             const div = document.createElement('div');
             div.className = 'mensagem ia';
             div.id = 'digitando';
@@ -587,7 +592,6 @@
             document.querySelector('.header').style.borderBottomColor = c.p;
             document.querySelector('.logo i').style.color = c.p;
             document.querySelector('.logo span').style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
-            corAtual = cor;
             adicionarMensagem(`🎨 **Cor alterada para ${cor.toUpperCase()}!**`);
         }
         
@@ -730,7 +734,7 @@
         
         function mostrarIA() {
             const painel = document.getElementById('iaPainel');
-            painel.style.display = painel.style.display === 'none' ? 'block' : 'none';
+            if (painel) painel.style.display = 'block';
         }
         
         // ============ COMENTÁRIOS MUNDIAIS ============
@@ -818,10 +822,6 @@
             } else if (link.includes('youtu.be/')) {
                 let videoId = link.split('youtu.be/')[1].split('?')[0];
                 embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            } else if (link.includes('drive.google.com')) {
-                let fileId = '';
-                if (link.includes('/file/d/')) fileId = link.split('/file/d/')[1].split('/')[0];
-                if (fileId) embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
             }
             
             const video = { title: titulo, url: embedUrl, description: descricao || 'Sem descrição', author: usuarioAtual?.name || 'Admin', authorEmail: usuarioAtual?.email || 'admin@olhaai.com', date: new Date().toISOString(), views: 0 };
@@ -891,23 +891,32 @@
         async function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginPassword').value;
+            if (!email || !senha) { alert("Preencha email e senha!"); return; }
+            
             try {
                 const userDoc = await db.collection('usuarios').doc(email).get();
                 if (userDoc.exists && userDoc.data().password === senha) {
                     usuarioAtual = userDoc.data();
                     localStorage.setItem('usuario', JSON.stringify(usuarioAtual));
                     alert(`👑 Bem-vindo, ${usuarioAtual.name}!`);
-                    document.querySelectorAll('.nav-buttons button').forEach(btn => {
-                        if (btn.id !== 'logoutBtn') btn.style.display = 'none';
-                    });
+                    
+                    // Esconder botões de login/cadastro
+                    document.getElementById('btnEntrar').style.display = 'none';
+                    document.getElementById('btnCadastrar').style.display = 'none';
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
+                    
+                    // Mostrar botões de admin
                     if (usuarioAtual.type === 'admin') {
                         document.getElementById('uploadVideoBtn').style.display = 'inline-flex';
+                        mostrarIA();
                     }
+                    
                     fecharLogin();
-                    mostrarIA();
                     carregarVideos();
-                } else { alert('Email ou senha incorretos!'); }
+                    carregarComentariosMundiais();
+                } else {
+                    alert('❌ Email ou senha incorretos!');
+                }
             } catch (error) { alert('Erro: ' + error.message); }
         }
         
@@ -921,20 +930,25 @@
                 const userDoc = await db.collection('usuarios').doc(email).get();
                 if (userDoc.exists) { alert('Email já cadastrado!'); return; }
                 await db.collection('usuarios').doc(email).set({ email, password, name, type });
-                alert('Cadastro realizado! Faça login.');
+                alert('✅ Cadastro realizado! Faça login.');
                 fecharCadastro();
+                mostrarLogin();
             } catch (error) { alert('Erro: ' + error.message); }
         }
         
         function logout() {
             usuarioAtual = null;
             localStorage.removeItem('usuario');
-            document.querySelectorAll('.nav-buttons button').forEach(btn => {
-                if (btn.id !== 'logoutBtn') btn.style.display = 'inline-flex';
-            });
+            
+            document.getElementById('btnEntrar').style.display = 'inline-flex';
+            document.getElementById('btnCadastrar').style.display = 'inline-flex';
             document.getElementById('logoutBtn').style.display = 'none';
             document.getElementById('uploadVideoBtn').style.display = 'none';
             document.getElementById('iaPainel').style.display = 'none';
+            
+            carregarVideos();
+            carregarComentariosMundiais();
+            alert('👋 Logout realizado!');
         }
         
         function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
@@ -945,9 +959,8 @@
             if (salvo) {
                 usuarioAtual = JSON.parse(salvo);
                 if (usuarioAtual.type === 'admin') {
-                    document.querySelectorAll('.nav-buttons button').forEach(btn => {
-                        if (btn.id !== 'logoutBtn') btn.style.display = 'none';
-                    });
+                    document.getElementById('btnEntrar').style.display = 'none';
+                    document.getElementById('btnCadastrar').style.display = 'none';
                     document.getElementById('logoutBtn').style.display = 'inline-flex';
                     document.getElementById('uploadVideoBtn').style.display = 'inline-flex';
                     mostrarIA();
