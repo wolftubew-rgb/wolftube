@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olha Aí - IA Completa</title>
+    <title>Olha Aí - IA Modificadora</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -85,7 +85,7 @@
             margin-top: 20px;
         }
         .mensagens {
-            max-height: 350px;
+            max-height: 450px;
             overflow-y: auto;
             margin-bottom: 20px;
             padding: 10px;
@@ -137,20 +137,6 @@
         }
         .cmd:hover { background: #9b59b6; transform: scale(1.02); }
         
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        .card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
         .footer {
             margin-top: 60px;
             padding: 30px;
@@ -213,8 +199,8 @@
 <body>
     <div class="header">
         <div class="logo">
-            <i class="fas fa-eye"></i>
-            <span>OLHA AÍ</span>
+            <i class="fas fa-brain"></i>
+            <span>IA MODIFICADORA</span>
         </div>
         <div class="nav-buttons">
             <button class="btn-primary" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
@@ -249,13 +235,13 @@
                     <div class="mensagem ia">
                         <div class="avatar"><i class="fas fa-robot"></i></div>
                         <div class="bolha">🤖 <strong>Olá! Eu sou a IA Modificadora!</strong><br><br>
-                        <strong>✨ Comandos que funcionam AGORA:</strong><br><br>
+                        <strong>✨ COMANDOS QUE FUNCIONAM:</strong><br><br>
                         🎨 <strong>Cores:</strong> "azul", "verde", "roxo", "rosa", "vermelho", "escuro"<br>
-                        🔘 <strong>Botões:</strong> "criar botao", "tirar botao", "remover botao", "apagar botao"<br>
-                        📦 <strong>Cards:</strong> "criar card", "tirar card", "remover card"<br>
+                        🔘 <strong>Botões:</strong> "criar botao", "tirar botao", "remover botao"<br>
+                        📦 <strong>Cards:</strong> "criar card", "tirar card"<br>
                         📝 <strong>Título:</strong> "titulo NOVO NOME"<br>
-                        🔄 <strong>Reset:</strong> "resetar", "resetar site"<br><br>
-                        <strong>👉 Experimente: "criar botao" depois "tirar botao"</strong></div>
+                        🔄 <strong>Reset:</strong> "resetar"<br><br>
+                        <strong>👉 Experimente: "criar botao" e depois "tirar botao"</strong></div>
                     </div>
                 </div>
                 <div class="input-area">
@@ -267,27 +253,31 @@
                     <span class="cmd" onclick="comando('verde')">🟢 VERDE</span>
                     <span class="cmd" onclick="comando('roxo')">🟣 ROXO</span>
                     <span class="cmd" onclick="comando('criar botao')">🔘 CRIAR</span>
-                    <span class="cmd" onclick="comando('tirar botao')">🗑️ TIRAR BOTÃO</span>
+                    <span class="cmd" onclick="comando('tirar botao')">🗑️ TIRAR</span>
                     <span class="cmd" onclick="comando('criar card')">📦 CRIAR CARD</span>
                     <span class="cmd" onclick="comando('tirar card')">🗑️ TIRAR CARD</span>
                     <span class="cmd" onclick="comando('resetar')">🔄 RESETAR</span>
+                    <span class="cmd" onclick="comando('titulo IA PODEROSA')">📝 TÍTULO</span>
                 </div>
             </div>
         </div>
 
-        <h2><i class="fas fa-video"></i> Conteúdo</h2>
-        <div class="videos-grid" id="conteudoGrid">
-            <div class="card">
-                <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                <h3>Bem-vindo!</h3>
-                <p>Faça login e use a IA</p>
-                <small>✨ Digite "criar botao" para testar</small>
+        <!-- ÁREA DE CARDS CRIADOS PELA IA -->
+        <div id="cardsContainer" style="margin-top: 30px;">
+            <h3><i class="fas fa-plus-circle"></i> Cards Criados</h3>
+            <div class="videos-grid" id="conteudoGrid">
+                <div class="card" id="cardInicial">
+                    <i class="fas fa-robot" style="font-size: 48px; margin-bottom: 15px;"></i>
+                    <h3>IA Modificadora</h3>
+                    <p>Digite "criar card" para adicionar conteúdo!</p>
+                    <small>✨ Comandos: criar card, tirar card</small>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="footer" id="footer">
-        <p>© 2024 Olha Aí - IA Modificadora</p>
+        <p>© 2024 IA Modificadora - Controle total do site</p>
     </div>
 
     <div class="modal hidden" id="loginModal">
@@ -349,7 +339,7 @@
             document.querySelector('.logo i').style.color = c.p;
             document.querySelector('.logo span').style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
             document.querySelector('.logo span').style.webkitBackgroundClip = 'text';
-            adicionarMensagem(`✅ **Cor alterada para ${cor.toUpperCase()}!** O site está com um visual lindo! 🎨`);
+            adicionarMensagem(`✅ **Cor alterada para ${cor.toUpperCase()}!** 🎨`);
         }
         
         // CRIAR BOTÃO
@@ -362,7 +352,7 @@
             btn.innerHTML = `<i class="fas fa-star"></i> Botão ${botoesCriados}`;
             btn.onclick = () => alert(`✨ Botão ${botoesCriados} clicado!`);
             container.appendChild(btn);
-            adicionarMensagem(`✅ **BOTÃO CRIADO!**\n\n🔘 Nome: Botão ${botoesCriados}\n📊 Total de botões: ${botoesCriados}`);
+            adicionarMensagem(`✅ **BOTÃO CRIADO!**\n\n🔘 Botão ${botoesCriados}\n📊 Total: ${botoesCriados}`);
         }
         
         // REMOVER BOTÃO
@@ -376,7 +366,7 @@
             const id = ultimoBotao.getAttribute('data-id');
             ultimoBotao.remove();
             botoesCriados--;
-            adicionarMensagem(`🗑️ **BOTÃO REMOVIDO!**\n\nBotão ${id} foi removido.\n📊 Restam ${botoesCriados} botões.`);
+            adicionarMensagem(`🗑️ **BOTÃO REMOVIDO!**\n\nBotão ${id} removido.\n📊 Restam ${botoesCriados}`);
         }
         
         // CRIAR CARD
@@ -389,74 +379,52 @@
             card.innerHTML = `
                 <i class="fas fa-plus-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
                 <h3>Card ${cardsCriados}</h3>
-                <p>Criado pela IA!</p>
+                <p>Criado pela IA em ${new Date().toLocaleTimeString()}</p>
                 <button class="btn-danger" style="margin-top: 15px; padding: 5px 15px; font-size: 12px;" onclick="this.parentElement.remove(); cardsCriados--; adicionarMensagem('🗑️ Card removido! Restam ' + cardsCriados + ' cards', 'ia');">Remover</button>
             `;
             grid.appendChild(card);
-            adicionarMensagem(`✅ **CARD CRIADO!**\n\n📦 Nome: Card ${cardsCriados}\n📊 Total de cards: ${cardsCriados}`);
+            adicionarMensagem(`✅ **CARD CRIADO!**\n\n📦 Card ${cardsCriados}\n📊 Total: ${cardsCriados}`);
         }
         
         // REMOVER CARD
         function removerCard() {
             const cards = document.querySelectorAll('.card-criado');
             if (cards.length === 0) {
-                adicionarMensagem(`❌ **Nenhum card para remover!**\n\nCrie um card primeiro com "criar card"`);
+                adicionarMensagem(`❌ **Nenhum card para remover!**\n\nCrie um card com "criar card"`);
                 return;
             }
             const ultimoCard = cards[cards.length - 1];
             const id = ultimoCard.getAttribute('data-id');
             ultimoCard.remove();
             cardsCriados--;
-            adicionarMensagem(`🗑️ **CARD REMOVIDO!**\n\nCard ${id} foi removido.\n📊 Restam ${cardsCriados} cards.`);
+            adicionarMensagem(`🗑️ **CARD REMOVIDO!**\n\nCard ${id} removido.\n📊 Restam ${cardsCriados}`);
         }
         
         // TÍTULO
         function mudarTitulo(novoTitulo) {
             document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
             document.title = novoTitulo;
-            adicionarMensagem(`✅ **TÍTULO ALTERADO!**\n\nAgora o site se chama: **${novoTitulo.toUpperCase()}**`);
+            adicionarMensagem(`✅ **TÍTULO ALTERADO!**\n\nAgora: **${novoTitulo.toUpperCase()}**`);
         }
         
         // RESETAR
         function resetar() {
-            // Remover botões
             const botoes = document.querySelectorAll('.botao-criado');
             botoes.forEach(btn => btn.remove());
             botoesCriados = 0;
             
-            // Remover cards
             const cards = document.querySelectorAll('.card-criado');
             cards.forEach(card => card.remove());
             cardsCriados = 0;
             
-            // Resetar cores
             document.body.style.background = "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)";
             document.querySelector('.header').style.borderBottomColor = "#ff4757";
             document.querySelector('.logo i').style.color = "#ff4757";
             document.querySelector('.logo span').style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
-            document.querySelector('.logo span').style.webkitBackgroundClip = 'text';
+            document.querySelector('.logo span').textContent = "IA MODIFICADORA";
+            document.title = "IA Modificadora";
             
-            // Resetar título
-            document.querySelector('.logo span').textContent = "OLHA AÍ";
-            document.title = "Olha Aí - IA Completa";
-            
-            // Resetar rodapé
-            document.getElementById('footer').innerHTML = '<p>© 2024 Olha Aí - IA Modificadora</p>';
-            
-            // Garantir card inicial
-            const grid = document.getElementById('conteudoGrid');
-            if (grid.children.length === 0) {
-                grid.innerHTML = `
-                    <div class="card">
-                        <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
-                        <h3>Bem-vindo!</h3>
-                        <p>Site resetado! Use a IA novamente</p>
-                        <small>✨ Digite "criar botao" para testar</small>
-                    </div>
-                `;
-            }
-            
-            adicionarMensagem(`✅ **SITE RESETADO COM SUCESSO!**\n\n🧹 Todas as modificações foram removidas.\n🔘 Botões: 0\n📦 Cards: 0\n🎨 Cores: padrão\n📝 Título: OLHA AÍ\n\nO site voltou ao estado original!`);
+            adicionarMensagem(`✅ **SITE RESETADO!**\n\n🔘 Botões: 0\n📦 Cards: 0\n🎨 Cores: padrão`);
         }
         
         // PROCESSAR COMANDO
@@ -472,7 +440,6 @@
             setTimeout(() => {
                 removerDigitando();
                 
-                // CORES
                 if (comando === 'azul') mudarCor('azul');
                 else if (comando === 'verde') mudarCor('verde');
                 else if (comando === 'roxo') mudarCor('roxo');
@@ -480,39 +447,28 @@
                 else if (comando === 'vermelho') mudarCor('vermelho');
                 else if (comando === 'escuro') mudarCor('escuro');
                 
-                // BOTÕES - MÚLTIPLAS VARIAÇÕES
-                else if (comando === 'criar botao' || comando === 'criar botão' || comando === 'criarbotao') criarBotao();
-                else if (comando === 'tirar botao' || comando === 'tirar botão' || comando === 'remover botao' || comando === 'apagar botao' || comando === 'remove botao') removerBotao();
+                else if (comando === 'criar botao' || comando === 'criar botão') criarBotao();
+                else if (comando === 'tirar botao' || comando === 'tirar botão' || comando === 'remover botao' || comando === 'apagar botao' || comando === 'tire este botao') removerBotao();
                 
-                // CARDS - MÚLTIPLAS VARIAÇÕES
-                else if (comando === 'criar card' || comando === 'criarcard') criarCard();
-                else if (comando === 'tirar card' || comando === 'tirar card' || comando === 'remover card' || comando === 'apagar card' || comando === 'remove card') removerCard();
+                else if (comando === 'criar card') criarCard();
+                else if (comando === 'tirar card' || comando === 'remover card' || comando === 'apagar card') removerCard();
                 
-                // TÍTULO
                 else if (comando.startsWith('titulo')) {
                     let novoTitulo = comando.replace('titulo', '').trim();
                     if (novoTitulo) mudarTitulo(novoTitulo);
-                    else adicionarMensagem(`❌ **Digite: "titulo MEU SITE"**\n\nExemplo: "titulo OLHA AI PODEROSO"`);
+                    else adicionarMensagem(`❌ Digite: "titulo MEU NOME"`);
                 }
                 
-                // RESETAR
-                else if (comando === 'resetar' || comando === 'reset' || comando === 'resetar site' || comando === 'limpar tudo') resetar();
+                else if (comando === 'resetar' || comando === 'reset') resetar();
                 
-                // AJUDA
-                else if (comando === 'ajuda' || comando === 'comandos' || comando === 'help') {
-                    adicionarMensagem(`📋 **COMANDOS DISPONÍVEIS:**\n\n` +
-                        `🎨 **Cores:**\n• azul, verde, roxo, rosa, vermelho, escuro\n\n` +
-                        `🔘 **Botões:**\n• "criar botao" - cria um novo botão\n• "tirar botao" - remove o último botão\n\n` +
-                        `📦 **Cards:**\n• "criar card" - cria um novo card\n• "tirar card" - remove o último card\n\n` +
-                        `📝 **Título:**\n• "titulo NOVO NOME" - muda o nome do site\n\n` +
-                        `🔄 **Reset:**\n• "resetar" - limpa todas as modificações\n\n` +
-                        `👉 **Experimente agora:** "criar botao" e depois "tirar botao"`);
+                else if (comando === 'ajuda') {
+                    adicionarMensagem(`📋 **COMANDOS:**\n\n🎨 azul, verde, roxo, rosa, vermelho, escuro\n🔘 criar botao / tirar botao\n📦 criar card / tirar card\n📝 titulo NOME\n🔄 resetar`);
                 }
                 
                 else {
-                    adicionarMensagem(`❌ **Comando não reconhecido!**\n\nComandos que funcionam:\n• azul, verde, roxo, rosa, vermelho, escuro\n• criar botao / tirar botao\n• criar card / tirar card\n• titulo [NOME]\n• resetar\n\nDigite "ajuda" para lista completa.`);
+                    adicionarMensagem(`❌ **Comando não reconhecido!**\n\nComandos: azul, verde, roxo, criar botao, tirar botao, criar card, tirar card, resetar`);
                 }
-            }, 500);
+            }, 300);
         }
         
         function comando(cmd) {
@@ -525,7 +481,6 @@
             painel.style.display = painel.style.display === 'none' ? 'block' : 'none';
         }
         
-        // LOGIN
         function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
         function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
         
@@ -534,7 +489,7 @@
             const senha = document.getElementById('loginPassword').value;
             if (email === 'admin@olhaai.com' && senha === 'admin123') {
                 localStorage.setItem('usuario', 'admin');
-                alert('✅ Login realizado! Agora você pode usar a IA.');
+                alert('✅ Login realizado!');
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
