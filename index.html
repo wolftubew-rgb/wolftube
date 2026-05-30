@@ -34,7 +34,6 @@
             background: linear-gradient(135deg, #ff4757, #ff6b81);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            transition: all 0.3s;
         }
         .nav-buttons { display: flex; gap: 12px; }
         button {
@@ -52,6 +51,7 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
+        .btn-admin { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
         .container { max-width: 1000px; margin: 0 auto; padding: 30px; }
         
         .ia-painel {
@@ -186,6 +186,8 @@
             0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
             30% { opacity: 1; transform: translateY(-5px); }
         }
+        .logado { display: none; }
+        .deslogado { display: inline-flex; }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -193,47 +195,51 @@
     <div class="header">
         <div class="logo">
             <i class="fas fa-crown"></i>
-            <span>IA SUPREMA</span>
+            <span id="siteTitulo">IA SUPREMA</span>
         </div>
         <div class="nav-buttons">
-            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> 🔑 ENTRAR</button>
-            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> 📝 CADASTRAR</button>
+            <button class="btn-primary" id="btnEntrar" onclick="mostrarLogin()"><i class="fas fa-sign-in-alt"></i> ENTRAR</button>
+            <button class="btn-secondary" id="btnCadastrar" onclick="mostrarCadastro()"><i class="fas fa-user-plus"></i> CADASTRAR</button>
             <button class="btn-danger" id="logoutBtn" onclick="logout()" style="display:none;"><i class="fas fa-sign-out-alt"></i> SAIR</button>
         </div>
     </div>
 
     <div class="container">
         <div class="botoes-container" id="botoesContainer"></div>
-        <div class="ia-painel" id="iaPainel" style="display: none;">
-            <h2><i class="fas fa-brain"></i> 🤖 IA SUPREMA - ADMIN</h2>
-            <div class="chat">
-                <div class="mensagens" id="mensagensChat">
-                    <div class="mensagem ia">
-                        <div class="avatar"><i class="fas fa-crown"></i></div>
-                        <div class="bolha">👑 <strong>Bem-vindo, ADMIN!</strong><br><br>
-                        <strong>✨ COMANDOS DISPONÍVEIS:</strong><br><br>
-                        🎨 <strong>CORES:</strong> "azul", "verde", "roxo", "rosa", "vermelho", "escuro"<br>
-                        🔘 <strong>BOTÕES:</strong> "criar botao", "tirar botao", "remover todos botoes"<br>
-                        📦 <strong>CARDS:</strong> "criar card", "tirar card", "remover todos cards"<br>
-                        📝 <strong>TEXTO:</strong> "titulo NOVO NOME", "rodape NOVO TEXTO"<br>
-                        🔄 <strong>RESET:</strong> "resetar tudo"<br><br>
-                        <strong>👉 Digite: "criar botao" ou "azul"</strong></div>
+        
+        <div id="iaPainel" style="display: none;">
+            <div class="ia-painel">
+                <h2><i class="fas fa-brain"></i> 🤖 IA SUPREMA - ADMIN</h2>
+                <div class="chat">
+                    <div class="mensagens" id="mensagensChat">
+                        <div class="mensagem ia">
+                            <div class="avatar"><i class="fas fa-crown"></i></div>
+                            <div class="bolha">👑 <strong>Bem-vindo, ADMIN!</strong><br><br>
+                            <strong>✨ COMANDOS DISPONÍVEIS:</strong><br><br>
+                            🎨 <strong>CORES:</strong> "azul", "verde", "roxo", "rosa", "vermelho", "escuro"<br>
+                            🔘 <strong>BOTÕES:</strong> "criar botao", "tirar botao", "remover todos botoes"<br>
+                            📦 <strong>CARDS:</strong> "criar card", "tirar card", "remover todos cards"<br>
+                            📝 <strong>TEXTO:</strong> "titulo NOVO NOME", "rodape NOVO TEXTO"<br>
+                            🔄 <strong>RESET:</strong> "resetar tudo"<br><br>
+                            <strong>👉 Digite: "criar botao" ou "azul"</strong></div>
+                        </div>
                     </div>
-                </div>
-                <div class="input-area">
-                    <input type="text" id="iaInput" placeholder="Digite seu comando aqui..." onkeypress="if(event.key==='Enter') processarComando()">
-                    <button class="btn-primary" onclick="processarComando()"><i class="fas fa-paper-plane"></i> Executar</button>
-                </div>
-                <div class="comandos-rapidos">
-                    <span class="cmd" onclick="executarComando('azul')">🔵 AZUL</span>
-                    <span class="cmd" onclick="executarComando('verde')">🟢 VERDE</span>
-                    <span class="cmd" onclick="executarComando('roxo')">🟣 ROXO</span>
-                    <span class="cmd" onclick="executarComando('criar botao')">🔘 CRIAR BOTÃO</span>
-                    <span class="cmd" onclick="executarComando('criar card')">📦 CRIAR CARD</span>
-                    <span class="cmd" onclick="executarComando('resetar tudo')">🔄 RESETAR</span>
+                    <div class="input-area">
+                        <input type="text" id="iaInput" placeholder="Digite seu comando aqui..." onkeypress="if(event.key==='Enter') processarComando()">
+                        <button class="btn-primary" onclick="processarComando()"><i class="fas fa-paper-plane"></i> Executar</button>
+                    </div>
+                    <div class="comandos-rapidos">
+                        <span class="cmd" onclick="executarComando('azul')">🔵 AZUL</span>
+                        <span class="cmd" onclick="executarComando('verde')">🟢 VERDE</span>
+                        <span class="cmd" onclick="executarComando('roxo')">🟣 ROXO</span>
+                        <span class="cmd" onclick="executarComando('criar botao')">🔘 CRIAR BOTÃO</span>
+                        <span class="cmd" onclick="executarComando('criar card')">📦 CRIAR CARD</span>
+                        <span class="cmd" onclick="executarComando('resetar tudo')">🔄 RESETAR</span>
+                    </div>
                 </div>
             </div>
         </div>
+        
         <div class="cards-container" id="cardsContainer"></div>
     </div>
 
@@ -245,8 +251,8 @@
         <div class="login-box">
             <i class="fas fa-crown" style="font-size: 48px; color: #ff4757;"></i>
             <h2>LOGIN ADMIN</h2>
-            <input type="text" id="loginEmail" placeholder="Usuário" value="admin">
-            <input type="password" id="loginPassword" placeholder="Senha" value="123">
+            <input type="text" id="loginUser" placeholder="Usuário" value="admin">
+            <input type="password" id="loginPass" placeholder="Senha" value="123">
             <button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
             <button class="btn-secondary" onclick="fecharLogin()">Fechar</button>
             <p style="margin-top: 15px; font-size: 12px;">Admin: admin / 123</p>
@@ -258,27 +264,39 @@
             <i class="fas fa-user-plus" style="font-size: 48px; color: #00b894;"></i>
             <h2>CADASTRO</h2>
             <input type="text" id="regName" placeholder="Nome">
-            <input type="text" id="regEmail" placeholder="Usuário">
-            <input type="password" id="regPassword" placeholder="Senha">
+            <input type="text" id="regUser" placeholder="Usuário">
+            <input type="password" id="regPass" placeholder="Senha">
             <button class="btn-primary" onclick="fazerCadastro()">CADASTRAR</button>
             <button class="btn-secondary" onclick="fecharCadastro()">Fechar</button>
         </div>
     </div>
 
     <script>
-        // ============ SEM FIREBASE - LOGIN LOCAL ============
-        
-        let usuarioAtual = null;
+        // VARIÁVEIS
+        let logado = false;
         let botoesCriados = 0;
         let cardsCriados = 0;
         
-        // Carregar usuários salvos
-        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        // USUÁRIOS (salvos localmente)
+        let usuarios = [];
         
-        // Garantir que admin existe
-        if (!usuarios.find(u => u.email === 'admin')) {
-            usuarios.push({ email: 'admin', password: '123', name: 'Administrador', type: 'admin' });
-            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        // Carregar usuários salvos
+        const usuariosSalvos = localStorage.getItem('usuarios_site');
+        if (usuariosSalvos) {
+            usuarios = JSON.parse(usuariosSalvos);
+        } else {
+            usuarios = [{ user: 'admin', password: '123', name: 'Administrador', type: 'admin' }];
+            localStorage.setItem('usuarios_site', JSON.stringify(usuarios));
+        }
+        
+        // Verificar login salvo
+        const loginSalvo = localStorage.getItem('logado_site');
+        if (loginSalvo === 'true') {
+            logado = true;
+            document.getElementById('btnEntrar').style.display = 'none';
+            document.getElementById('btnCadastrar').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'inline-flex';
+            document.getElementById('iaPainel').style.display = 'block';
         }
         
         // ============ FUNÇÕES DA IA ============
@@ -387,7 +405,7 @@
         }
         
         function mudarTitulo(novoTitulo) {
-            document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
+            document.getElementById('siteTitulo').textContent = novoTitulo.toUpperCase();
             document.title = novoTitulo;
             adicionarMensagem(`📝 Título alterado para: ${novoTitulo.toUpperCase()}`);
         }
@@ -405,12 +423,12 @@
             document.body.style.background = "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)";
             document.querySelector('.header').style.borderBottomColor = "#ff4757";
             document.querySelector('.logo i').style.color = "#ff4757";
-            document.querySelector('.logo span').textContent = "IA SUPREMA";
+            document.getElementById('siteTitulo').textContent = "IA SUPREMA";
             document.getElementById('footer').innerHTML = '<p>✨ IA Suprema - Modifica Tudo no Site ✨</p>';
             adicionarMensagem(`🔄 SITE RESETADO COMPLETAMENTE!`);
         }
         
-        async function processarComando() {
+        function processarComando() {
             const input = document.getElementById('iaInput');
             let comando = input.value.trim().toLowerCase();
             if (!comando) return;
@@ -456,7 +474,7 @@
             processarComando();
         }
         
-        // ============ LOGIN SEM FIREBASE ============
+        // ============ LOGIN ============
         
         function mostrarLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
         function fecharLogin() { document.getElementById('loginModal').classList.add('hidden'); }
@@ -464,16 +482,16 @@
         function fecharCadastro() { document.getElementById('registerModal').classList.add('hidden'); }
         
         function fazerLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const senha = document.getElementById('loginPassword').value;
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
             
-            const user = usuarios.find(u => u.email === email && u.password === senha);
+            const encontrado = usuarios.find(u => u.user === user && u.password === pass);
             
-            if (user) {
-                usuarioAtual = user;
-                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAtual));
+            if (encontrado) {
+                logado = true;
+                localStorage.setItem('logado_site', 'true');
                 
-                alert(`✅ Login realizado! Bem-vindo, ${user.name}!`);
+                alert(`✅ Login realizado! Bem-vindo, ${encontrado.name}!`);
                 
                 document.getElementById('btnEntrar').style.display = 'none';
                 document.getElementById('btnCadastrar').style.display = 'none';
@@ -488,21 +506,21 @@
         
         function fazerCadastro() {
             const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
+            const user = document.getElementById('regUser').value;
+            const pass = document.getElementById('regPass').value;
             
-            if (!name || !email || !password) {
+            if (!name || !user || !pass) {
                 alert("❌ Preencha todos os campos!");
                 return;
             }
             
-            if (usuarios.find(u => u.email === email)) {
+            if (usuarios.find(u => u.user === user)) {
                 alert("❌ Usuário já existe!");
                 return;
             }
             
-            usuarios.push({ email, password, name, type: 'user' });
-            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            usuarios.push({ user, password: pass, name, type: 'user' });
+            localStorage.setItem('usuarios_site', JSON.stringify(usuarios));
             
             alert("✅ Cadastro realizado! Faça login.");
             fecharCadastro();
@@ -510,27 +528,13 @@
         }
         
         function logout() {
-            usuarioAtual = null;
-            localStorage.removeItem('usuarioLogado');
+            logado = false;
+            localStorage.removeItem('logado_site');
             document.getElementById('btnEntrar').style.display = 'inline-flex';
             document.getElementById('btnCadastrar').style.display = 'inline-flex';
             document.getElementById('logoutBtn').style.display = 'none';
             document.getElementById('iaPainel').style.display = 'none';
             alert("👋 Logout realizado!");
-        }
-        
-        // Verificar login salvo
-        const salvo = localStorage.getItem('usuarioLogado');
-        if (salvo) {
-            try {
-                usuarioAtual = JSON.parse(salvo);
-                if (usuarioAtual.type === 'admin') {
-                    document.getElementById('btnEntrar').style.display = 'none';
-                    document.getElementById('btnCadastrar').style.display = 'none';
-                    document.getElementById('logoutBtn').style.display = 'inline-flex';
-                    document.getElementById('iaPainel').style.display = 'block';
-                }
-            } catch(e) {}
         }
     </script>
 </body>
