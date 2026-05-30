@@ -66,6 +66,7 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: linear-gradient(135deg, #00b894, #00cec9); color: white; }
         .btn-danger { background: linear-gradient(135deg, #2c3e50, #34495e); color: white; }
+        .btn-groq { background: linear-gradient(135deg, #f012be, #8e44ad); color: white; }
         .main-buttons {
             display: flex;
             justify-content: center;
@@ -178,6 +179,22 @@
         .modal, .login-box { background: linear-gradient(135deg, #1e1e2e, #2a2a3e); padding: 40px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; }
         .login-box input, .login-box select { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 10px; }
         .hidden { display: none; }
+        .api-config-modal {
+            background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .api-config-modal input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-family: monospace;
+        }
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .videos-grid { grid-template-columns: 1fr; }
@@ -212,16 +229,19 @@
                 <div class="stat-card"><div class="number" id="totalCriadores">0</div><div>Criadores</div></div>
             </div>
             <button class="btn-delete-all" onclick="excluirTodosVideos()"><i class="fas fa-trash-alt"></i> EXCLUIR TODOS</button>
+            <div style="margin-top: 20px;">
+                <button class="btn-groq" onclick="configurarChaveGroq()"><i class="fas fa-key"></i> 🔑 Configurar Chave API Groq</button>
+            </div>
         </div>
 
         <div id="aiSection" class="section ai-section">
             <h2><i class="fas fa-robot"></i> IA Assistente - Olha Aí Bot</h2>
-            <p>💡 IA super inteligente para ajudar o admin!</p>
+            <p>💡 IA usando Groq (100% GRÁTIS, super rápida!)</p>
             <div class="ai-chat-container">
                 <div class="ai-messages" id="aiMessages">
                     <div class="ai-message bot">
                         <div class="ai-avatar"><i class="fas fa-robot"></i></div>
-                        <div class="message-bubble">Olá Admin! 👋<br><br>Sou a IA do Olha Aí! Posso ajudar com:<br><br>📊 Estatísticas do site<br>🎯 Dicas de moderação<br>📈 Estratégias de crescimento<br>💬 Respostas para comentários<br><br>Como posso ajudar você hoje?</div>
+                        <div class="message-bubble">Olá Admin! 👋<br><br>Sou a IA do Olha Aí!<br><br>⚠️ **Primeiro passo:** Clique no botão "🔑 Configurar Chave API Groq" no Painel Admin e cole sua chave.<br><br>Depois volte aqui e pergunte qualquer coisa! 🚀</div>
                     </div>
                 </div>
                 <div class="ai-input-area">
@@ -298,16 +318,44 @@
     <div id="termosModal" class="modal hidden"><div class="modal-content"><h2>Termos</h2><p>Seja respeitoso.</p><button onclick="fecharTermos()">Fechar</button></div></div>
     <div id="contatoModal" class="modal hidden"><div class="modal-content"><h2>Contato</h2><p>📧 contato@olhaai.com</p><button onclick="fecharContato()">Fechar</button></div></div>
     <div id="confirmModal" class="modal hidden"><div class="modal-content"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:#e74c3c"></i><h2>Atenção!</h2><p>Excluir TODOS os vídeos?</p><button class="btn-delete-all" onclick="confirmarExcluirTodos()">SIM</button><button class="btn-secondary" onclick="fecharConfirmModal()">CANCELAR</button></div></div>
+    <div id="apiConfigModal" class="modal hidden"><div class="api-config-modal"><i class="fas fa-key" style="font-size:48px;color:#f012be"></i><h2>🔑 Configurar API Groq</h2><p>Cole sua chave API do Groq abaixo:</p><input type="text" id="groqApiKey" placeholder="gsk_..." style="width:100%"><p style="font-size:12px;margin-top:10px;">Pegue sua chave grátis em: <a href="https://console.groq.com/keys" target="_blank" style="color:#f012be">console.groq.com/keys</a></p><button class="btn-primary" onclick="salvarChaveGroq()">💾 Salvar Chave</button><button class="btn-secondary" onclick="fecharModalChave()">Cancelar</button></div></div>
 
     <script>
-        // ============ CHAVE API DEEPSEEK - JÁ CONFIGURADA ============
-        const MINHA_CHAVE_DEEPSEEK = "sk-fadefe12b0424ecbb1e2008aa27fa332";
-        // ============================================================
+        // ============ CHAVE API - ARMAZENADA LOCALMENTE (SEGURA) ============
+        let MINHA_CHAVE_GROQ = localStorage.getItem('groq_api_key') || null;
         
         const CHAVE_PIX = "aea8ea33-ce23-459a-8261-7b04e25d9f7e";
         
         function copiarPix() { navigator.clipboard.writeText(CHAVE_PIX); alert("✅ Chave Pix copiada!"); }
         function copiarComValor(valor) { navigator.clipboard.writeText(`Doação - R$ ${valor}\nChave: ${CHAVE_PIX}`); alert(`✅ R$ ${valor}`); }
+        
+        function configurarChaveGroq() {
+            document.getElementById('groqApiKey').value = MINHA_CHAVE_GROQ || '';
+            document.getElementById('apiConfigModal').classList.remove('hidden');
+        }
+        
+        function salvarChaveGroq() {
+            const chave = document.getElementById('groqApiKey').value.trim();
+            if (chave && chave.startsWith('gsk_')) {
+                MINHA_CHAVE_GROQ = chave;
+                localStorage.setItem('groq_api_key', chave);
+                alert('✅ Chave API Groq salva com sucesso! Agora você pode usar a IA.');
+                fecharModalChave();
+                // Atualiza mensagem da IA
+                document.getElementById('aiMessages').innerHTML = `
+                    <div class="ai-message bot">
+                        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+                        <div class="message-bubble">✅ Chave configurada! Agora sou a IA do Olha Aí!<br><br>Pergunte qualquer coisa sobre o site, estatísticas, dicas de moderação, crescimento, etc.<br><br>Como posso ajudar você hoje? 🚀</div>
+                    </div>
+                `;
+            } else {
+                alert('❌ Chave inválida! A chave Groq começa com "gsk_"');
+            }
+        }
+        
+        function fecharModalChave() {
+            document.getElementById('apiConfigModal').classList.add('hidden');
+        }
         
         function mostrarAdmin() { 
             document.getElementById('adminSection').classList.add('show'); 
@@ -335,11 +383,16 @@
             document.getElementById('donationSection').classList.remove('show'); 
         }
         
-        // ============ IA COM DEEPSEEK ============
+        // ============ IA COM GROQ (GRÁTIS E RÁPIDO) ============
         async function perguntarIA() {
             const input = document.getElementById('aiInput');
             const pergunta = input.value.trim();
             if (!pergunta) return;
+            
+            if (!MINHA_CHAVE_GROQ) {
+                adicionarMensagemIA('⚠️ **Configure sua chave API Groq primeiro!**\n\n1. Vá no **Painel Admin**\n2. Clique em **"🔑 Configurar Chave API Groq"**\n3. Cole sua chave (começa com gsk_)\n4. Volte e pergunte novamente!', 'bot');
+                return;
+            }
             
             adicionarMensagemIA(pergunta, 'user');
             input.value = '';
@@ -356,14 +409,14 @@ Pergunta do admin: ${pergunta}
 
 Resposta:`;
                 
-                const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${MINHA_CHAVE_DEEPSEEK}`
+                        "Authorization": `Bearer ${MINHA_CHAVE_GROQ}`
                     },
                     body: JSON.stringify({
-                        model: "deepseek-chat",
+                        model: "llama-3.3-70b-versatile",
                         messages: [{ role: "user", content: prompt }],
                         temperature: 0.7,
                         max_tokens: 800
@@ -372,6 +425,9 @@ Resposta:`;
                 
                 if (!response.ok) {
                     const erro = await response.json();
+                    if (response.status === 401) {
+                        throw new Error("Chave inválida! Configure uma nova chave no Painel Admin.");
+                    }
                     throw new Error(erro.error?.message || "Erro na API");
                 }
                 const data = await response.json();
