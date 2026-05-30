@@ -239,15 +239,8 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
-        }
-        .video-thumbnail video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
         .video-thumbnail .play-icon {
-            position: absolute;
             font-size: 48px;
             color: white;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
@@ -451,8 +444,8 @@
         </div>
 
         <div class="videos-header">
-            <h2><i class="fas fa-video"></i> Vídeos da Galeria</h2>
-            <button class="btn-upload" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-cloud-upload-alt"></i> Selecionar Vídeo</button>
+            <h2><i class="fas fa-video"></i> 📱 Vídeos da Galeria</h2>
+            <button class="btn-upload" id="uploadVideoBtn" onclick="mostrarUploadVideo()" style="display:none;"><i class="fas fa-plus-circle"></i> Selecionar Vídeo</button>
         </div>
         <div class="videos-grid" id="videosGrid"></div>
     </div>
@@ -490,14 +483,14 @@
     <div class="modal hidden" id="uploadModal">
         <div class="login-box" style="max-width: 500px;">
             <i class="fas fa-film" style="font-size: 48px; color: #ff4757;"></i>
-            <h2>SELECIONAR VÍDEO</h2>
+            <h2>🎬 SELECIONAR VÍDEO</h2>
             
-            <div class="upload-area" onclick="document.getElementById('videoFileInput').click()">
+            <div class="upload-area" onclick="abrirGaleria()">
                 <i class="fas fa-video"></i>
                 <p><strong>📱 Clique para escolher um vídeo da galeria</strong></p>
-                <p style="font-size: 12px; margin-top: 10px;">🎬 MP4, MOV, AVI, MKV<br>📊 Até 100MB</p>
+                <p style="font-size: 12px; margin-top: 10px;">🎬 MP4, MOV, AVI, MKV<br>📱 Abre a galeria do seu celular</p>
             </div>
-            <input type="file" id="videoFileInput" accept="video/*" style="display: none;" onchange="previewVideo(this)">
+            <input type="file" id="videoFileInput" accept="video/*" style="display: none;" onchange="selecionarVideo(this)">
             
             <div id="videoPreviewArea" style="display: none; margin: 15px 0;">
                 <video id="videoPreview" controls style="width: 100%; border-radius: 10px; max-height: 200px;"></video>
@@ -507,7 +500,7 @@
             <input type="text" id="videoTitle" placeholder="Título do vídeo" style="width: 100%; margin: 10px 0;">
             <textarea id="videoDesc" rows="3" placeholder="Descrição do vídeo..." style="width:100%; padding:12px; border-radius:10px; border:none;"></textarea>
             
-            <button class="btn-success" onclick="publicarVideoLocal()" style="width: 100%; margin-top: 10px;"><i class="fas fa-check"></i> PUBLICAR</button>
+            <button class="btn-success" onclick="publicarVideo()" style="width: 100%; margin-top: 10px;"><i class="fas fa-check"></i> PUBLICAR VÍDEO</button>
             <button class="btn-secondary" onclick="fecharUpload()" style="width: 100%; margin-top: 10px;">Cancelar</button>
         </div>
     </div>
@@ -534,8 +527,9 @@
         let logado = false;
         let botoesCriados = 0;
         let usuarioAtual = null;
-        let videoSelecionado = null;
+        let videoSelecionadoFile = null;
         
+        // Carregar dados salvos
         let comentariosLocais = JSON.parse(localStorage.getItem('comentarios_mundiais')) || [
             { autor: "🌍 Sistema", texto: "Bem-vindo! Selecione vídeos da sua galeria!", data: new Date().toISOString() },
             { autor: "🤖 IA Suprema", texto: "Clique em 'Selecionar Vídeo' e escolha um vídeo do seu celular!", data: new Date().toISOString() }
@@ -553,11 +547,16 @@
             localStorage.setItem('usuarios_site', JSON.stringify(usuarios));
         }
         
-        // Preview do vídeo selecionado
-        function previewVideo(input) {
+        // Função para abrir a galeria
+        function abrirGaleria() {
+            document.getElementById('videoFileInput').click();
+        }
+        
+        // Função para selecionar o vídeo
+        function selecionarVideo(input) {
             const file = input.files[0];
             if (file) {
-                videoSelecionado = file;
+                videoSelecionadoFile = file;
                 const videoURL = URL.createObjectURL(file);
                 const preview = document.getElementById('videoPreview');
                 const previewArea = document.getElementById('videoPreviewArea');
@@ -747,7 +746,7 @@
         function carregarVideos() {
             const grid = document.getElementById('videosGrid');
             if (videosLocais.length === 0) {
-                grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-video" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>Clique em "Selecionar Vídeo" e escolha um vídeo da sua galeria!</p></div>';
+                grid.innerHTML = '<div class="video-card" style="text-align:center;padding:40px;"><i class="fas fa-video" style="font-size:48px"></i><h3>Nenhum vídeo ainda</h3><p>📱 Clique em "Selecionar Vídeo" e escolha um vídeo da sua galeria!</p></div>';
                 return;
             }
             grid.innerHTML = videosLocais.map(video => `
@@ -764,27 +763,26 @@
             `).join('');
         }
         
-        function publicarVideoLocal() {
+        function publicarVideo() {
             const titulo = document.getElementById('videoTitle').value;
             const descricao = document.getElementById('videoDesc').value;
             
-            if (!titulo) { alert("Digite um título para o vídeo!"); return; }
-            if (!videoSelecionado) { alert("Selecione um vídeo da galeria!"); return; }
+            if (!titulo) { alert("📝 Digite um título para o vídeo!"); return; }
+            if (!videoSelecionadoFile) { alert("📱 Selecione um vídeo da galeria!"); return; }
             
             // Criar URL do vídeo selecionado
-            const videoURL = URL.createObjectURL(videoSelecionado);
+            const videoURL = URL.createObjectURL(videoSelecionadoFile);
             const novoId = Date.now().toString();
             
             videosLocais.push({
                 id: novoId,
                 title: titulo,
                 url: videoURL,
-                type: "file",
                 description: descricao || 'Sem descrição',
                 author: usuarioAtual?.name || 'Admin',
                 views: 0,
-                fileName: videoSelecionado.name,
-                fileSize: (videoSelecionado.size / (1024 * 1024)).toFixed(2),
+                fileName: videoSelecionadoFile.name,
+                fileSize: (videoSelecionadoFile.size / (1024 * 1024)).toFixed(2),
                 date: new Date().toISOString()
             });
             
@@ -796,7 +794,7 @@
             document.getElementById('videoDesc').value = '';
             document.getElementById('videoPreviewArea').style.display = 'none';
             document.getElementById('videoFileInput').value = '';
-            videoSelecionado = null;
+            videoSelecionadoFile = null;
             
             fecharUpload();
             alert('✅ Vídeo publicado com sucesso! Ele aparecerá na lista.');
@@ -804,7 +802,7 @@
         
         function excluirVideo(id) {
             const video = videosLocais.find(v => v.id === id);
-            if (video && video.type === 'file' && video.url && video.url.startsWith('blob:')) {
+            if (video && video.url && video.url.startsWith('blob:')) {
                 URL.revokeObjectURL(video.url);
             }
             videosLocais = videosLocais.filter(v => v.id !== id);
@@ -845,7 +843,7 @@
             document.getElementById('videoTitle').value = '';
             document.getElementById('videoDesc').value = '';
             document.getElementById('videoFileInput').value = '';
-            videoSelecionado = null;
+            videoSelecionadoFile = null;
         }
         
         function fecharUpload() { document.getElementById('uploadModal').classList.add('hidden'); }
