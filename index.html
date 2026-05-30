@@ -53,7 +53,6 @@
         .btn-primary { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; }
         .btn-secondary { background: #00b894; color: white; }
         .btn-danger { background: #2c3e50; color: white; }
-        .btn-remover { background: #e74c3c; color: white; }
         .main-buttons {
             display: flex;
             justify-content: center;
@@ -86,7 +85,7 @@
             margin-top: 20px;
         }
         .mensagens {
-            max-height: 300px;
+            max-height: 350px;
             overflow-y: auto;
             margin-bottom: 20px;
             padding: 10px;
@@ -95,13 +94,15 @@
             margin-bottom: 15px;
             display: flex;
             gap: 10px;
+            animation: fadeIn 0.3s ease;
         }
         .mensagem.usuario { justify-content: flex-end; }
         .mensagem.ia { justify-content: flex-start; }
         .bolha {
-            max-width: 70%;
+            max-width: 75%;
             padding: 12px 18px;
             border-radius: 20px;
+            word-wrap: break-word;
         }
         .usuario .bolha { background: linear-gradient(135deg, #ff4757, #ff6b81); border-bottom-right-radius: 5px; }
         .ia .bolha { background: rgba(255,255,255,0.12); border-bottom-left-radius: 5px; border-left: 3px solid #9b59b6; }
@@ -117,6 +118,7 @@
             border: none;
             border-radius: 25px;
             background: rgba(255,255,255,0.9);
+            font-size: 14px;
         }
         .comandos {
             display: flex;
@@ -127,12 +129,13 @@
         .cmd {
             background: rgba(155,89,182,0.3);
             border: 1px solid #9b59b6;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .cmd:hover { background: #9b59b6; }
+        .cmd:hover { background: #9b59b6; transform: scale(1.02); }
         
         .videos-grid {
             display: grid;
@@ -145,7 +148,9 @@
             border-radius: 15px;
             padding: 20px;
             text-align: center;
+            transition: all 0.3s;
         }
+        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
         .footer {
             margin-top: 60px;
             padding: 30px;
@@ -194,6 +199,14 @@
             0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
             30% { opacity: 1; transform: translateY(-5px); }
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .input-area { flex-direction: column; }
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -211,38 +224,52 @@
     </div>
 
     <div class="container">
-        <div class="main-buttons">
+        <div class="main-buttons" id="botoesContainer">
             <button class="main-btn btn-primary" id="iaBtn" onclick="mostrarIA()" style="display:none;"><i class="fas fa-robot"></i> 🤖 IA Modificadora</button>
         </div>
 
         <div id="iaPainel" class="ia-painel" style="display: none;">
-            <h2><i class="fas fa-robot"></i> 🤖 IA Modificadora</h2>
-            <p>Comandos: <strong>azul, verde, roxo, rosa, vermelho, escuro, criar botao, remover botao, criar card, remover card, titulo, resetar</strong></p>
+            <h2><i class="fas fa-robot"></i> 🤖 IA MODIFICADORA</h2>
+            <p><strong>COMANDOS QUE FUNCIONAM:</strong></p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                <span style="background: #3498db; padding: 4px 12px; border-radius: 20px;">azul</span>
+                <span style="background: #27ae60; padding: 4px 12px; border-radius: 20px;">verde</span>
+                <span style="background: #9b59b6; padding: 4px 12px; border-radius: 20px;">roxo</span>
+                <span style="background: #e84393; padding: 4px 12px; border-radius: 20px;">rosa</span>
+                <span style="background: #e74c3c; padding: 4px 12px; border-radius: 20px;">vermelho</span>
+                <span style="background: #2c3e50; padding: 4px 12px; border-radius: 20px;">escuro</span>
+                <span style="background: #9b59b6; padding: 4px 12px; border-radius: 20px;">criar botao</span>
+                <span style="background: #e74c3c; padding: 4px 12px; border-radius: 20px;">tirar botao</span>
+                <span style="background: #27ae60; padding: 4px 12px; border-radius: 20px;">criar card</span>
+                <span style="background: #e74c3c; padding: 4px 12px; border-radius: 20px;">tirar card</span>
+                <span style="background: #f39c12; padding: 4px 12px; border-radius: 20px;">resetar</span>
+            </div>
             <div class="chat">
                 <div class="mensagens" id="mensagensChat">
                     <div class="mensagem ia">
                         <div class="avatar"><i class="fas fa-robot"></i></div>
-                        <div class="bolha">🤖 Olá! Comandos disponíveis:<br><br>
-                        🎨 <strong>cores:</strong> azul, verde, roxo, rosa, vermelho, escuro<br>
-                        🔘 <strong>botões:</strong> "criar botao", "remover botao"<br>
-                        📦 <strong>cards:</strong> "criar card", "remover card"<br>
-                        📝 <strong>título:</strong> "titulo MEU SITE"<br>
-                        🔄 <strong>reset:</strong> "resetar"<br><br>
-                        <strong>👉 Experimente: "criar botao" ou "azul"</strong></div>
+                        <div class="bolha">🤖 <strong>Olá! Eu sou a IA Modificadora!</strong><br><br>
+                        <strong>✨ Comandos que funcionam AGORA:</strong><br><br>
+                        🎨 <strong>Cores:</strong> "azul", "verde", "roxo", "rosa", "vermelho", "escuro"<br>
+                        🔘 <strong>Botões:</strong> "criar botao", "tirar botao", "remover botao", "apagar botao"<br>
+                        📦 <strong>Cards:</strong> "criar card", "tirar card", "remover card"<br>
+                        📝 <strong>Título:</strong> "titulo NOVO NOME"<br>
+                        🔄 <strong>Reset:</strong> "resetar", "resetar site"<br><br>
+                        <strong>👉 Experimente: "criar botao" depois "tirar botao"</strong></div>
                     </div>
                 </div>
                 <div class="input-area">
-                    <input type="text" id="iaInput" placeholder="Ex: azul, criar botao, remover botao, titulo MEU SITE..." onkeypress="if(event.key==='Enter') processar()">
+                    <input type="text" id="iaInput" placeholder="Ex: azul, criar botao, tirar botao, titulo MEU SITE..." onkeypress="if(event.key==='Enter') processar()">
                     <button class="btn-primary" onclick="processar()"><i class="fas fa-paper-plane"></i> Executar</button>
                 </div>
                 <div class="comandos">
                     <span class="cmd" onclick="comando('azul')">🔵 AZUL</span>
                     <span class="cmd" onclick="comando('verde')">🟢 VERDE</span>
                     <span class="cmd" onclick="comando('roxo')">🟣 ROXO</span>
-                    <span class="cmd" onclick="comando('criar botao')">🔘 CRIAR BOTÃO</span>
-                    <span class="cmd" onclick="comando('remover botao')">🗑️ REMOVER BOTÃO</span>
+                    <span class="cmd" onclick="comando('criar botao')">🔘 CRIAR</span>
+                    <span class="cmd" onclick="comando('tirar botao')">🗑️ TIRAR BOTÃO</span>
                     <span class="cmd" onclick="comando('criar card')">📦 CRIAR CARD</span>
-                    <span class="cmd" onclick="comando('remover card')">🗑️ REMOVER CARD</span>
+                    <span class="cmd" onclick="comando('tirar card')">🗑️ TIRAR CARD</span>
                     <span class="cmd" onclick="comando('resetar')">🔄 RESETAR</span>
                 </div>
             </div>
@@ -254,6 +281,7 @@
                 <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
                 <h3>Bem-vindo!</h3>
                 <p>Faça login e use a IA</p>
+                <small>✨ Digite "criar botao" para testar</small>
             </div>
         </div>
     </div>
@@ -282,7 +310,7 @@
             const div = document.createElement('div');
             div.className = `mensagem ${tipo}`;
             if (tipo === 'ia') {
-                div.innerHTML = `<div class="avatar"><i class="fas fa-robot"></i></div><div class="bolha">${texto}</div>`;
+                div.innerHTML = `<div class="avatar"><i class="fas fa-robot"></i></div><div class="bolha">${texto.replace(/\n/g, '<br>')}</div>`;
             } else {
                 div.innerHTML = `<div class="bolha">${texto}</div>`;
             }
@@ -320,33 +348,35 @@
             document.querySelector('.header').style.borderBottomColor = c.p;
             document.querySelector('.logo i').style.color = c.p;
             document.querySelector('.logo span').style.background = `linear-gradient(135deg, ${c.p}, ${c.s})`;
-            adicionarMensagem(`✅ **Cor alterada para ${cor.toUpperCase()}!**`);
+            document.querySelector('.logo span').style.webkitBackgroundClip = 'text';
+            adicionarMensagem(`✅ **Cor alterada para ${cor.toUpperCase()}!** O site está com um visual lindo! 🎨`);
         }
         
         // CRIAR BOTÃO
         function criarBotao() {
             botoesCriados++;
-            const container = document.querySelector('.main-buttons');
+            const container = document.getElementById('botoesContainer');
             const btn = document.createElement('button');
             btn.className = 'main-btn btn-primary botao-criado';
             btn.setAttribute('data-id', botoesCriados);
             btn.innerHTML = `<i class="fas fa-star"></i> Botão ${botoesCriados}`;
-            btn.onclick = () => alert(`Botão ${botoesCriados} clicado!`);
+            btn.onclick = () => alert(`✨ Botão ${botoesCriados} clicado!`);
             container.appendChild(btn);
-            adicionarMensagem(`✅ **Botão criado!** Total: ${botoesCriados}`);
+            adicionarMensagem(`✅ **BOTÃO CRIADO!**\n\n🔘 Nome: Botão ${botoesCriados}\n📊 Total de botões: ${botoesCriados}`);
         }
         
         // REMOVER BOTÃO
         function removerBotao() {
             const botoes = document.querySelectorAll('.botao-criado');
             if (botoes.length === 0) {
-                adicionarMensagem(`❌ **Nenhum botão para remover!** Crie um botão primeiro com "criar botao"`);
+                adicionarMensagem(`❌ **Nenhum botão para remover!**\n\nCrie um botão primeiro com "criar botao"`);
                 return;
             }
             const ultimoBotao = botoes[botoes.length - 1];
+            const id = ultimoBotao.getAttribute('data-id');
             ultimoBotao.remove();
             botoesCriados--;
-            adicionarMensagem(`🗑️ **Botão removido!** Restam ${botoesCriados} botões.`);
+            adicionarMensagem(`🗑️ **BOTÃO REMOVIDO!**\n\nBotão ${id} foi removido.\n📊 Restam ${botoesCriados} botões.`);
         }
         
         // CRIAR CARD
@@ -360,30 +390,31 @@
                 <i class="fas fa-plus-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
                 <h3>Card ${cardsCriados}</h3>
                 <p>Criado pela IA!</p>
-                <button class="btn-remover" style="margin-top: 15px; padding: 5px 15px;" onclick="this.parentElement.remove(); cardsCriados--; adicionarMensagem('🗑️ Card removido! Restam ' + cardsCriados + ' cards', 'ia');">Remover</button>
+                <button class="btn-danger" style="margin-top: 15px; padding: 5px 15px; font-size: 12px;" onclick="this.parentElement.remove(); cardsCriados--; adicionarMensagem('🗑️ Card removido! Restam ' + cardsCriados + ' cards', 'ia');">Remover</button>
             `;
             grid.appendChild(card);
-            adicionarMensagem(`✅ **Card criado!** Total: ${cardsCriados}`);
+            adicionarMensagem(`✅ **CARD CRIADO!**\n\n📦 Nome: Card ${cardsCriados}\n📊 Total de cards: ${cardsCriados}`);
         }
         
         // REMOVER CARD
         function removerCard() {
             const cards = document.querySelectorAll('.card-criado');
             if (cards.length === 0) {
-                adicionarMensagem(`❌ **Nenhum card para remover!** Crie um card primeiro com "criar card"`);
+                adicionarMensagem(`❌ **Nenhum card para remover!**\n\nCrie um card primeiro com "criar card"`);
                 return;
             }
             const ultimoCard = cards[cards.length - 1];
+            const id = ultimoCard.getAttribute('data-id');
             ultimoCard.remove();
             cardsCriados--;
-            adicionarMensagem(`🗑️ **Card removido!** Restam ${cardsCriados} cards.`);
+            adicionarMensagem(`🗑️ **CARD REMOVIDO!**\n\nCard ${id} foi removido.\n📊 Restam ${cardsCriados} cards.`);
         }
         
         // TÍTULO
         function mudarTitulo(novoTitulo) {
             document.querySelector('.logo span').textContent = novoTitulo.toUpperCase();
             document.title = novoTitulo;
-            adicionarMensagem(`✅ **Título alterado para ${novoTitulo.toUpperCase()}!**`);
+            adicionarMensagem(`✅ **TÍTULO ALTERADO!**\n\nAgora o site se chama: **${novoTitulo.toUpperCase()}**`);
         }
         
         // RESETAR
@@ -403,6 +434,7 @@
             document.querySelector('.header').style.borderBottomColor = "#ff4757";
             document.querySelector('.logo i').style.color = "#ff4757";
             document.querySelector('.logo span').style.background = "linear-gradient(135deg, #ff4757, #ff6b81)";
+            document.querySelector('.logo span').style.webkitBackgroundClip = 'text';
             
             // Resetar título
             document.querySelector('.logo span').textContent = "OLHA AÍ";
@@ -419,11 +451,12 @@
                         <i class="fas fa-play-circle" style="font-size: 48px; margin-bottom: 15px;"></i>
                         <h3>Bem-vindo!</h3>
                         <p>Site resetado! Use a IA novamente</p>
+                        <small>✨ Digite "criar botao" para testar</small>
                     </div>
                 `;
             }
             
-            adicionarMensagem(`✅ **SITE RESETADO!**\n\n🔘 Botões: 0\n📦 Cards: 0\n🎨 Cores: padrão\n📝 Título: OLHA AÍ\n\nTudo limpo!`);
+            adicionarMensagem(`✅ **SITE RESETADO COM SUCESSO!**\n\n🧹 Todas as modificações foram removidas.\n🔘 Botões: 0\n📦 Cards: 0\n🎨 Cores: padrão\n📝 Título: OLHA AÍ\n\nO site voltou ao estado original!`);
         }
         
         // PROCESSAR COMANDO
@@ -447,37 +480,37 @@
                 else if (comando === 'vermelho') mudarCor('vermelho');
                 else if (comando === 'escuro') mudarCor('escuro');
                 
-                // BOTÕES
-                else if (comando === 'criar botao' || comando === 'criar botão') criarBotao();
-                else if (comando === 'remover botao' || comando === 'remover botão' || comando === 'tirar botao' || comando === 'apagar botao') removerBotao();
+                // BOTÕES - MÚLTIPLAS VARIAÇÕES
+                else if (comando === 'criar botao' || comando === 'criar botão' || comando === 'criarbotao') criarBotao();
+                else if (comando === 'tirar botao' || comando === 'tirar botão' || comando === 'remover botao' || comando === 'apagar botao' || comando === 'remove botao') removerBotao();
                 
-                // CARDS
-                else if (comando === 'criar card') criarCard();
-                else if (comando === 'remover card' || comando === 'tirar card' || comando === 'apagar card') removerCard();
+                // CARDS - MÚLTIPLAS VARIAÇÕES
+                else if (comando === 'criar card' || comando === 'criarcard') criarCard();
+                else if (comando === 'tirar card' || comando === 'tirar card' || comando === 'remover card' || comando === 'apagar card' || comando === 'remove card') removerCard();
                 
                 // TÍTULO
                 else if (comando.startsWith('titulo')) {
                     let novoTitulo = comando.replace('titulo', '').trim();
                     if (novoTitulo) mudarTitulo(novoTitulo);
-                    else adicionarMensagem(`❌ **Digite: "titulo MEU SITE"**`);
+                    else adicionarMensagem(`❌ **Digite: "titulo MEU SITE"**\n\nExemplo: "titulo OLHA AI PODEROSO"`);
                 }
                 
                 // RESETAR
-                else if (comando === 'resetar' || comando === 'reset') resetar();
+                else if (comando === 'resetar' || comando === 'reset' || comando === 'resetar site' || comando === 'limpar tudo') resetar();
                 
                 // AJUDA
-                else if (comando === 'ajuda' || comando === 'comandos') {
+                else if (comando === 'ajuda' || comando === 'comandos' || comando === 'help') {
                     adicionarMensagem(`📋 **COMANDOS DISPONÍVEIS:**\n\n` +
-                        `🎨 **Cores:** azul, verde, roxo, rosa, vermelho, escuro\n` +
-                        `🔘 **Botões:** "criar botao", "remover botao"\n` +
-                        `📦 **Cards:** "criar card", "remover card"\n` +
-                        `📝 **Título:** "titulo MEU SITE"\n` +
-                        `🔄 **Reset:** "resetar"\n\n` +
-                        `👉 Experimente: "criar botao"`);
+                        `🎨 **Cores:**\n• azul, verde, roxo, rosa, vermelho, escuro\n\n` +
+                        `🔘 **Botões:**\n• "criar botao" - cria um novo botão\n• "tirar botao" - remove o último botão\n\n` +
+                        `📦 **Cards:**\n• "criar card" - cria um novo card\n• "tirar card" - remove o último card\n\n` +
+                        `📝 **Título:**\n• "titulo NOVO NOME" - muda o nome do site\n\n` +
+                        `🔄 **Reset:**\n• "resetar" - limpa todas as modificações\n\n` +
+                        `👉 **Experimente agora:** "criar botao" e depois "tirar botao"`);
                 }
                 
                 else {
-                    adicionarMensagem(`❌ **Comando não reconhecido!**\n\nComandos:\n• azul, verde, roxo, rosa, vermelho, escuro\n• criar botao / remover botao\n• criar card / remover card\n• titulo [NOME]\n• resetar\n\nDigite "ajuda" para detalhes.`);
+                    adicionarMensagem(`❌ **Comando não reconhecido!**\n\nComandos que funcionam:\n• azul, verde, roxo, rosa, vermelho, escuro\n• criar botao / tirar botao\n• criar card / tirar card\n• titulo [NOME]\n• resetar\n\nDigite "ajuda" para lista completa.`);
                 }
             }, 500);
         }
@@ -501,7 +534,7 @@
             const senha = document.getElementById('loginPassword').value;
             if (email === 'admin@olhaai.com' && senha === 'admin123') {
                 localStorage.setItem('usuario', 'admin');
-                alert('✅ Login realizado!');
+                alert('✅ Login realizado! Agora você pode usar a IA.');
                 document.querySelectorAll('.nav-buttons button').forEach(btn => {
                     if (btn.id !== 'logoutBtn') btn.style.display = 'none';
                 });
